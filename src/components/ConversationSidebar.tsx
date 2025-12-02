@@ -9,7 +9,6 @@ import {
   Edit2,
   Check,
   X,
-  ChevronLeft,
   ChevronRight
 } from 'lucide-react';
 import { Conversation } from '@/lib/firebase';
@@ -88,13 +87,10 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
     return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US');
   };
 
-  const CloseIcon = isRTL ? ChevronLeft : ChevronRight;
+  const CloseIcon = ChevronRight;
 
   return (
-    <div className={cn(
-      "h-full flex flex-col bg-card border-border",
-      isRTL ? "border-r" : "border-l"
-    )}>
+    <div className="h-full flex flex-col bg-card border-l border-border">
       {/* Header */}
       <div className="p-4 border-b border-border safe-area-top">
         <div className="flex items-center gap-2 mb-4">

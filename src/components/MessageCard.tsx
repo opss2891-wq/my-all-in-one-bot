@@ -4,6 +4,7 @@ import { Message, updateMessage } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
 import HighlightText from './HighlightText';
+import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -237,7 +238,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         if (!codeData) return null;
         return (
           <div className="space-y-3">
-            {/* Code Block */}
+            {/* Code Block with Syntax Highlighting */}
             <div className="relative group/code">
               <div className="absolute top-2 end-2 flex gap-2 z-10">
                 <span className="px-2 py-1 text-[10px] font-mono bg-info/20 text-info rounded-md uppercase">
@@ -250,14 +251,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                   <Copy className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
               </div>
-              <pre className="bg-secondary/80 rounded-xl p-4 pt-10 overflow-x-auto text-sm font-mono text-foreground border border-info/20">
-                <code dir="ltr" className="text-start block">
-                  {codeData.code}
-                </code>
-              </pre>
+              <div className="pt-8 border border-info/20 rounded-xl overflow-hidden bg-[#0d1117]">
+                <CodeHighlight 
+                  code={codeData.code} 
+                  language={codeData.language || 'text'}
+                />
+              </div>
             </div>
             
-            {/* AI Explanation */}
+            {/* Explanation (if any) */}
             {codeData.explanation && (
               <div className="p-3 rounded-xl bg-info/5 border border-info/20">
                 <p className="text-xs text-muted-foreground mb-1">{t('explanation')}</p>
