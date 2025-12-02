@@ -6,7 +6,7 @@ import {
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
-import { generateLinkTitle, detectCredentialType } from '@/lib/gemini';
+import { generateLinkTitle, detectCredentialType, explainCode } from '@/lib/gemini';
 
 // Simple language detection for code
 const detectCodeLanguage = (code: string): string => {
@@ -42,7 +42,10 @@ const ChatView: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [archivedConversations, setArchivedConversations] = useState<Conversation[]>([]);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(() => {
+    // Load from localStorage on initial render
+    return localStorage.getItem('activeConversationId');
+  });
   const [showArchived, setShowArchived] = useState(false);
   
   const [loading, setLoading] = useState(true);
@@ -98,8 +101,17 @@ const ChatView: React.FC = () => {
       setConversations(convs);
       setArchivedConversations(archived);
       
-      if (convs.length > 0 && !currentConversationId) {
-        setCurrentConversationId(convs[0].id!);
+      // Check if saved conversation exists
+      const savedId = localStorage.getItem('activeConversationId');
+      const allConvs = [...convs, ...archived];
+      const savedConvExists = savedId && allConvs.some(c => c.id === savedId);
+      
+      if (savedConvExists) {
+        setCurrentConversationId(savedId);
+      } else if (convs.length > 0 && !currentConversationId) {
+        const newId = convs[0].id!;
+        setCurrentConversationId(newId);
+        localStorage.setItem('activeConversationId', newId);
       } else if (convs.length === 0 && archived.length === 0) {
         handleCreateConversation();
       }
@@ -126,6 +138,7 @@ const ChatView: React.FC = () => {
       const docRef = await createConversation();
       await loadConversations();
       setCurrentConversationId(docRef.id);
+      localStorage.setItem('activeConversationId', docRef.id);
       setShowArchived(false);
       setSidebarOpen(false);
       toast({ title: t('newConversation') });
@@ -140,7 +153,10 @@ const ChatView: React.FC = () => {
       await loadConversations();
       if (currentConversationId === id) {
         const remaining = conversations.filter(c => c.id !== id);
-        setCurrentConversationId(remaining.length > 0 ? remaining[0].id! : null);
+        const newId = remaining.length > 0 ? remaining[0].id! : null;
+        setCurrentConversationId(newId);
+        if (newId) localStorage.setItem('activeConversationId', newId);
+        else localStorage.removeItem('activeConversationId');
       }
       toast({ title: t('archived') });
     } catch (error) {
@@ -224,12 +240,13 @@ const ChatView: React.FC = () => {
         return { type: 'note', content: `Credentials: ${content}` };
 
       case 'code':
-        // No AI - just save the code as-is, user can add language manually
+        // Use AI to explain code and add tags
+        const codeResult = await explainCode(content);
         const codeData: CodeData = {
           code: content,
-          language: detectCodeLanguage(content),
-          explanation: '',
-          tags: []
+          language: codeResult.language || detectCodeLanguage(content),
+          explanation: codeResult.explanation,
+          tags: codeResult.tags
         };
         return { type: 'code', codeData };
 
@@ -402,6 +419,7 @@ const ChatView: React.FC = () => {
           showArchived={showArchived}
           onSelectConversation={(id) => {
             setCurrentConversationId(id);
+            localStorage.setItem('activeConversationId', id);
             setSidebarOpen(false);
           }}
           onCreateConversation={handleCreateConversation}
