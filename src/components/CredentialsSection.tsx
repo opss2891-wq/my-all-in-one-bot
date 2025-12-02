@@ -1,0 +1,256 @@
+import React, { useState, useEffect } from 'react';
+import { Plus, Trash2, Key, Eye, EyeOff, Copy, Loader2 } from 'lucide-react';
+import { addCredential, getCredentials, deleteCredential, Credential, CredentialType } from '@/lib/firebase';
+import { toast } from '@/hooks/use-toast';
+
+const credentialTypes: { value: CredentialType; label: string }[] = [
+  { value: 'hosting', label: 'Hosting' },
+  { value: 'admin', label: 'Admin Panel' },
+  { value: 'ftp', label: 'FTP' },
+  { value: 'ssh', label: 'SSH' },
+  { value: 'cpanel', label: 'cPanel' },
+  { value: 'database', label: 'Database' },
+  { value: 'other', label: 'Other' },
+];
+
+const getTypeColor = (type: CredentialType) => {
+  const colors: Record<CredentialType, string> = {
+    hosting: 'bg-primary/20 text-primary',
+    admin: 'bg-destructive/20 text-destructive',
+    ftp: 'bg-success/20 text-success',
+    ssh: 'bg-warning/20 text-warning',
+    cpanel: 'bg-accent/20 text-accent',
+    database: 'bg-blue-500/20 text-blue-400',
+    other: 'bg-muted text-muted-foreground',
+  };
+  return colors[type] || colors.other;
+};
+
+const CredentialsSection: React.FC = () => {
+  const [credentials, setCredentials] = useState<Credential[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [adding, setAdding] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
+  const [form, setForm] = useState({
+    username: '',
+    password: '',
+    host: '',
+    url: '',
+    type: 'hosting' as CredentialType,
+  });
+
+  useEffect(() => {
+    loadCredentials();
+  }, []);
+
+  const loadCredentials = async () => {
+    try {
+      const data = await getCredentials();
+      setCredentials(data);
+    } catch (error) {
+      toast({ title: 'Error loading credentials', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddCredential = async () => {
+    if (!form.username || !form.password) return;
+    setAdding(true);
+    try {
+      await addCredential(form);
+      setForm({ username: '', password: '', host: '', url: '', type: 'hosting' });
+      setShowForm(false);
+      await loadCredentials();
+      toast({ title: 'Credential added successfully' });
+    } catch (error) {
+      toast({ title: 'Error adding credential', variant: 'destructive' });
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const handleDeleteCredential = async (id: string) => {
+    try {
+      await deleteCredential(id);
+      await loadCredentials();
+      toast({ title: 'Credential deleted' });
+    } catch (error) {
+      toast({ title: 'Error deleting credential', variant: 'destructive' });
+    }
+  };
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast({ title: `${label} copied!` });
+  };
+
+  const togglePassword = (id: string) => {
+    setShowPasswords(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  return (
+    <section id="credentials" className="snap-section p-6 flex flex-col">
+      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-accent/20 glow-accent">
+              <Key className="w-6 h-6 text-accent" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground">Credentials</h2>
+          </div>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="p-3 gradient-accent rounded-xl hover:opacity-90 transition-all"
+          >
+            <Plus className="w-5 h-5 text-accent-foreground" />
+          </button>
+        </div>
+
+        {showForm && (
+          <div className="bg-card border border-border rounded-xl p-4 mb-6 animate-slide-up">
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Type</label>
+                <select
+                  value={form.type}
+                  onChange={(e) => setForm({ ...form, type: e.target.value as CredentialType })}
+                  className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {credentialTypes.map((type) => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Username</label>
+                <input
+                  type="text"
+                  value={form.username}
+                  onChange={(e) => setForm({ ...form, username: e.target.value })}
+                  className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Password</label>
+                <input
+                  type="password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Host</label>
+                <input
+                  type="text"
+                  value={form.host}
+                  onChange={(e) => setForm({ ...form, host: e.target.value })}
+                  placeholder="ftp.example.com"
+                  className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="text-sm text-muted-foreground mb-1 block">URL</label>
+              <input
+                type="url"
+                value={form.url}
+                onChange={(e) => setForm({ ...form, url: e.target.value })}
+                placeholder="https://example.com"
+                className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <button
+              onClick={handleAddCredential}
+              disabled={adding || !form.username || !form.password}
+              className="w-full py-2 gradient-accent rounded-lg text-accent-foreground font-medium hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+            >
+              {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              Save Credential
+            </button>
+          </div>
+        )}
+
+        <div className="flex-1 overflow-y-auto space-y-3">
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : credentials.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              No credentials saved
+            </div>
+          ) : (
+            credentials.map((cred) => (
+              <div
+                key={cred.id}
+                className="bg-card border border-border rounded-xl p-4 animate-slide-up group hover:border-accent/50 transition-all"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className={`text-xs px-2 py-1 rounded-full font-mono ${getTypeColor(cred.type)}`}>
+                    {cred.type.toUpperCase()}
+                  </span>
+                  <button
+                    onClick={() => handleDeleteCredential(cred.id!)}
+                    className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                
+                <div className="space-y-2 font-mono text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">User:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-foreground">{cred.username}</span>
+                      <button onClick={() => copyToClipboard(cred.username, 'Username')} className="p-1 hover:bg-muted rounded">
+                        <Copy className="w-3 h-3 text-muted-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Pass:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-foreground">
+                        {showPasswords[cred.id!] ? cred.password : '••••••••'}
+                      </span>
+                      <button onClick={() => togglePassword(cred.id!)} className="p-1 hover:bg-muted rounded">
+                        {showPasswords[cred.id!] ? <EyeOff className="w-3 h-3 text-muted-foreground" /> : <Eye className="w-3 h-3 text-muted-foreground" />}
+                      </button>
+                      <button onClick={() => copyToClipboard(cred.password, 'Password')} className="p-1 hover:bg-muted rounded">
+                        <Copy className="w-3 h-3 text-muted-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                  {cred.host && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Host:</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-foreground">{cred.host}</span>
+                        <button onClick={() => copyToClipboard(cred.host, 'Host')} className="p-1 hover:bg-muted rounded">
+                          <Copy className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {cred.url && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">URL:</span>
+                      <a href={cred.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-[200px]">
+                        {cred.url}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default CredentialsSection;
