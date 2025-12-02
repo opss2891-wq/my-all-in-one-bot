@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
@@ -7,6 +7,67 @@ import HighlightText from './HighlightText';
 import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+// Component for adding new tasks
+const AddTaskInput: React.FC<{ messageId: string; onUpdate: () => void }> = ({ messageId, onUpdate }) => {
+  const [newTask, setNewTask] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+  const { t } = useLanguage();
+
+  const handleAddTask = async () => {
+    if (!newTask.trim()) return;
+    try {
+      // Get current message and add new task
+      const { doc, getDoc } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
+      const docRef = doc(db, 'messages', messageId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const currentTasks = docSnap.data().tasks || [];
+        const updatedTasks = [...currentTasks, { text: newTask.trim(), completed: false }];
+        await updateMessage(messageId, { tasks: updatedTasks });
+        setNewTask('');
+        setIsAdding(false);
+        onUpdate();
+        toast({ title: t('addedSuccess') });
+      }
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
+  };
+
+  if (!isAdding) {
+    return (
+      <button
+        onClick={() => setIsAdding(true)}
+        className="flex items-center gap-2 p-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl transition-all w-full"
+      >
+        <Plus className="w-4 h-4" />
+        <span>إضافة مهمة جديدة</span>
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex gap-2">
+      <input
+        type="text"
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
+        placeholder="اكتب المهمة الجديدة..."
+        className="flex-1 px-3 py-2 text-sm bg-muted/50 border border-warning/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-warning/30"
+        autoFocus
+      />
+      <button
+        onClick={handleAddTask}
+        className="px-3 py-2 bg-warning/20 text-warning rounded-xl hover:bg-warning/30 transition-colors"
+      >
+        <Plus className="w-4 h-4" />
+      </button>
+    </div>
+  );
+};
 
 interface MessageCardProps {
   message: Message;
@@ -85,11 +146,12 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const renderContent = () => {
     switch (message.type) {
       case 'note':
-        const noteIsArabic = isArabicText(message.content || '');
+        // Default to RTL (right) direction
         return (
           <div 
             className="cursor-pointer active:scale-[0.99] transition-transform"
-            style={{ textAlign: noteIsArabic ? 'right' : 'left', direction: noteIsArabic ? 'rtl' : 'ltr' }}
+            dir="rtl"
+            style={{ textAlign: 'right' }}
           >
             <HighlightText 
               text={message.content || ''} 
@@ -100,24 +162,39 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         );
 
       case 'tasks':
-        const completedCount = message.tasks?.filter(t => t.completed).length || 0;
-        const totalCount = message.tasks?.length || 0;
+        const tasks = message.tasks || [];
+        const title = tasks.length > 0 ? tasks[0].text : '';
+        const actualTasks = tasks.slice(1); // Tasks start from index 1
+        const completedCount = actualTasks.filter(t => t.completed).length;
+        const totalCount = actualTasks.length;
         const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
         return (
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4">
-              <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-success/70 to-success transition-all duration-500 ease-out"
-                  style={{ width: `${progress}%` }}
-                />
+          <div className="space-y-3">
+            {/* Title - First line */}
+            {title && (
+              <h3 className="text-base font-semibold text-foreground border-b border-warning/20 pb-2">
+                {title}
+              </h3>
+            )}
+            
+            {/* Progress bar */}
+            {actualTasks.length > 0 && (
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-success/70 to-success transition-all duration-500 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="font-medium tabular-nums">{completedCount}/{totalCount}</span>
               </div>
-              <span className="font-medium tabular-nums">{completedCount}/{totalCount}</span>
-            </div>
-            {message.tasks?.map((task, index) => (
+            )}
+            
+            {/* Task items - starting from index 1 */}
+            {actualTasks.map((task, index) => (
               <div
-                key={index}
-                onClick={() => handleToggleTask(index)}
+                key={index + 1}
+                onClick={() => handleToggleTask(index + 1)} // +1 because title is at index 0
                 className={cn(
                   "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all active:scale-[0.98]",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
@@ -138,6 +215,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 />
               </div>
             ))}
+            
+            {/* Add new task */}
+            <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
           </div>
         );
 
