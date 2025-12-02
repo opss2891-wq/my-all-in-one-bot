@@ -51,9 +51,15 @@ const CodeHighlight: React.FC<CodeHighlightProps> = ({ code, language = 'text', 
     <pre className={`rounded-xl overflow-x-auto p-4 ${className}`}>
       <code 
         ref={codeRef} 
-        className={`language-${language} block text-base leading-relaxed`}
+        className={`language-${language} block leading-relaxed`}
         dir="ltr"
-        style={{ textAlign: 'left', fontSize: '0.95rem' }}
+        style={{ 
+          textAlign: 'left', 
+          fontSize: '1rem',
+          fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', 'Monaco', monospace",
+          fontWeight: 400,
+          letterSpacing: '0.02em'
+        }}
       >
         {code}
       </code>
