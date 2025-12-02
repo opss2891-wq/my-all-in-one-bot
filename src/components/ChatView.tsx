@@ -6,7 +6,27 @@ import {
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
-import { generateLinkTitle, detectCredentialType, explainCode } from '@/lib/gemini';
+import { generateLinkTitle, detectCredentialType } from '@/lib/gemini';
+
+// Simple language detection for code
+const detectCodeLanguage = (code: string): string => {
+  const patterns: { pattern: RegExp; lang: string }[] = [
+    { pattern: /^<(!DOCTYPE|html|div|span|p|a|img)/im, lang: 'html' },
+    { pattern: /(function|const|let|var|=>|import|export)\s/m, lang: 'javascript' },
+    { pattern: /^(def |class |import |from |print\()/m, lang: 'python' },
+    { pattern: /^(public|private|class|void|int|String)\s/m, lang: 'java' },
+    { pattern: /^(<?php|echo|function\s+\w+\()/m, lang: 'php' },
+    { pattern: /^(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER)\s/im, lang: 'sql' },
+    { pattern: /^(\{|\[)[\s\S]*(\}|\])$/m, lang: 'json' },
+    { pattern: /^(\.|#|@media|@keyframes)\w+\s*\{/m, lang: 'css' },
+    { pattern: /^#!/m, lang: 'bash' },
+  ];
+  
+  for (const { pattern, lang } of patterns) {
+    if (pattern.test(code)) return lang;
+  }
+  return 'text';
+};
 import MessageCard from './MessageCard';
 import MessageInput from './MessageInput';
 import SearchBar from './SearchBar';
@@ -204,12 +224,12 @@ const ChatView: React.FC = () => {
         return { type: 'note', content: `Credentials: ${content}` };
 
       case 'code':
-        const codeResult = await explainCode(content);
+        // No AI - just save the code as-is, user can add language manually
         const codeData: CodeData = {
           code: content,
-          language: codeResult.language,
-          explanation: codeResult.explanation,
-          tags: codeResult.tags
+          language: detectCodeLanguage(content),
+          explanation: '',
+          tags: []
         };
         return { type: 'code', codeData };
 
@@ -372,11 +392,8 @@ const ChatView: React.FC = () => {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out",
-        isRTL ? "start-0" : "end-0",
-        isRTL 
-          ? (sidebarOpen ? "translate-x-0" : "-translate-x-full")
-          : (sidebarOpen ? "translate-x-0" : "translate-x-full")
+        "fixed inset-y-0 right-0 z-50 w-80 transform transition-transform duration-300 ease-out",
+        sidebarOpen ? "translate-x-0" : "translate-x-full"
       )}>
         <ConversationSidebar
           conversations={conversations}
