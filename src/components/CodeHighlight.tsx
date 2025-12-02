@@ -48,12 +48,12 @@ const CodeHighlight: React.FC<CodeHighlightProps> = ({ code, language = 'text', 
   }, [code, language]);
 
   return (
-    <pre className={`rounded-xl overflow-x-auto text-sm ${className}`}>
+    <pre className={`rounded-xl overflow-x-auto p-4 ${className}`}>
       <code 
         ref={codeRef} 
-        className={`language-${language} block`}
+        className={`language-${language} block text-base leading-relaxed`}
         dir="ltr"
-        style={{ textAlign: 'left' }}
+        style={{ textAlign: 'left', fontSize: '0.95rem' }}
       >
         {code}
       </code>
