@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
@@ -143,13 +143,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     }
   };
 
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const renderContent = () => {
     switch (message.type) {
       case 'note':
         // Default to RTL (right) direction
         return (
           <div 
-            className="cursor-pointer active:scale-[0.99] transition-transform"
+            className="cursor-pointer active:scale-[0.99] transition-transform space-y-3"
             dir="rtl"
             style={{ textAlign: 'right' }}
           >
@@ -158,6 +160,25 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               searchQuery={searchQuery}
               className="text-foreground whitespace-pre-wrap block text-sm md:text-base leading-relaxed"
             />
+            
+            {/* Display Images */}
+            {message.images && message.images.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-3">
+                {message.images.map((img, index) => (
+                  <div 
+                    key={index} 
+                    className="relative group rounded-xl overflow-hidden border border-border cursor-pointer"
+                    onClick={(e) => { e.stopPropagation(); setSelectedImage(img); }}
+                  >
+                    <img 
+                      src={img} 
+                      alt={`Image ${index + 1}`}
+                      className="w-full h-24 object-cover hover:scale-105 transition-transform"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
 
@@ -291,25 +312,48 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'links':
         return (
           <div className="space-y-2">
-            {message.links?.map((link, index) => (
-              <a
-                key={index}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all group active:scale-[0.98]"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <ExternalLink className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-foreground font-medium truncate text-sm">{link.title || link.url}</p>
-                  {link.title && (
-                    <p className="text-xs text-muted-foreground truncate">{link.url}</p>
-                  )}
-                </div>
-              </a>
-            ))}
+            {message.links?.map((link, index) => {
+              // Get favicon from Google's service
+              let faviconUrl: string | undefined;
+              try {
+                const urlObj = new URL(link.url);
+                faviconUrl = `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=64`;
+              } catch {
+                faviconUrl = undefined;
+              }
+              
+              return (
+                <a
+                  key={index}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all group active:scale-[0.98]"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors overflow-hidden">
+                    {faviconUrl ? (
+                      <img 
+                        src={faviconUrl} 
+                        alt="" 
+                        className="w-6 h-6 object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.parentElement?.classList.add('fallback-icon');
+                        }}
+                      />
+                    ) : (
+                      <ExternalLink className="w-5 h-5 text-primary" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-foreground font-medium truncate text-sm">{link.title || link.url}</p>
+                    {link.title && (
+                      <p className="text-xs text-muted-foreground truncate">{link.url}</p>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
           </div>
         );
 
@@ -407,6 +451,28 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         </button>
       </div>
       {renderContent()}
+      
+      {/* Image Preview Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh]">
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-10 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <img 
+              src={selectedImage} 
+              alt="Preview" 
+              className="max-w-full max-h-[85vh] object-contain rounded-xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

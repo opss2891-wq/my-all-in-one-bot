@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface UIContextType {
   sidebarOpen: boolean;
@@ -17,6 +17,18 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
   const toggleHeader = () => setHeaderVisible(prev => !prev);
+
+  // Handle ESC key to close sidebar
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [sidebarOpen]);
 
   return (
     <UIContext.Provider value={{

@@ -31,9 +31,19 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+    // For tasks, Shift+Enter sends, Enter creates new line
+    // For others, Enter sends
+    if (type === 'tasks') {
+      if (e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+      // Normal Enter allows new lines in tasks
+    } else {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
     }
   };
 
