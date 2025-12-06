@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
@@ -120,6 +120,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'credentials': return <Key className="w-5 h-5 text-accent" />;
       case 'links': return <Link2 className="w-5 h-5 text-primary" />;
       case 'code': return <Code className="w-5 h-5 text-info" />;
+      case 'file': return <File className="w-5 h-5 text-purple-400" />;
     }
   };
 
@@ -130,6 +131,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'credentials': return t('credentials');
       case 'links': return t('links');
       case 'code': return t('code');
+      case 'file': return t('file') || 'ملف';
     }
   };
 
@@ -140,6 +142,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'credentials': return 'border-accent/30 hover:border-accent/50';
       case 'links': return 'border-primary/30 hover:border-primary/50';
       case 'code': return 'border-info/30 hover:border-info/50';
+      case 'file': return 'border-purple-500/30 hover:border-purple-500/50';
     }
   };
 
@@ -406,6 +409,57 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             )}
           </div>
         );
+
+      case 'file':
+        const fileData = message.fileData;
+        if (!fileData) return null;
+        
+        const isTextFile = fileData.type === 'text/plain' || fileData.name.endsWith('.txt') || fileData.type === 'text/csv';
+        const fileContent = isTextFile ? fileData.content : null;
+        
+        const downloadFile = () => {
+          const link = document.createElement('a');
+          if (isTextFile) {
+            const blob = new Blob([fileData.content], { type: 'text/plain' });
+            link.href = URL.createObjectURL(blob);
+          } else {
+            link.href = fileData.content; // base64 URL
+          }
+          link.download = fileData.name;
+          link.click();
+        };
+        
+        return (
+          <div className="space-y-3">
+            {/* File Info */}
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-purple-500/5 border border-purple-500/20">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                <File className="w-5 h-5 text-purple-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-foreground font-medium truncate text-sm">{fileData.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {(fileData.size / 1024).toFixed(1)} KB
+                </p>
+              </div>
+              <button
+                onClick={downloadFile}
+                className="p-2 hover:bg-purple-500/10 rounded-lg transition-colors"
+              >
+                <Download className="w-4 h-4 text-purple-400" />
+              </button>
+            </div>
+            
+            {/* Text Content Preview */}
+            {fileContent && (
+              <div className="p-3 rounded-xl bg-secondary/50 border border-border max-h-48 overflow-y-auto">
+                <pre className="text-xs text-foreground whitespace-pre-wrap font-mono leading-relaxed">
+                  {fileContent.length > 2000 ? fileContent.slice(0, 2000) + '...' : fileContent}
+                </pre>
+              </div>
+            )}
+          </div>
+        );
     }
   };
 
@@ -428,6 +482,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             message.type === 'credentials' && "bg-accent/10",
             message.type === 'links' && "bg-primary/10",
             message.type === 'code' && "bg-info/10",
+            message.type === 'file' && "bg-purple-500/10",
           )}>
             {getIcon()}
           </div>
@@ -452,27 +507,52 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       </div>
       {renderContent()}
       
-      {/* Image Preview Modal */}
+      {/* Image Preview Modal with Esc support */}
       {selectedImage && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-4xl max-h-[90vh]">
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-10 right-0 p-2 text-white hover:text-gray-300 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <img 
-              src={selectedImage} 
-              alt="Preview" 
-              className="max-w-full max-h-[85vh] object-contain rounded-xl"
-            />
-          </div>
-        </div>
+        <ImagePreviewModal 
+          image={selectedImage} 
+          onClose={() => setSelectedImage(null)} 
+        />
       )}
+    </div>
+  );
+};
+
+// Separate component for image preview with Esc support
+const ImagePreviewModal: React.FC<{ image: string; onClose: () => void }> = ({ image, onClose }) => {
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div 
+      className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div 
+        className="relative max-w-4xl max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors bg-black/50 rounded-full"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        <img 
+          src={image} 
+          alt="Preview" 
+          className="max-w-full max-h-[85vh] object-contain rounded-xl cursor-pointer"
+          onClick={onClose}
+        />
+        <p className="text-center text-white/60 text-sm mt-3">اضغط ESC أو انقر للإغلاق</p>
+      </div>
     </div>
   );
 };
