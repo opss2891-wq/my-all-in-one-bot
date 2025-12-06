@@ -92,6 +92,75 @@ ${content}
   return validTypes.includes(type.toLowerCase()) ? type.toLowerCase() : 'other';
 };
 
+// Parse and format credentials using AI
+export const parseCredentials = async (content: string): Promise<{
+  username: string;
+  password: string;
+  host?: string;
+  url?: string;
+  credType: string;
+} | null> => {
+  const prompt = `حلل بيانات الاعتماد التالية واستخرج منها:
+- اسم المستخدم (username)
+- كلمة المرور (password)
+- الخادم/السيرفر (host) إن وجد
+- الرابط (url) إن وجد
+- نوع البيانات (ftp, ssh, hosting, admin, cpanel, database, other)
+
+البيانات:
+${content}
+
+أجب بالتنسيق التالي فقط (بدون أي نص إضافي):
+USERNAME: [اسم المستخدم]
+PASSWORD: [كلمة المرور]
+HOST: [الخادم أو فارغ]
+URL: [الرابط أو فارغ]
+TYPE: [النوع]`;
+
+  const result = await generateWithGemini(prompt);
+  
+  const usernameMatch = result.match(/USERNAME:\s*(.+)/i);
+  const passwordMatch = result.match(/PASSWORD:\s*(.+)/i);
+  const hostMatch = result.match(/HOST:\s*(.+)/i);
+  const urlMatch = result.match(/URL:\s*(.+)/i);
+  const typeMatch = result.match(/TYPE:\s*(\w+)/i);
+  
+  if (!usernameMatch || !passwordMatch) return null;
+  
+  const validTypes = ['ftp', 'ssh', 'hosting', 'admin', 'cpanel', 'database', 'other'];
+  const credType = typeMatch?.[1]?.toLowerCase() || 'other';
+  
+  return {
+    username: usernameMatch[1].trim(),
+    password: passwordMatch[1].trim(),
+    host: hostMatch?.[1]?.trim() !== '' && hostMatch?.[1]?.trim() !== 'فارغ' ? hostMatch[1].trim() : undefined,
+    url: urlMatch?.[1]?.trim() !== '' && urlMatch?.[1]?.trim() !== 'فارغ' ? urlMatch[1].trim() : undefined,
+    credType: validTypes.includes(credType) ? credType : 'other'
+  };
+};
+
+// Fetch link metadata (title and thumbnail)
+export const fetchLinkMetadata = async (url: string): Promise<{ title: string; thumbnail?: string }> => {
+  try {
+    // Try to get title from AI
+    const title = await generateLinkTitle(url);
+    
+    // Extract favicon as thumbnail
+    const urlObj = new URL(url);
+    const faviconUrl = `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=64`;
+    
+    return {
+      title: title || extractTitleFromUrl(url),
+      thumbnail: faviconUrl
+    };
+  } catch {
+    return {
+      title: extractTitleFromUrl(url),
+      thumbnail: undefined
+    };
+  }
+};
+
 export const explainCode = async (code: string): Promise<{ explanation: string; language: string; tags: string[] }> => {
   const prompt = `حلل هذا الكود وأعطني:
 1. شرح قصير (سطر أو سطرين) باللغة العربية

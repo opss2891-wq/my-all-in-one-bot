@@ -60,6 +60,7 @@ export interface Message {
   credential?: CredentialData;
   links?: LinkItem[];
   codeData?: CodeData;
+  images?: string[]; // Base64 images for notes
   createdAt: string;
 }
 

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
 import { 
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData,
   Conversation, getConversations, getArchivedConversations, createConversation, 
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
-import { generateLinkTitle, detectCredentialType, explainCode } from '@/lib/gemini';
+import { generateLinkTitle, parseCredentials, explainCode } from '@/lib/gemini';
 
 // Simple language detection for code
 const detectCodeLanguage = (code: string): string => {
@@ -32,6 +32,7 @@ import MessageInput from './MessageInput';
 import SearchBar from './SearchBar';
 import ConversationSidebar from './ConversationSidebar';
 import ContextMenu from './ContextMenu';
+import SettingsDialog from './SettingsDialog';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
@@ -226,14 +227,26 @@ const ChatView: React.FC = () => {
         return { type: 'links', links };
 
       case 'credentials':
+        // Use AI to parse and format credentials
+        const parsedCreds = await parseCredentials(content);
+        if (parsedCreds) {
+          const credential: CredentialData = {
+            username: parsedCreds.username,
+            password: parsedCreds.password,
+            host: parsedCreds.host,
+            url: parsedCreds.url,
+            credType: parsedCreds.credType as CredentialData['credType']
+          };
+          return { type: 'credentials', credential };
+        }
+        // Fallback to simple parsing
         const match = content.match(/^([^:]+):([^@]+)(?:@(.+))?$/);
         if (match) {
-          const credType = await detectCredentialType(content);
           const credential: CredentialData = {
             username: match[1].trim(),
             password: match[2].trim(),
             host: match[3]?.trim(),
-            credType: credType as CredentialData['credType']
+            credType: 'other'
           };
           return { type: 'credentials', credential };
         }
@@ -338,6 +351,29 @@ const ChatView: React.FC = () => {
     }
     setDisplayCount(MESSAGES_PER_PAGE);
   };
+
+  // Navigate to next/previous conversation
+  const allConvs = showArchived ? archivedConversations : conversations;
+  const currentConvIndex = allConvs.findIndex(c => c.id === currentConversationId);
+  
+  const goToNextConversation = () => {
+    if (currentConvIndex < allConvs.length - 1) {
+      const nextId = allConvs[currentConvIndex + 1].id!;
+      setCurrentConversationId(nextId);
+      localStorage.setItem('activeConversationId', nextId);
+    }
+  };
+
+  const goToPrevConversation = () => {
+    if (currentConvIndex > 0) {
+      const prevId = allConvs[currentConvIndex - 1].id!;
+      setCurrentConversationId(prevId);
+      localStorage.setItem('activeConversationId', prevId);
+    }
+  };
+
+  const canGoNext = currentConvIndex < allConvs.length - 1;
+  const canGoPrev = currentConvIndex > 0;
 
   return (
     <div className={cn("flex h-[100dvh] bg-background overflow-hidden", isRTL && "flex-row-reverse")}>
@@ -447,6 +483,20 @@ const ChatView: React.FC = () => {
                   <PanelLeftOpen className="w-5 h-5" />
                 </button>
                 
+                {/* Previous Conversation */}
+                <button
+                  onClick={goToPrevConversation}
+                  disabled={!canGoPrev}
+                  className={cn(
+                    "p-2 rounded-xl transition-colors",
+                    canGoPrev 
+                      ? "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground" 
+                      : "bg-muted/20 text-muted-foreground/30 cursor-not-allowed"
+                  )}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl gradient-primary flex items-center justify-center glow-primary flex-shrink-0">
                   <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
                 </div>
@@ -456,6 +506,23 @@ const ChatView: React.FC = () => {
                   </h1>
                   <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
                 </div>
+                
+                {/* Next Conversation */}
+                <button
+                  onClick={goToNextConversation}
+                  disabled={!canGoNext}
+                  className={cn(
+                    "p-2 rounded-xl transition-colors",
+                    canGoNext 
+                      ? "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground" 
+                      : "bg-muted/20 text-muted-foreground/30 cursor-not-allowed"
+                  )}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                
+                {/* Settings */}
+                <SettingsDialog />
                 
                 {/* Header Toggle */}
                 <button
