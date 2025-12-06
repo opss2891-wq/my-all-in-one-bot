@@ -24,7 +24,7 @@ export interface Conversation {
 }
 
 // Message types
-export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code';
+export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
 
 export interface CodeData {
   code: string;
@@ -51,6 +51,13 @@ export interface LinkItem {
   url: string;
 }
 
+export interface FileData {
+  name: string;
+  type: string; // mime type
+  size: number;
+  content: string; // base64 for small files, or text content
+}
+
 export interface Message {
   id?: string;
   conversationId?: string;
@@ -60,6 +67,7 @@ export interface Message {
   credential?: CredentialData;
   links?: LinkItem[];
   codeData?: CodeData;
+  fileData?: FileData;
   images?: string[]; // Base64 images for notes
   createdAt: string;
 }

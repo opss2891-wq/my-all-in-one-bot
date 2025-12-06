@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload } from 'lucide-react';
 import { MessageType } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MessageInputProps {
-  onSend: (type: MessageType, content: string) => Promise<void>;
+  onSend: (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }) => Promise<void>;
   loading: boolean;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   const [type, setType] = useState<MessageType>('note');
   const [content, setContent] = useState('');
+  const [selectedFile, setSelectedFile] = useState<{ name: string; type: string; size: number; content: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { t, isRTL } = useLanguage();
 
   const typeConfig = {
@@ -20,14 +22,65 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
     credentials: { icon: Key, label: t('credentials'), color: 'text-accent', bgColor: 'bg-accent/20', borderColor: 'border-accent/30' },
     links: { icon: Link2, label: t('links'), color: 'text-primary', bgColor: 'bg-primary/20', borderColor: 'border-primary/30' },
     code: { icon: Code, label: t('code'), color: 'text-info', bgColor: 'bg-info/20', borderColor: 'border-info/30' },
+    file: { icon: File, label: t('file') || 'ملف', color: 'text-purple-400', bgColor: 'bg-purple-500/20', borderColor: 'border-purple-500/30' },
   };
 
   const config = typeConfig[type];
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const allowedTypes = [
+      'text/plain', 
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/msword',
+      'application/vnd.ms-excel',
+      'text/csv'
+    ];
+    
+    if (!allowedTypes.includes(file.type) && !file.name.endsWith('.txt')) {
+      return;
+    }
+    
+    const reader = new FileReader();
+    
+    if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.type === 'text/csv') {
+      reader.onload = (event) => {
+        setSelectedFile({
+          name: file.name,
+          type: file.type || 'text/plain',
+          size: file.size,
+          content: event.target?.result as string
+        });
+      };
+      reader.readAsText(file);
+    } else {
+      reader.onload = (event) => {
+        setSelectedFile({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          content: event.target?.result as string // base64
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSend = async () => {
-    if (!content.trim() || loading) return;
-    await onSend(type, content);
-    setContent('');
+    if (type === 'file' && selectedFile) {
+      await onSend(type, selectedFile.name, selectedFile);
+      setSelectedFile(null);
+    } else if (content.trim() && !loading) {
+      await onSend(type, content);
+      setContent('');
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -90,27 +143,58 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
 
         {/* Input Area - Textarea with Send Button aligned */}
         <div className={cn("flex gap-3 items-stretch", isRTL && "flex-row-reverse")}>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={getPlaceholder()}
-            rows={2}
-            dir="auto"
-            className={cn(
-              "flex-1 bg-secondary/80 border-2 rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none transition-all focus:outline-none min-h-[60px]",
-              config.borderColor,
-              "focus:ring-2 focus:ring-primary/20"
-            )}
-          />
+          {type === 'file' ? (
+            <div className="flex-1 flex flex-col gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".txt,.doc,.docx,.xls,.xlsx,.csv"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-3 bg-secondary/80 border-2 rounded-2xl px-4 py-6 text-foreground transition-all hover:bg-secondary",
+                  config.borderColor
+                )}
+              >
+                <Upload className="w-6 h-6 text-purple-400" />
+                <span className="text-muted-foreground">اختر ملف (txt, doc, docx, xls, xlsx, csv)</span>
+              </button>
+              {selectedFile && (
+                <div className="flex items-center gap-2 p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">
+                  <File className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-foreground flex-1 truncate">{selectedFile.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {(selectedFile.size / 1024).toFixed(1)} KB
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={getPlaceholder()}
+              rows={2}
+              dir="auto"
+              className={cn(
+                "flex-1 bg-secondary/80 border-2 rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none transition-all focus:outline-none min-h-[60px]",
+                config.borderColor,
+                "focus:ring-2 focus:ring-primary/20"
+              )}
+            />
+          )}
 
           {/* Send Button - Aligned to match textarea height */}
           <button
             onClick={handleSend}
-            disabled={loading || !content.trim()}
+            disabled={loading || (type === 'file' ? !selectedFile : !content.trim())}
             className={cn(
               "px-5 rounded-2xl transition-all flex items-center justify-center flex-shrink-0",
-              content.trim() 
+              (type === 'file' ? selectedFile : content.trim())
                 ? "gradient-primary text-primary-foreground hover:opacity-90 shadow-lg" 
                 : "bg-muted text-muted-foreground"
             )}

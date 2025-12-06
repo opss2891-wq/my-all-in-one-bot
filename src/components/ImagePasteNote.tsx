@@ -126,25 +126,50 @@ const ImagePasteNote: React.FC<ImagePasteNoteProps> = ({
 
       {/* Image Preview Modal */}
       {selectedImage && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-4xl max-h-[90vh]">
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-10 right-0 p-2 text-white hover:text-gray-300 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <img 
-              src={selectedImage} 
-              alt="Preview" 
-              className="max-w-full max-h-[85vh] object-contain rounded-xl"
-            />
-          </div>
-        </div>
+        <ImagePreviewModal 
+          image={selectedImage} 
+          onClose={() => setSelectedImage(null)} 
+        />
       )}
+    </div>
+  );
+};
+
+// Separate component for image preview with Esc support
+const ImagePreviewModal: React.FC<{ image: string; onClose: () => void }> = ({ image, onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div 
+      className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div 
+        className="relative max-w-4xl max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors bg-black/50 rounded-full"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        <img 
+          src={image} 
+          alt="Preview" 
+          className="max-w-full max-h-[85vh] object-contain rounded-xl cursor-pointer"
+          onClick={onClose}
+        />
+        <p className="text-center text-white/60 text-sm mt-3">اضغط ESC أو انقر للإغلاق</p>
+      </div>
     </div>
   );
 };

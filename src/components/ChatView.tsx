@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File } from 'lucide-react';
 import { 
-  Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData,
+  Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, getConversations, getArchivedConversations, createConversation, 
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
-import { generateLinkTitle, parseCredentials, explainCode } from '@/lib/gemini';
+import { generateLinkTitle, explainCode } from '@/lib/gemini';
 
 // Simple language detection for code
 const detectCodeLanguage = (code: string): string => {
@@ -227,30 +227,51 @@ const ChatView: React.FC = () => {
         return { type: 'links', links };
 
       case 'credentials':
-        // Use AI to parse and format credentials
-        const parsedCreds = await parseCredentials(content);
-        if (parsedCreds) {
-          const credential: CredentialData = {
-            username: parsedCreds.username,
-            password: parsedCreds.password,
-            host: parsedCreds.host,
-            url: parsedCreds.url,
-            credType: parsedCreds.credType as CredentialData['credType']
-          };
-          return { type: 'credentials', credential };
+        // Parse credentials without AI - simple format parsing
+        // Expected formats: user:pass@host or user:pass or JSON-like
+        const lines2 = content.split('\n').filter(l => l.trim());
+        let username = '', password = '', host = '', url = '', credType: CredentialData['credType'] = 'other';
+        
+        for (const line of lines2) {
+          const lower = line.toLowerCase();
+          if (lower.includes('user') || lower.includes('username') || lower.includes('اسم')) {
+            username = line.replace(/^[^:]+:\s*/i, '').trim();
+          } else if (lower.includes('pass') || lower.includes('password') || lower.includes('كلمة')) {
+            password = line.replace(/^[^:]+:\s*/i, '').trim();
+          } else if (lower.includes('host') || lower.includes('server') || lower.includes('سيرفر')) {
+            host = line.replace(/^[^:]+:\s*/i, '').trim();
+          } else if (lower.includes('url') || lower.includes('link') || lower.includes('رابط')) {
+            url = line.replace(/^[^:]+:\s*/i, '').trim();
+          } else if (lower.includes('ftp') || lower.includes('ssh') || lower.includes('cpanel') || lower.includes('hosting') || lower.includes('admin') || lower.includes('database')) {
+            if (lower.includes('ftp')) credType = 'ftp';
+            else if (lower.includes('ssh')) credType = 'ssh';
+            else if (lower.includes('cpanel')) credType = 'cpanel';
+            else if (lower.includes('hosting')) credType = 'hosting';
+            else if (lower.includes('admin')) credType = 'admin';
+            else if (lower.includes('database')) credType = 'database';
+          }
         }
-        // Fallback to simple parsing
-        const match = content.match(/^([^:]+):([^@]+)(?:@(.+))?$/);
-        if (match) {
-          const credential: CredentialData = {
-            username: match[1].trim(),
-            password: match[2].trim(),
-            host: match[3]?.trim(),
-            credType: 'other'
-          };
-          return { type: 'credentials', credential };
+        
+        // Fallback: simple user:pass@host format
+        if (!username && !password) {
+          const match = content.match(/^([^:\n]+)[:\s]+([^@\n]+)(?:@(.+))?$/);
+          if (match) {
+            username = match[1].trim();
+            password = match[2].trim();
+            host = match[3]?.trim() || '';
+          } else {
+            // Just use first two lines as user/pass
+            username = lines2[0] || '';
+            password = lines2[1] || '';
+            host = lines2[2] || '';
+            url = lines2[3] || '';
+          }
         }
-        return { type: 'note', content: `Credentials: ${content}` };
+        
+        return { 
+          type: 'credentials', 
+          credential: { username, password, host, url, credType } 
+        };
 
       case 'code':
         // Use AI to explain code and add tags
@@ -268,7 +289,7 @@ const ChatView: React.FC = () => {
     }
   };
 
-  const handleSend = async (type: MessageType, content: string) => {
+  const handleSend = async (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }) => {
     if (!currentConversationId) {
       toast({ title: t('error'), variant: 'destructive' });
       return;
@@ -276,11 +297,25 @@ const ChatView: React.FC = () => {
     
     setSending(true);
     try {
-      const messageData = await parseContent(type, content);
-      await addMessage({ 
-        ...messageData, 
-        conversationId: currentConversationId 
-      } as Omit<Message, 'id' | 'createdAt'>);
+      if (type === 'file' && file) {
+        const fileData: FileData = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          content: file.content
+        };
+        await addMessage({ 
+          type: 'file',
+          fileData,
+          conversationId: currentConversationId 
+        });
+      } else {
+        const messageData = await parseContent(type, content);
+        await addMessage({ 
+          ...messageData, 
+          conversationId: currentConversationId 
+        } as Omit<Message, 'id' | 'createdAt'>);
+      }
       await loadMessages();
       await loadConversations();
       toast({ title: t('addedSuccess') });
@@ -323,6 +358,11 @@ const ChatView: React.FC = () => {
       if (codeData?.explanation?.toLowerCase().includes(query)) return true;
       if (codeData?.tags?.some(tag => tag.toLowerCase().includes(query))) return true;
     }
+    if (m.type === 'file') {
+      const fileData = m.fileData;
+      if (fileData?.name?.toLowerCase().includes(query)) return true;
+      if (fileData?.content?.toLowerCase().includes(query)) return true;
+    }
     
     return false;
   });
@@ -341,6 +381,7 @@ const ChatView: React.FC = () => {
     { type: 'credentials' as const, label: t('credentials'), icon: Key },
     { type: 'links' as const, label: t('links'), icon: Link2 },
     { type: 'code' as const, label: t('code'), icon: Code },
+    { type: 'file' as const, label: t('file') || 'ملف', icon: File },
   ];
 
   const handleNavigate = (section: string) => {
