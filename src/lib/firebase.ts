@@ -43,6 +43,7 @@ export interface CredentialData {
   password: string;
   host?: string;
   url?: string;
+  port?: string;
   credType: 'ftp' | 'ssh' | 'hosting' | 'admin' | 'cpanel' | 'database' | 'other';
 }
 

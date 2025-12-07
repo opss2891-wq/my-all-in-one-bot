@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { 
   FileText, CheckSquare, Key, Link2, Code, X, 
   PanelLeftClose, PanelLeftOpen, Eye, EyeOff, 
-  Languages, Copy, Trash2, Edit2, Sparkles
+  Languages, Copy, Trash2, Edit2, Sparkles,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
@@ -19,6 +20,10 @@ interface ContextMenuProps {
   onDeleteCard?: () => void;
   onEditCard?: () => void;
   cardType?: 'note' | 'tasks' | 'credentials' | 'links' | null;
+  onNextConversation?: () => void;
+  onPrevConversation?: () => void;
+  canGoNext?: boolean;
+  canGoPrev?: boolean;
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ 
@@ -26,7 +31,11 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   onCopyCard,
   onDeleteCard,
   onEditCard,
-  cardType 
+  cardType,
+  onNextConversation,
+  onPrevConversation,
+  canGoNext,
+  canGoPrev
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
@@ -135,6 +144,37 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                   <span className="text-sm text-destructive">{t('deleteCard')}</span>
                 </button>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Conversation Navigation */}
+        {(onNextConversation || onPrevConversation) && (
+          <div className="p-2 border-b border-border">
+            <p className="text-xs text-muted-foreground px-2 mb-2">التنقل بين المحادثات</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { onPrevConversation?.(); setIsOpen(false); }}
+                disabled={!canGoPrev}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl transition-colors",
+                  canGoPrev ? "hover:bg-muted" : "opacity-50 cursor-not-allowed"
+                )}
+              >
+                <ChevronRight className="w-4 h-4 text-primary" />
+                <span className="text-sm text-foreground">السابق</span>
+              </button>
+              <button
+                onClick={() => { onNextConversation?.(); setIsOpen(false); }}
+                disabled={!canGoNext}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl transition-colors",
+                  canGoNext ? "hover:bg-muted" : "opacity-50 cursor-not-allowed"
+                )}
+              >
+                <span className="text-sm text-foreground">التالي</span>
+                <ChevronLeft className="w-4 h-4 text-primary" />
+              </button>
             </div>
           </div>
         )}

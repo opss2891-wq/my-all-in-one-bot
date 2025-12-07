@@ -38,6 +38,7 @@ const CredentialsSection: React.FC = () => {
     password: '',
     host: '',
     url: '',
+    port: '',
     type: 'hosting' as CredentialType,
   });
   const [form, setForm] = useState({
@@ -45,6 +46,7 @@ const CredentialsSection: React.FC = () => {
     password: '',
     host: '',
     url: '',
+    port: '',
     type: 'hosting' as CredentialType,
   });
 
@@ -68,7 +70,7 @@ const CredentialsSection: React.FC = () => {
     setAdding(true);
     try {
       await addCredential(form);
-      setForm({ username: '', password: '', host: '', url: '', type: 'hosting' });
+      setForm({ username: '', password: '', host: '', url: '', port: '', type: 'hosting' });
       setShowForm(false);
       await loadCredentials();
       toast({ title: 'Credential added successfully' });
@@ -96,6 +98,7 @@ const CredentialsSection: React.FC = () => {
       password: cred.password,
       host: cred.host || '',
       url: cred.url || '',
+      port: (cred as any).port || '',
       type: cred.type,
     });
   };
@@ -114,7 +117,7 @@ const CredentialsSection: React.FC = () => {
 
   const cancelEditing = () => {
     setEditingId(null);
-    setEditForm({ username: '', password: '', host: '', url: '', type: 'hosting' });
+    setEditForm({ username: '', password: '', host: '', url: '', port: '', type: 'hosting' });
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -184,6 +187,16 @@ const CredentialsSection: React.FC = () => {
                   value={form.host}
                   onChange={(e) => setForm({ ...form, host: e.target.value })}
                   placeholder="ftp.example.com"
+                  className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground mb-1 block">Port</label>
+                <input
+                  type="text"
+                  value={form.port}
+                  onChange={(e) => setForm({ ...form, port: e.target.value })}
+                  placeholder="21"
                   className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -267,6 +280,15 @@ const CredentialsSection: React.FC = () => {
                           className="w-full bg-secondary border border-border rounded-lg px-2 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                       </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground mb-1 block">Port</label>
+                        <input
+                          type="text"
+                          value={editForm.port}
+                          onChange={(e) => setEditForm({ ...editForm, port: e.target.value })}
+                          className="w-full bg-secondary border border-border rounded-lg px-2 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">URL</label>
@@ -345,6 +367,17 @@ const CredentialsSection: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <span className="text-foreground">{cred.host}</span>
                             <button onClick={() => copyToClipboard(cred.host, 'Host')} className="p-1 hover:bg-muted rounded">
+                              <Copy className="w-3 h-3 text-muted-foreground" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {(cred as any).port && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Port:</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-foreground">{(cred as any).port}</span>
+                            <button onClick={() => copyToClipboard((cred as any).port, 'Port')} className="p-1 hover:bg-muted rounded">
                               <Copy className="w-3 h-3 text-muted-foreground" />
                             </button>
                           </div>
