@@ -93,6 +93,40 @@ const ChatView: React.FC = () => {
     }
   }, [handleScroll]);
 
+  // Keyboard navigation for conversations (ArrowLeft/ArrowRight)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input/textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      const convs = showArchived ? archivedConversations : conversations;
+      const currentIndex = convs.findIndex(c => c.id === currentConversationId);
+      
+      if (e.key === 'ArrowLeft') {
+        // Go to next conversation
+        if (currentIndex >= 0 && currentIndex < convs.length - 1) {
+          const nextId = convs[currentIndex + 1].id!;
+          setCurrentConversationId(nextId);
+          localStorage.setItem('activeConversationId', nextId);
+          toast({ title: convs[currentIndex + 1].title });
+        }
+      } else if (e.key === 'ArrowRight') {
+        // Go to previous conversation
+        if (currentIndex > 0) {
+          const prevId = convs[currentIndex - 1].id!;
+          setCurrentConversationId(prevId);
+          localStorage.setItem('activeConversationId', prevId);
+          toast({ title: convs[currentIndex - 1].title });
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [conversations, archivedConversations, currentConversationId, showArchived]);
+
   const loadConversations = async () => {
     try {
       const [convs, archived] = await Promise.all([
@@ -228,9 +262,8 @@ const ChatView: React.FC = () => {
 
       case 'credentials':
         // Parse credentials without AI - simple format parsing
-        // Expected formats: user:pass@host or user:pass or JSON-like
         const lines2 = content.split('\n').filter(l => l.trim());
-        let username = '', password = '', host = '', url = '', credType: CredentialData['credType'] = 'other';
+        let username = '', password = '', host = '', url = '', port = '', credType: CredentialData['credType'] = 'other';
         
         for (const line of lines2) {
           const lower = line.toLowerCase();
@@ -238,18 +271,33 @@ const ChatView: React.FC = () => {
             username = line.replace(/^[^:]+:\s*/i, '').trim();
           } else if (lower.includes('pass') || lower.includes('password') || lower.includes('كلمة')) {
             password = line.replace(/^[^:]+:\s*/i, '').trim();
-          } else if (lower.includes('host') || lower.includes('server') || lower.includes('سيرفر')) {
+          } else if (lower.includes('host') || lower.includes('server') || lower.includes('سيرفر') || lower.includes('ftp.')) {
             host = line.replace(/^[^:]+:\s*/i, '').trim();
-          } else if (lower.includes('url') || lower.includes('link') || lower.includes('رابط')) {
+          } else if (lower.includes('url') || lower.includes('link') || lower.includes('رابط') || lower.includes('http')) {
             url = line.replace(/^[^:]+:\s*/i, '').trim();
-          } else if (lower.includes('ftp') || lower.includes('ssh') || lower.includes('cpanel') || lower.includes('hosting') || lower.includes('admin') || lower.includes('database')) {
-            if (lower.includes('ftp')) credType = 'ftp';
-            else if (lower.includes('ssh')) credType = 'ssh';
-            else if (lower.includes('cpanel')) credType = 'cpanel';
-            else if (lower.includes('hosting')) credType = 'hosting';
-            else if (lower.includes('admin')) credType = 'admin';
-            else if (lower.includes('database')) credType = 'database';
+            // If it's just a URL without a label
+            if (lower.startsWith('http')) {
+              url = line.trim();
+            }
+          } else if (lower.includes('port') || lower.includes('منفذ') || lower.includes('بورت')) {
+            port = line.replace(/^[^:]+:\s*/i, '').trim();
+          } else if (lower.includes('type') || lower.includes('نوع')) {
+            const typeValue = line.replace(/^[^:]+:\s*/i, '').trim().toLowerCase();
+            if (typeValue.includes('ftp')) credType = 'ftp';
+            else if (typeValue.includes('ssh')) credType = 'ssh';
+            else if (typeValue.includes('cpanel')) credType = 'cpanel';
+            else if (typeValue.includes('hosting')) credType = 'hosting';
+            else if (typeValue.includes('admin')) credType = 'admin';
+            else if (typeValue.includes('database')) credType = 'database';
           }
+          
+          // Detect type from line content
+          if (lower.includes('ftp') && !host) credType = 'ftp';
+          else if (lower.includes('ssh') && !host) credType = 'ssh';
+          else if (lower.includes('cpanel') && !host) credType = 'cpanel';
+          else if (lower.includes('hosting') && !host) credType = 'hosting';
+          else if (lower.includes('admin') && !host) credType = 'admin';
+          else if (lower.includes('database') && !host) credType = 'database';
         }
         
         // Fallback: simple user:pass@host format
@@ -260,17 +308,18 @@ const ChatView: React.FC = () => {
             password = match[2].trim();
             host = match[3]?.trim() || '';
           } else {
-            // Just use first two lines as user/pass
+            // Just use lines as user/pass/host/url/port
             username = lines2[0] || '';
             password = lines2[1] || '';
             host = lines2[2] || '';
             url = lines2[3] || '';
+            port = lines2[4] || '';
           }
         }
         
         return { 
           type: 'credentials', 
-          credential: { username, password, host, url, credType } 
+          credential: { username, password, host, url, port, credType } 
         };
 
       case 'code':
@@ -427,6 +476,10 @@ const ChatView: React.FC = () => {
       {/* Context Menu */}
       <ContextMenu 
         onNavigate={handleNavigate}
+        onNextConversation={goToNextConversation}
+        onPrevConversation={goToPrevConversation}
+        canGoNext={canGoNext}
+        canGoPrev={canGoPrev}
       />
 
       {/* Mobile Overlay */}

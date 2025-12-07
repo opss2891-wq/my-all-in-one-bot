@@ -249,66 +249,105 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         const cred = message.credential;
         if (!cred) return null;
         return (
-          <div className="space-y-3 font-mono text-sm">
-            <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/50">
-              <span className="text-muted-foreground text-xs">{t('username')}</span>
-              <div className="flex items-center gap-2">
-                <span className="text-foreground truncate max-w-[150px] md:max-w-[200px]">{cred.username}</span>
-                <button 
-                  onClick={() => copyToClipboard(cred.username, t('username'))} 
-                  className="p-1.5 hover:bg-muted rounded-lg transition-colors"
-                >
-                  <Copy className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
-              </div>
-            </div>
-            <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/50">
-              <span className="text-muted-foreground text-xs">{t('password')}</span>
-              <div className="flex items-center gap-2">
-                <span className="text-foreground font-mono">
-                  {showPassword ? cred.password : '••••••••'}
-                </span>
-                <button 
-                  onClick={() => setShowPassword(!showPassword)} 
-                  className="p-1.5 hover:bg-muted rounded-lg transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-3.5 h-3.5 text-muted-foreground" /> : <Eye className="w-3.5 h-3.5 text-muted-foreground" />}
-                </button>
-                <button 
-                  onClick={() => copyToClipboard(cred.password, t('password'))} 
-                  className="p-1.5 hover:bg-muted rounded-lg transition-colors"
-                >
-                  <Copy className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
-              </div>
-            </div>
-            {cred.host && (
-              <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/50">
-                <span className="text-muted-foreground text-xs">{t('host')}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-foreground truncate max-w-[150px] md:max-w-[200px]">{cred.host}</span>
-                  <button 
-                    onClick={() => copyToClipboard(cred.host!, t('host'))} 
-                    className="p-1.5 hover:bg-muted rounded-lg transition-colors"
-                  >
-                    <Copy className="w-3.5 h-3.5 text-muted-foreground" />
-                  </button>
-                </div>
-              </div>
-            )}
-            {cred.url && (
-              <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/50">
-                <span className="text-muted-foreground text-xs">URL</span>
-                <a href={cred.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-[180px]">
-                  {cred.url}
-                </a>
-              </div>
-            )}
-            <div className="pt-1">
+          <div className="space-y-2 font-mono text-sm">
+            {/* Type Badge */}
+            <div className="pb-2 border-b border-border">
               <span className="text-xs px-3 py-1.5 rounded-full bg-accent/20 text-accent font-medium">
                 {cred.credType?.toUpperCase() || 'OTHER'}
               </span>
             </div>
+            
+            {/* Username */}
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+              <span className="text-muted-foreground text-xs min-w-[60px]">User</span>
+              <div className="flex items-center gap-2 flex-1 justify-end">
+                <span className="text-foreground truncate max-w-[180px]">{cred.username}</span>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); copyToClipboard(cred.username, 'Username'); }} 
+                  className="p-1.5 hover:bg-primary/20 rounded-lg transition-colors"
+                >
+                  <Copy className="w-3.5 h-3.5 text-primary" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Password */}
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+              <span className="text-muted-foreground text-xs min-w-[60px]">Pass</span>
+              <div className="flex items-center gap-2 flex-1 justify-end">
+                <span className="text-foreground font-mono">
+                  {showPassword ? cred.password : '••••••••'}
+                </span>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setShowPassword(!showPassword); }} 
+                  className="p-1.5 hover:bg-warning/20 rounded-lg transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-3.5 h-3.5 text-warning" /> : <Eye className="w-3.5 h-3.5 text-warning" />}
+                </button>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); copyToClipboard(cred.password, 'Password'); }} 
+                  className="p-1.5 hover:bg-primary/20 rounded-lg transition-colors"
+                >
+                  <Copy className="w-3.5 h-3.5 text-primary" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Host */}
+            {cred.host && (
+              <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+                <span className="text-muted-foreground text-xs min-w-[60px]">Host</span>
+                <div className="flex items-center gap-2 flex-1 justify-end">
+                  <span className="text-foreground truncate max-w-[180px]">{cred.host}</span>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); copyToClipboard(cred.host!, 'Host'); }} 
+                    className="p-1.5 hover:bg-primary/20 rounded-lg transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-primary" />
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {/* Port */}
+            {cred.port && (
+              <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+                <span className="text-muted-foreground text-xs min-w-[60px]">Port</span>
+                <div className="flex items-center gap-2 flex-1 justify-end">
+                  <span className="text-foreground">{cred.port}</span>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); copyToClipboard(cred.port!, 'Port'); }} 
+                    className="p-1.5 hover:bg-primary/20 rounded-lg transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-primary" />
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {/* URL */}
+            {cred.url && (
+              <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+                <span className="text-muted-foreground text-xs min-w-[60px]">URL</span>
+                <div className="flex items-center gap-2 flex-1 justify-end">
+                  <a 
+                    href={cred.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-primary hover:underline truncate max-w-[150px]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {cred.url}
+                  </a>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); copyToClipboard(cred.url!, 'URL'); }} 
+                    className="p-1.5 hover:bg-primary/20 rounded-lg transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-primary" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         );
 
