@@ -1,20 +1,81 @@
-import React, { useState, useRef } from 'react';
-import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X } from 'lucide-react';
 import { MessageType } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { toast } from '@/hooks/use-toast';
 
 interface MessageInputProps {
-  onSend: (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }) => Promise<void>;
+  onSend: (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }, images?: string[]) => Promise<void>;
   loading: boolean;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   const [type, setType] = useState<MessageType>('note');
   const [content, setContent] = useState('');
+  const [images, setImages] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<{ name: string; type: string; size: number; content: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const { t, isRTL } = useLanguage();
+
+  // Handle paste for images
+  const handleImagePaste = useCallback((e: ClipboardEvent) => {
+    if (type !== 'note') return;
+    
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const base64 = event.target?.result as string;
+            if (base64) {
+              setImages(prev => [...prev, base64]);
+              toast({ title: 'تم إضافة الصورة بنجاح' });
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+        break;
+      }
+    }
+  }, [type]);
+
+  useEffect(() => {
+    document.addEventListener('paste', handleImagePaste);
+    return () => document.removeEventListener('paste', handleImagePaste);
+  }, [handleImagePaste]);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64 = event.target?.result as string;
+          if (base64) {
+            setImages(prev => [...prev, base64]);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    if (imageInputRef.current) {
+      imageInputRef.current.value = '';
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
 
   const typeConfig = {
     note: { icon: FileText, label: t('notes'), color: 'text-success', bgColor: 'bg-success/20', borderColor: 'border-success/30' },
@@ -77,9 +138,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
     if (type === 'file' && selectedFile) {
       await onSend(type, selectedFile.name, selectedFile);
       setSelectedFile(null);
-    } else if (content.trim() && !loading) {
-      await onSend(type, content);
+    } else if ((content.trim() || images.length > 0) && !loading) {
+      await onSend(type, content, undefined, type === 'note' ? images : undefined);
       setContent('');
+      setImages([]);
     }
   };
 
@@ -173,28 +235,73 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
               )}
             </div>
           ) : (
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={getPlaceholder()}
-              rows={2}
-              dir="auto"
-              className={cn(
-                "flex-1 bg-secondary/80 border-2 rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none transition-all focus:outline-none min-h-[60px]",
-                config.borderColor,
-                "focus:ring-2 focus:ring-primary/20"
+            <div className="flex-1 flex flex-col gap-2">
+              {/* Image Previews for Notes */}
+              {type === 'note' && images.length > 0 && (
+                <div className="flex gap-2 flex-wrap">
+                  {images.map((img, index) => (
+                    <div key={index} className="relative group">
+                      <img 
+                        src={img} 
+                        alt={`Preview ${index + 1}`}
+                        className="w-16 h-16 object-cover rounded-lg border border-border"
+                      />
+                      <button
+                        onClick={() => removeImage(index)}
+                        className="absolute -top-1 -right-1 p-1 bg-destructive/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-3 h-3 text-white" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               )}
-            />
+              
+              <div className="flex gap-3 items-stretch">
+                {type === 'note' && (
+                  <>
+                    <input
+                      ref={imageInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageSelect}
+                      className="hidden"
+                    />
+                    <button
+                      onClick={() => imageInputRef.current?.click()}
+                      className="px-3 rounded-2xl bg-success/10 text-success hover:bg-success/20 transition-all flex items-center justify-center"
+                      title="إضافة صورة (أو Ctrl+V)"
+                    >
+                      <Image className="w-5 h-5" />
+                    </button>
+                  </>
+                )}
+                
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={getPlaceholder()}
+                  rows={2}
+                  dir="auto"
+                  className={cn(
+                    "flex-1 bg-secondary/80 border-2 rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none transition-all focus:outline-none min-h-[60px]",
+                    config.borderColor,
+                    "focus:ring-2 focus:ring-primary/20"
+                  )}
+                />
+              </div>
+            </div>
           )}
 
           {/* Send Button - Aligned to match textarea height */}
           <button
             onClick={handleSend}
-            disabled={loading || (type === 'file' ? !selectedFile : !content.trim())}
+            disabled={loading || (type === 'file' ? !selectedFile : (!content.trim() && images.length === 0))}
             className={cn(
               "px-5 rounded-2xl transition-all flex items-center justify-center flex-shrink-0",
-              (type === 'file' ? selectedFile : content.trim())
+              (type === 'file' ? selectedFile : (content.trim() || images.length > 0))
                 ? "gradient-primary text-primary-foreground hover:opacity-90 shadow-lg" 
                 : "bg-muted text-muted-foreground"
             )}

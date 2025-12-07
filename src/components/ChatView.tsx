@@ -289,7 +289,7 @@ const ChatView: React.FC = () => {
     }
   };
 
-  const handleSend = async (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }) => {
+  const handleSend = async (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }, images?: string[]) => {
     if (!currentConversationId) {
       toast({ title: t('error'), variant: 'destructive' });
       return;
@@ -311,6 +311,10 @@ const ChatView: React.FC = () => {
         });
       } else {
         const messageData = await parseContent(type, content);
+        // Add images if it's a note
+        if (type === 'note' && images && images.length > 0) {
+          (messageData as Partial<Message>).images = images;
+        }
         await addMessage({ 
           ...messageData, 
           conversationId: currentConversationId 
@@ -398,10 +402,11 @@ const ChatView: React.FC = () => {
   const currentConvIndex = allConvs.findIndex(c => c.id === currentConversationId);
   
   const goToNextConversation = () => {
-    if (currentConvIndex < allConvs.length - 1) {
+    if (currentConvIndex >= 0 && currentConvIndex < allConvs.length - 1) {
       const nextId = allConvs[currentConvIndex + 1].id!;
       setCurrentConversationId(nextId);
       localStorage.setItem('activeConversationId', nextId);
+      toast({ title: allConvs[currentConvIndex + 1].title });
     }
   };
 
@@ -410,10 +415,11 @@ const ChatView: React.FC = () => {
       const prevId = allConvs[currentConvIndex - 1].id!;
       setCurrentConversationId(prevId);
       localStorage.setItem('activeConversationId', prevId);
+      toast({ title: allConvs[currentConvIndex - 1].title });
     }
   };
 
-  const canGoNext = currentConvIndex < allConvs.length - 1;
+  const canGoNext = currentConvIndex >= 0 && currentConvIndex < allConvs.length - 1;
   const canGoPrev = currentConvIndex > 0;
 
   return (

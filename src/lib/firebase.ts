@@ -240,3 +240,7 @@ export const getCredentials = async () => {
 export const deleteCredential = async (id: string) => {
   await deleteDoc(doc(db, 'credentials', id));
 };
+
+export const updateCredential = async (id: string, data: Partial<Omit<Credential, 'id' | 'createdAt'>>) => {
+  await updateDoc(doc(db, 'credentials', id), data as Record<string, unknown>);
+};
