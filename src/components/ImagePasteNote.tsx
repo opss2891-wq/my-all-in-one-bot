@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Image, X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 interface ImagePasteNoteProps {
   images: string[];
@@ -15,8 +16,21 @@ const ImagePasteNote: React.FC<ImagePasteNoteProps> = ({
 }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Handle paste event
+  const convertToBase64 = useCallback((file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      if (base64) {
+        onImagesChange([...images, base64]);
+        toast({ title: 'تم إضافة الصورة بنجاح' });
+      }
+    };
+    reader.readAsDataURL(file);
+  }, [images, onImagesChange]);
+
+  // Handle paste event - global listener
   useEffect(() => {
     if (readOnly) return;
 
@@ -26,6 +40,7 @@ const ImagePasteNote: React.FC<ImagePasteNoteProps> = ({
 
       for (const item of items) {
         if (item.type.startsWith('image/')) {
+          e.preventDefault();
           const file = item.getAsFile();
           if (file) {
             convertToBase64(file);
@@ -36,18 +51,8 @@ const ImagePasteNote: React.FC<ImagePasteNoteProps> = ({
 
     document.addEventListener('paste', handlePaste);
     return () => document.removeEventListener('paste', handlePaste);
-  }, [images, readOnly, onImagesChange]);
+  }, [readOnly, convertToBase64]);
 
-  const convertToBase64 = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64 = e.target?.result as string;
-      if (base64 && !images.includes(base64)) {
-        onImagesChange([...images, base64]);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
