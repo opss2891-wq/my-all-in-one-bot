@@ -10,7 +10,9 @@ import {
   Check,
   X,
   ChevronRight,
-  Search
+  Search,
+  Pin,
+  PinOff
 } from 'lucide-react';
 import { Conversation } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
@@ -34,6 +36,8 @@ interface ConversationSidebarProps {
   onUnarchiveConversation: (id: string) => void;
   onDeleteConversation: (id: string) => void;
   onRenameConversation: (id: string, title: string) => void;
+  onPinConversation: (id: string) => void;
+  onUnpinConversation: (id: string) => void;
   onToggleArchived: () => void;
   onClose?: () => void;
 }
@@ -49,6 +53,8 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   onUnarchiveConversation,
   onDeleteConversation,
   onRenameConversation,
+  onPinConversation,
+  onUnpinConversation,
   onToggleArchived,
   onClose,
 }) => {
@@ -60,11 +66,19 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   const baseConversations = showArchived ? archivedConversations : conversations;
   
   const displayedConversations = useMemo(() => {
-    if (!searchQuery.trim()) return baseConversations;
-    const query = searchQuery.toLowerCase();
-    return baseConversations.filter(conv => 
-      conv.title.toLowerCase().includes(query)
-    );
+    let filtered = baseConversations;
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = baseConversations.filter(conv => 
+        conv.title.toLowerCase().includes(query)
+      );
+    }
+    // Sort: pinned first, then by updatedAt
+    return [...filtered].sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
   }, [baseConversations, searchQuery]);
 
   const startEditing = (conv: Conversation) => {
@@ -196,13 +210,16 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                 onClick={() => !editingId && onSelectConversation(conv.id!)}
               >
                 <div className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative",
                   currentConversationId === conv.id ? "bg-primary/20" : "bg-muted"
                 )}>
                   <MessageSquare className={cn(
                     "w-5 h-5",
                     currentConversationId === conv.id ? "text-primary" : "text-muted-foreground"
                   )} />
+                  {conv.pinned && (
+                    <Pin className="w-3 h-3 text-warning absolute -top-1 -right-1" />
+                  )}
                 </div>
                 
                 <div className="flex-1 min-w-0">
@@ -227,7 +244,10 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                     </div>
                   ) : (
                     <>
-                      <p className="text-sm font-medium truncate text-foreground">
+                      <p className={cn(
+                        "text-sm font-medium truncate text-foreground",
+                        conv.pinned && "flex items-center gap-1"
+                      )}>
                         {conv.title}
                       </p>
                       <p className="text-xs text-muted-foreground">
@@ -249,6 +269,17 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                         <Edit2 className="w-4 h-4" />
                         {t('rename')}
                       </DropdownMenuItem>
+                      {conv.pinned ? (
+                        <DropdownMenuItem onClick={() => onUnpinConversation(conv.id!)} className="gap-2">
+                          <PinOff className="w-4 h-4" />
+                          {t('unpin')}
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem onClick={() => onPinConversation(conv.id!)} className="gap-2">
+                          <Pin className="w-4 h-4" />
+                          {t('pin')}
+                        </DropdownMenuItem>
+                      )}
                       {showArchived ? (
                         <DropdownMenuItem onClick={() => onUnarchiveConversation(conv.id!)} className="gap-2">
                           <ArchiveRestore className="w-4 h-4" />
