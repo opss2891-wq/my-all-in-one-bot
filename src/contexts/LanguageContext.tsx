@@ -30,6 +30,8 @@ const translations: Record<Language, Translations> = {
     rename: 'إعادة تسمية',
     unarchive: 'إلغاء الأرشفة',
     delete: 'حذف',
+    pin: 'تثبيت',
+    unpin: 'إلغاء التثبيت',
     noConversations: 'لا توجد محادثات',
     noArchivedConversations: 'لا توجد محادثات مؤرشفة',
     
@@ -117,6 +119,8 @@ const translations: Record<Language, Translations> = {
     rename: 'Rename',
     unarchive: 'Unarchive',
     delete: 'Delete',
+    pin: 'Pin',
+    unpin: 'Unpin',
     noConversations: 'No conversations',
     noArchivedConversations: 'No archived conversations',
     

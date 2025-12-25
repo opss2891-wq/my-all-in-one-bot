@@ -19,6 +19,7 @@ export interface Conversation {
   id?: string;
   title: string;
   archived: boolean;
+  pinned?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -111,6 +112,14 @@ export const archiveConversation = async (id: string) => {
 
 export const unarchiveConversation = async (id: string) => {
   await updateConversation(id, { archived: false });
+};
+
+export const pinConversation = async (id: string) => {
+  await updateConversation(id, { pinned: true });
+};
+
+export const unpinConversation = async (id: string) => {
+  await updateConversation(id, { pinned: false });
 };
 
 export const deleteConversation = async (id: string) => {

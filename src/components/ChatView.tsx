@@ -3,7 +3,8 @@ import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus,
 import { 
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, getConversations, getArchivedConversations, createConversation, 
-  archiveConversation, unarchiveConversation, deleteConversation, updateConversation
+  archiveConversation, unarchiveConversation, deleteConversation, updateConversation,
+  pinConversation, unpinConversation
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { generateLinkTitle, explainCode } from '@/lib/gemini';
@@ -228,6 +229,26 @@ const ChatView: React.FC = () => {
       await updateConversation(id, { title });
       await loadConversations();
       toast({ title: t('nameUpdated') });
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    }
+  };
+
+  const handlePinConversation = async (id: string) => {
+    try {
+      await pinConversation(id);
+      await loadConversations();
+      toast({ title: t('pin') });
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    }
+  };
+
+  const handleUnpinConversation = async (id: string) => {
+    try {
+      await unpinConversation(id);
+      await loadConversations();
+      toast({ title: t('unpin') });
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -563,6 +584,8 @@ const ChatView: React.FC = () => {
           onUnarchiveConversation={handleUnarchiveConversation}
           onDeleteConversation={handleDeleteConversation}
           onRenameConversation={handleRenameConversation}
+          onPinConversation={handlePinConversation}
+          onUnpinConversation={handleUnpinConversation}
           onToggleArchived={() => setShowArchived(!showArchived)}
           onClose={() => setSidebarOpen(false)}
         />
