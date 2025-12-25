@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File } from 'lucide-react';
+import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File, Sun, Moon } from 'lucide-react';
 import { 
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, getConversations, getArchivedConversations, createConversation, 
@@ -58,7 +58,7 @@ const ChatView: React.FC = () => {
   const mainRef = useRef<HTMLDivElement>(null);
 
   const { t, isRTL } = useLanguage();
-  const { sidebarOpen, setSidebarOpen, toggleSidebar, headerVisible, toggleHeader } = useUI();
+  const { sidebarOpen, setSidebarOpen, toggleSidebar, headerVisible, toggleHeader, theme, toggleTheme } = useUI();
 
   useEffect(() => {
     loadConversations();
@@ -623,6 +623,15 @@ const ChatView: React.FC = () => {
                 
                 {/* Settings */}
                 <SettingsDialog />
+                
+                {/* Theme Toggle */}
+                <button
+                  onClick={toggleTheme}
+                  className="p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  title={theme === 'dark' ? t('lightMode') : t('darkMode')}
+                >
+                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
                 
                 {/* Header Toggle */}
                 <button

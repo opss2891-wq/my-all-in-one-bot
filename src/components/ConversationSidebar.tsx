@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   MessageSquare, 
   Plus, 
@@ -9,7 +9,8 @@ import {
   Edit2,
   Check,
   X,
-  ChevronRight
+  ChevronRight,
+  Search
 } from 'lucide-react';
 import { Conversation } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
@@ -53,9 +54,18 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
 }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const { t, isRTL, language } = useLanguage();
 
-  const displayedConversations = showArchived ? archivedConversations : conversations;
+  const baseConversations = showArchived ? archivedConversations : conversations;
+  
+  const displayedConversations = useMemo(() => {
+    if (!searchQuery.trim()) return baseConversations;
+    const query = searchQuery.toLowerCase();
+    return baseConversations.filter(conv => 
+      conv.title.toLowerCase().includes(query)
+    );
+  }, [baseConversations, searchQuery]);
 
   const startEditing = (conv: Conversation) => {
     setEditingId(conv.id!);
@@ -109,6 +119,37 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
           <Plus className="w-5 h-5" />
           <span>{t('newConversation')}</span>
         </button>
+      </div>
+
+      {/* Search */}
+      <div className="px-3 py-2 border-b border-border">
+        <div className="relative">
+          <Search className={cn(
+            "absolute top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground",
+            isRTL ? "right-3" : "left-3"
+          )} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('searchConversations')}
+            className={cn(
+              "w-full py-2.5 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-all",
+              isRTL ? "pr-10 pl-3" : "pl-10 pr-3"
+            )}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className={cn(
+                "absolute top-1/2 -translate-y-1/2 p-1 hover:bg-background rounded-lg transition-colors",
+                isRTL ? "left-2" : "right-2"
+              )}
+            >
+              <X className="w-4 h-4 text-muted-foreground" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Toggle Archived */}

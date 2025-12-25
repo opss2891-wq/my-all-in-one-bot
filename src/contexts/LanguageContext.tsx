@@ -71,6 +71,14 @@ const translations: Record<Language, Translations> = {
     editCard: 'تعديل',
     deleteCard: 'حذف',
     
+    // Theme
+    darkMode: 'الوضع المظلم',
+    lightMode: 'الوضع الفاتح',
+    toggleTheme: 'تبديل الوضع',
+    
+    // Search
+    searchConversations: 'بحث في المحادثات...',
+    
     // Time
     today: 'اليوم',
     yesterday: 'أمس',
@@ -149,6 +157,14 @@ const translations: Record<Language, Translations> = {
     copyAll: 'Copy All',
     editCard: 'Edit',
     deleteCard: 'Delete',
+    
+    // Theme
+    darkMode: 'Dark Mode',
+    lightMode: 'Light Mode',
+    toggleTheme: 'Toggle Theme',
+    
+    // Search
+    searchConversations: 'Search conversations...',
     
     // Time
     today: 'Today',
