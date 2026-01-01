@@ -15,11 +15,15 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
 // Conversation types
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
+
 export interface Conversation {
   id?: string;
   title: string;
   archived: boolean;
   pinned?: boolean;
+  color?: ConversationColor;
+  label?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -120,6 +124,50 @@ export const pinConversation = async (id: string) => {
 
 export const unpinConversation = async (id: string) => {
   await updateConversation(id, { pinned: false });
+};
+
+export const setConversationColor = async (id: string, color: ConversationColor) => {
+  await updateConversation(id, { color });
+};
+
+export const setConversationLabel = async (id: string, label: string) => {
+  await updateConversation(id, { label });
+};
+
+// Global search across all conversations
+export const searchAllMessages = async (query: string) => {
+  if (!query.trim()) return [];
+  
+  const q = collection(db, 'messages');
+  const snapshot = await getDocs(q);
+  const messages = snapshot.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Message, 'id'>) })) as Message[];
+  
+  const queryLower = query.toLowerCase();
+  
+  return messages.filter(m => {
+    if (m.type === 'note' && m.content?.toLowerCase().includes(queryLower)) return true;
+    if (m.type === 'tasks' && m.tasks?.some(t => t.text.toLowerCase().includes(queryLower))) return true;
+    if (m.type === 'credentials') {
+      const cred = m.credential;
+      if (cred?.username?.toLowerCase().includes(queryLower)) return true;
+      if (cred?.host?.toLowerCase().includes(queryLower)) return true;
+      if (cred?.url?.toLowerCase().includes(queryLower)) return true;
+    }
+    if (m.type === 'links' && m.links?.some(l => 
+      l.title.toLowerCase().includes(queryLower) || l.url.toLowerCase().includes(queryLower)
+    )) return true;
+    if (m.type === 'code') {
+      const codeData = m.codeData;
+      if (codeData?.code?.toLowerCase().includes(queryLower)) return true;
+      if (codeData?.explanation?.toLowerCase().includes(queryLower)) return true;
+      if (codeData?.tags?.some(tag => tag.toLowerCase().includes(queryLower))) return true;
+    }
+    if (m.type === 'file') {
+      const fileData = m.fileData;
+      if (fileData?.name?.toLowerCase().includes(queryLower)) return true;
+    }
+    return false;
+  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 };
 
 export const deleteConversation = async (id: string) => {

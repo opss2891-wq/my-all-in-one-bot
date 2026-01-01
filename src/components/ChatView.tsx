@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File, Sun, Moon } from 'lucide-react';
 import { 
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
-  Conversation, getConversations, getArchivedConversations, createConversation, 
+  Conversation, ConversationColor, getConversations, getArchivedConversations, createConversation, 
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation,
-  pinConversation, unpinConversation
+  pinConversation, unpinConversation, setConversationColor, setConversationLabel
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { generateLinkTitle, explainCode } from '@/lib/gemini';
@@ -249,6 +249,26 @@ const ChatView: React.FC = () => {
       await unpinConversation(id);
       await loadConversations();
       toast({ title: t('unpin') });
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    }
+  };
+
+  const handleSetColor = async (id: string, color: ConversationColor) => {
+    try {
+      await setConversationColor(id, color);
+      await loadConversations();
+      toast({ title: t('setColor') });
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    }
+  };
+
+  const handleSetLabel = async (id: string, label: string) => {
+    try {
+      await setConversationLabel(id, label);
+      await loadConversations();
+      toast({ title: t('setLabel') });
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -586,6 +606,8 @@ const ChatView: React.FC = () => {
           onRenameConversation={handleRenameConversation}
           onPinConversation={handlePinConversation}
           onUnpinConversation={handleUnpinConversation}
+          onSetColor={handleSetColor}
+          onSetLabel={handleSetLabel}
           onToggleArchived={() => setShowArchived(!showArchived)}
           onClose={() => setSidebarOpen(false)}
         />

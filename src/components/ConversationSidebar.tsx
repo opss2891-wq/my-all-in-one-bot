@@ -12,9 +12,11 @@ import {
   ChevronRight,
   Search,
   Pin,
-  PinOff
+  PinOff,
+  Palette,
+  Tag
 } from 'lucide-react';
-import { Conversation } from '@/lib/firebase';
+import { Conversation, ConversationColor } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
@@ -22,8 +24,34 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import GlobalSearchDialog from './GlobalSearchDialog';
+
+const colorClasses: Record<ConversationColor, string> = {
+  none: '',
+  red: 'border-l-4 border-l-red-500',
+  orange: 'border-l-4 border-l-orange-500',
+  yellow: 'border-l-4 border-l-yellow-500',
+  green: 'border-l-4 border-l-green-500',
+  blue: 'border-l-4 border-l-blue-500',
+  purple: 'border-l-4 border-l-purple-500',
+  pink: 'border-l-4 border-l-pink-500',
+};
+
+const colorDots: Record<ConversationColor, string> = {
+  none: 'bg-muted-foreground/30',
+  red: 'bg-red-500',
+  orange: 'bg-orange-500',
+  yellow: 'bg-yellow-500',
+  green: 'bg-green-500',
+  blue: 'bg-blue-500',
+  purple: 'bg-purple-500',
+  pink: 'bg-pink-500',
+};
 
 interface ConversationSidebarProps {
   conversations: Conversation[];
@@ -38,6 +66,8 @@ interface ConversationSidebarProps {
   onRenameConversation: (id: string, title: string) => void;
   onPinConversation: (id: string) => void;
   onUnpinConversation: (id: string) => void;
+  onSetColor: (id: string, color: ConversationColor) => void;
+  onSetLabel: (id: string, label: string) => void;
   onToggleArchived: () => void;
   onClose?: () => void;
 }
@@ -55,13 +85,19 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   onRenameConversation,
   onPinConversation,
   onUnpinConversation,
+  onSetColor,
+  onSetLabel,
   onToggleArchived,
   onClose,
 }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [labelEditId, setLabelEditId] = useState<string | null>(null);
+  const [labelValue, setLabelValue] = useState('');
   const { t, isRTL, language } = useLanguage();
+
+  const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'];
 
   const baseConversations = showArchived ? archivedConversations : conversations;
   
@@ -133,6 +169,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
           <Plus className="w-5 h-5" />
           <span>{t('newConversation')}</span>
         </button>
+        
+        {/* Global Search */}
+        <div className="mt-3">
+          <GlobalSearchDialog onSelectMessage={onSelectConversation} />
+        </div>
       </div>
 
       {/* Search */}
@@ -205,9 +246,10 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                   "group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all",
                   currentConversationId === conv.id
                     ? "bg-primary/15 border border-primary/30"
-                    : "hover:bg-muted/80 active:scale-[0.98]"
+                    : "hover:bg-muted/80 active:scale-[0.98]",
+                  conv.color && colorClasses[conv.color]
                 )}
-                onClick={() => !editingId && onSelectConversation(conv.id!)}
+                onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
               >
                 <div className={cn(
                   "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative",
@@ -242,6 +284,46 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                         <X className="w-4 h-4 text-destructive" />
                       </button>
                     </div>
+                  ) : labelEditId === conv.id ? (
+                    <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                      <Input
+                        value={labelValue}
+                        onChange={(e) => setLabelValue(e.target.value)}
+                        placeholder={t('setLabel')}
+                        className="h-8 text-sm"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            onSetLabel(conv.id!, labelValue);
+                            setLabelEditId(null);
+                            setLabelValue('');
+                          }
+                          if (e.key === 'Escape') {
+                            setLabelEditId(null);
+                            setLabelValue('');
+                          }
+                        }}
+                      />
+                      <button 
+                        onClick={() => {
+                          onSetLabel(conv.id!, labelValue);
+                          setLabelEditId(null);
+                          setLabelValue('');
+                        }} 
+                        className="p-1.5 hover:bg-success/20 rounded-lg"
+                      >
+                        <Check className="w-4 h-4 text-success" />
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setLabelEditId(null);
+                          setLabelValue('');
+                        }} 
+                        className="p-1.5 hover:bg-destructive/20 rounded-lg"
+                      >
+                        <X className="w-4 h-4 text-destructive" />
+                      </button>
+                    </div>
                   ) : (
                     <>
                       <p className={cn(
@@ -250,21 +332,28 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                       )}>
                         {conv.title}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatDate(conv.updatedAt)}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-muted-foreground">
+                          {formatDate(conv.updatedAt)}
+                        </p>
+                        {conv.label && (
+                          <span className="text-xs px-1.5 py-0.5 rounded bg-accent/20 text-accent">
+                            {conv.label}
+                          </span>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>
 
-                {!editingId && (
+                {!editingId && !labelEditId && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
                       <button className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-44 bg-card border-border">
+                    <DropdownMenuContent align="end" className="w-48 bg-card border-border">
                       <DropdownMenuItem onClick={() => startEditing(conv)} className="gap-2">
                         <Edit2 className="w-4 h-4" />
                         {t('rename')}
@@ -280,6 +369,39 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                           {t('pin')}
                         </DropdownMenuItem>
                       )}
+                      
+                      {/* Color submenu */}
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className="gap-2">
+                          <Palette className="w-4 h-4" />
+                          {t('setColor')}
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent className="bg-card border-border">
+                          {colors.map((color) => (
+                            <DropdownMenuItem
+                              key={color}
+                              onClick={() => onSetColor(conv.id!, color)}
+                              className="gap-2"
+                            >
+                              <span className={cn("w-4 h-4 rounded-full", colorDots[color])} />
+                              {color === 'none' ? t('noColor') : color}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
+                      
+                      {/* Label */}
+                      <DropdownMenuItem 
+                        onClick={() => {
+                          setLabelEditId(conv.id!);
+                          setLabelValue(conv.label || '');
+                        }} 
+                        className="gap-2"
+                      >
+                        <Tag className="w-4 h-4" />
+                        {t('setLabel')}
+                      </DropdownMenuItem>
+                      
                       {showArchived ? (
                         <DropdownMenuItem onClick={() => onUnarchiveConversation(conv.id!)} className="gap-2">
                           <ArchiveRestore className="w-4 h-4" />

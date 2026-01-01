@@ -34,6 +34,13 @@ const translations: Record<Language, Translations> = {
     unpin: 'إلغاء التثبيت',
     noConversations: 'لا توجد محادثات',
     noArchivedConversations: 'لا توجد محادثات مؤرشفة',
+    setColor: 'تعيين اللون',
+    setLabel: 'تعيين التصنيف',
+    noColor: 'بدون لون',
+    globalSearch: 'بحث شامل',
+    searchAll: 'بحث في جميع المحادثات...',
+    foundIn: 'وُجد في',
+    file: 'ملف',
     
     // Messages
     noMessages: 'لا توجد رسائل بعد',
@@ -123,6 +130,13 @@ const translations: Record<Language, Translations> = {
     unpin: 'Unpin',
     noConversations: 'No conversations',
     noArchivedConversations: 'No archived conversations',
+    setColor: 'Set Color',
+    setLabel: 'Set Label',
+    noColor: 'No Color',
+    globalSearch: 'Global Search',
+    searchAll: 'Search all conversations...',
+    foundIn: 'Found in',
+    file: 'File',
     
     // Messages
     noMessages: 'No messages yet',
