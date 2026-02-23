@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Key, Check, X, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Settings, Key, Check, X, Eye, EyeOff, Loader2, Palette } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
+import CustomCSSSection from '@/components/CustomCSSSection';
 
 interface ApiKey {
   id: string;
@@ -135,109 +137,107 @@ const SettingsDialog: React.FC = () => {
       <DialogContent className="max-w-md bg-card border-border">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
-            <Key className="w-5 h-5" />
-            إعدادات مفاتيح API
+            <Settings className="w-5 h-5" />
+            الإعدادات
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Existing Keys */}
-          <div className="space-y-2 max-h-60 overflow-y-auto">
-            {apiKeys.length === 0 ? (
-              <div className="text-center py-6 text-muted-foreground text-sm">
-                لا توجد مفاتيح مضافة
+        <Tabs defaultValue="api" className="w-full">
+          <TabsList className="w-full grid grid-cols-2">
+            <TabsTrigger value="api" className="flex items-center gap-1.5 text-xs">
+              <Key className="w-3.5 h-3.5" />
+              مفاتيح API
+            </TabsTrigger>
+            <TabsTrigger value="css" className="flex items-center gap-1.5 text-xs">
+              <Palette className="w-3.5 h-3.5" />
+              تنسيقات CSS
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="api" className="mt-4">
+            <div className="space-y-4">
+              {/* Existing Keys */}
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {apiKeys.length === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground text-sm">
+                    لا توجد مفاتيح مضافة
+                  </div>
+                ) : (
+                  apiKeys.map((apiKey) => (
+                    <div
+                      key={apiKey.id}
+                      className={cn(
+                        "flex items-center gap-2 p-3 rounded-xl border transition-all",
+                        apiKey.isValid === true && "border-success/30 bg-success/5",
+                        apiKey.isValid === false && "border-destructive/30 bg-destructive/5",
+                        apiKey.isValid === null && "border-border bg-muted/30"
+                      )}
+                    >
+                      <div className="flex-shrink-0">
+                        {apiKey.isChecking ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                        ) : apiKey.isValid === true ? (
+                          <Check className="w-4 h-4 text-success" />
+                        ) : apiKey.isValid === false ? (
+                          <X className="w-4 h-4 text-destructive" />
+                        ) : (
+                          <div className="w-4 h-4 rounded-full bg-muted-foreground/20" />
+                        )}
+                      </div>
+                      <div className="flex-1 font-mono text-sm truncate">
+                        {showKeys[apiKey.id]
+                          ? apiKey.key
+                          : `${apiKey.key.substring(0, 10)}...${apiKey.key.slice(-4)}`}
+                      </div>
+                      <button onClick={() => toggleKeyVisibility(apiKey.id)} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
+                        {showKeys[apiKey.id] ? <EyeOff className="w-4 h-4 text-muted-foreground" /> : <Eye className="w-4 h-4 text-muted-foreground" />}
+                      </button>
+                      <button onClick={() => removeKey(apiKey.id)} className="p-1.5 hover:bg-destructive/10 rounded-lg transition-colors">
+                        <X className="w-4 h-4 text-destructive" />
+                      </button>
+                    </div>
+                  ))
+                )}
               </div>
-            ) : (
-              apiKeys.map((apiKey) => (
-                <div
-                  key={apiKey.id}
+
+              <div className="flex gap-2">
+                <Input
+                  value={newKey}
+                  onChange={(e) => setNewKey(e.target.value)}
+                  placeholder="أدخل مفتاح API جديد..."
+                  className="flex-1 font-mono text-sm"
+                  onKeyDown={(e) => e.key === 'Enter' && addKey()}
+                />
+                <button
+                  onClick={addKey}
+                  disabled={!newKey.trim()}
                   className={cn(
-                    "flex items-center gap-2 p-3 rounded-xl border transition-all",
-                    apiKey.isValid === true && "border-success/30 bg-success/5",
-                    apiKey.isValid === false && "border-destructive/30 bg-destructive/5",
-                    apiKey.isValid === null && "border-border bg-muted/30"
+                    "px-4 py-2 rounded-xl font-medium transition-colors",
+                    newKey.trim()
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "bg-muted text-muted-foreground"
                   )}
                 >
-                  {/* Status */}
-                  <div className="flex-shrink-0">
-                    {apiKey.isChecking ? (
-                      <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                    ) : apiKey.isValid === true ? (
-                      <Check className="w-4 h-4 text-success" />
-                    ) : apiKey.isValid === false ? (
-                      <X className="w-4 h-4 text-destructive" />
-                    ) : (
-                      <div className="w-4 h-4 rounded-full bg-muted-foreground/20" />
-                    )}
-                  </div>
+                  إضافة
+                </button>
+              </div>
 
-                  {/* Key */}
-                  <div className="flex-1 font-mono text-sm truncate">
-                    {showKeys[apiKey.id] 
-                      ? apiKey.key 
-                      : `${apiKey.key.substring(0, 10)}...${apiKey.key.slice(-4)}`}
-                  </div>
-
-                  {/* Actions */}
-                  <button
-                    onClick={() => toggleKeyVisibility(apiKey.id)}
-                    className="p-1.5 hover:bg-muted rounded-lg transition-colors"
-                  >
-                    {showKeys[apiKey.id] ? (
-                      <EyeOff className="w-4 h-4 text-muted-foreground" />
-                    ) : (
-                      <Eye className="w-4 h-4 text-muted-foreground" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => removeKey(apiKey.id)}
-                    className="p-1.5 hover:bg-destructive/10 rounded-lg transition-colors"
-                  >
-                    <X className="w-4 h-4 text-destructive" />
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Add New Key */}
-          <div className="flex gap-2">
-            <Input
-              value={newKey}
-              onChange={(e) => setNewKey(e.target.value)}
-              placeholder="أدخل مفتاح API جديد..."
-              className="flex-1 font-mono text-sm"
-              onKeyDown={(e) => e.key === 'Enter' && addKey()}
-            />
-            <button
-              onClick={addKey}
-              disabled={!newKey.trim()}
-              className={cn(
-                "px-4 py-2 rounded-xl font-medium transition-colors",
-                newKey.trim()
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "bg-muted text-muted-foreground"
+              {apiKeys.length > 0 && (
+                <button onClick={checkAllKeys} className="w-full py-2 text-sm text-primary hover:bg-primary/10 rounded-xl transition-colors">
+                  التحقق من جميع المفاتيح
+                </button>
               )}
-            >
-              إضافة
-            </button>
-          </div>
 
-          {/* Check All Button */}
-          {apiKeys.length > 0 && (
-            <button
-              onClick={checkAllKeys}
-              className="w-full py-2 text-sm text-primary hover:bg-primary/10 rounded-xl transition-colors"
-            >
-              التحقق من جميع المفاتيح
-            </button>
-          )}
+              <p className="text-xs text-muted-foreground text-center">
+                سيتم استخدام المفاتيح بالتناوب. إذا فشل مفتاح سينتقل تلقائياً للمفتاح التالي.
+              </p>
+            </div>
+          </TabsContent>
 
-          {/* Info */}
-          <p className="text-xs text-muted-foreground text-center">
-            سيتم استخدام المفاتيح بالتناوب. إذا فشل مفتاح سينتقل تلقائياً للمفتاح التالي.
-          </p>
-        </div>
+          <TabsContent value="css" className="mt-4">
+            <CustomCSSSection />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
