@@ -183,7 +183,7 @@ TAGS: [tag1, tag2, tag3]`;
   
   return {
     explanation: explanationMatch?.[1]?.trim() || 'كود برمجي',
-    language: languageMatch?.[1]?.toLowerCase() || 'text',
+    language: languageMatch?.[1]?.toLowerCase() || 'javascript',
     tags: tagsMatch?.[1]?.split(',').map(t => t.trim()).filter(Boolean) || []
   };
 };
