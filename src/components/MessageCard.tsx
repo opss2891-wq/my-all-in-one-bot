@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
@@ -7,6 +7,11 @@ import HighlightText from './HighlightText';
 import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+const CODE_LANGUAGES = [
+  'javascript', 'typescript', 'python', 'php', 'sql',
+  'css', 'html', 'xml', 'json', 'bash', 'java', 'text'
+];
 
 // Component for adding new tasks
 const AddTaskInput: React.FC<{ messageId: string; onUpdate: () => void }> = ({ messageId, onUpdate }) => {
@@ -65,6 +70,51 @@ const AddTaskInput: React.FC<{ messageId: string; onUpdate: () => void }> = ({ m
       >
         <Plus className="w-4 h-4" />
       </button>
+    </div>
+  );
+};
+
+// Language selector for code blocks
+const LanguageSelector: React.FC<{
+  language: string;
+  messageId: string;
+  codeData: { code: string; language?: string; explanation?: string; tags?: string[] };
+  onUpdate: () => void;
+}> = ({ language, messageId, codeData, onUpdate }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleSelect = async (lang: string) => {
+    setOpen(false);
+    await updateMessage(messageId, { codeData: { ...codeData, language: lang } });
+    onUpdate();
+    toast({ title: `تم تغيير اللغة إلى ${lang.toUpperCase()}` });
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        className="flex items-center gap-1 px-2 py-1 text-[10px] font-mono bg-info/20 text-info rounded-md uppercase hover:bg-info/30 transition-colors"
+      >
+        {language}
+        <ChevronDown className="w-3 h-3" />
+      </button>
+      {open && (
+        <div className="absolute top-full mt-1 end-0 bg-card border border-border rounded-lg shadow-lg py-1 z-50 max-h-48 overflow-y-auto min-w-[120px]">
+          {CODE_LANGUAGES.map((lang) => (
+            <button
+              key={lang}
+              onClick={(e) => { e.stopPropagation(); handleSelect(lang); }}
+              className={cn(
+                "w-full text-start px-3 py-1.5 text-xs font-mono uppercase hover:bg-muted transition-colors",
+                lang === language ? "text-info bg-info/10" : "text-foreground"
+              )}
+            >
+              {lang}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -407,9 +457,12 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             {/* Code Block with Syntax Highlighting */}
             <div className="relative group/code">
               <div className="absolute top-2 end-2 flex gap-2 z-10">
-                <span className="px-2 py-1 text-[10px] font-mono bg-info/20 text-info rounded-md uppercase">
-                  {codeData.language || 'text'}
-                </span>
+                <LanguageSelector
+                  language={codeData.language || 'javascript'}
+                  messageId={message.id!}
+                  codeData={codeData}
+                  onUpdate={onUpdate}
+                />
                 <button
                   onClick={(e) => { e.stopPropagation(); copyToClipboard(codeData.code, t('code')); }}
                   className="p-1.5 bg-muted/80 hover:bg-muted rounded-md transition-colors"
@@ -418,7 +471,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 </button>
               </div>
               <div className="pt-8 border border-info/20 rounded-xl overflow-hidden bg-[#0d1117]">
-                <CodeHighlight 
+                <CodeHighlight
                   code={codeData.code} 
                   language={codeData.language || 'text'}
                 />
