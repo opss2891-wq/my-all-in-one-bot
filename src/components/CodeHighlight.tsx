@@ -31,7 +31,7 @@ interface CodeHighlightProps {
   className?: string;
 }
 
-const CodeHighlight: React.FC<CodeHighlightProps> = ({ code, language = 'text', className = '' }) => {
+const CodeHighlight: React.FC<CodeHighlightProps> = ({ code, language = 'javascript', className = '' }) => {
   const codeRef = useRef<HTMLElement>(null);
 
   useEffect(() => {

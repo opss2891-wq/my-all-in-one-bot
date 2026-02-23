@@ -33,7 +33,19 @@ export const useCustomCSS = () => {
   const [entries, setEntries] = useState<CustomCSSEntry[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
+      const parsed: CustomCSSEntry[] = saved ? JSON.parse(saved) : [];
+      // Ensure default entry exists
+      const defaultId = 'default-hide-badge';
+      if (!parsed.some(e => e.id === defaultId)) {
+        parsed.unshift({
+          id: defaultId,
+          name: 'إخفاء شارة Lovable',
+          css: 'a#lovable-badge {\n    display: none !important;\n}',
+          enabled: true,
+          createdAt: 0,
+        });
+      }
+      return parsed;
     } catch {
       return [];
     }
