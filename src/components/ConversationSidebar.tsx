@@ -9,6 +9,7 @@ import {
   Edit2,
   Check,
   X,
+  X as CloseIcon,
   ChevronRight,
   Search,
   Pin,
