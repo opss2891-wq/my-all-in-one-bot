@@ -14,12 +14,16 @@ export default defineConfig({
     },
   },
   build: {
+    target: 'esnext',
     minify: false,
     cssMinify: false,
-    sourcemap: false,
-    lib: false,
     rollupOptions: {
-      treeshake: false
+      output: {
+        manualChunks: undefined
+      }
     }
+  },
+  optimizeDeps: {
+    entries: ['src/main.tsx']
   }
 });
