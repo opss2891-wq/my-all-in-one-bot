@@ -215,7 +215,6 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
 export const getMessages = async (userId: string, conversationId?: string) => {
   let q;
   if (conversationId) {
-    // Simple query without composite index requirement
     q = query(
       collection(db, 'messages'), 
       where('userId', '==', userId),
@@ -226,7 +225,6 @@ export const getMessages = async (userId: string, conversationId?: string) => {
   }
   const snapshot = await getDocs(q);
   const messages = snapshot.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Message, 'id'>) })) as Message[];
-  // Sort client-side to avoid composite index requirement
   return messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 };
 
@@ -258,21 +256,27 @@ export const deleteNote = async (id: string) => {
 
 export interface Task {
   id?: string;
+  userId: string;
   title: string;
   completed: boolean;
   createdAt: string;
 }
 
-export const addTask = async (title: string) => {
+export const addTask = async (userId: string, title: string) => {
   return await addDoc(collection(db, 'tasks'), {
+    userId,
     title,
     completed: false,
     createdAt: new Date().toISOString(),
   });
 };
 
-export const getTasks = async () => {
-  const q = query(collection(db, 'tasks'), orderBy('createdAt', 'desc'));
+export const getTasks = async (userId: string) => {
+  const q = query(
+    collection(db, 'tasks'), 
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Task[];
 };
@@ -289,6 +293,7 @@ export type CredentialType = 'ftp' | 'ssh' | 'hosting' | 'admin' | 'cpanel' | 'd
 
 export interface Credential {
   id?: string;
+  userId: string;
   username: string;
   password: string;
   host: string;
@@ -297,15 +302,20 @@ export interface Credential {
   createdAt: string;
 }
 
-export const addCredential = async (credential: Omit<Credential, 'id' | 'createdAt'>) => {
+export const addCredential = async (userId: string, credential: Omit<Credential, 'id' | 'createdAt' | 'userId'>) => {
   return await addDoc(collection(db, 'credentials'), {
     ...credential,
+    userId,
     createdAt: new Date().toISOString(),
   });
 };
 
-export const getCredentials = async () => {
-  const q = query(collection(db, 'credentials'), orderBy('createdAt', 'desc'));
+export const getCredentials = async (userId: string) => {
+  const q = query(
+    collection(db, 'credentials'), 
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Credential[];
 };
@@ -314,6 +324,6 @@ export const deleteCredential = async (id: string) => {
   await deleteDoc(doc(db, 'credentials', id));
 };
 
-export const updateCredential = async (id: string, data: Partial<Omit<Credential, 'id' | 'createdAt'>>) => {
+export const updateCredential = async (id: string, data: Partial<Omit<Credential, 'id' | 'createdAt' | 'userId'>>) => {
   await updateDoc(doc(db, 'credentials', id), data as Record<string, unknown>);
 };
