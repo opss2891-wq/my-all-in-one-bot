@@ -16,7 +16,6 @@ const NotesSection: React.FC = () => {
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
-  const { user } = useAuth();
 
   useEffect(() => {
     if (user) loadNotes();
