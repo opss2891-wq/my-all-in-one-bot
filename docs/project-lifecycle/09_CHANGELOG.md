@@ -1,5 +1,11 @@
 # Changelog: DataBot
 
+## [1.0.5] - 2026-08-14
+### Security
+- P1: Client-side AES encryption for all stored credentials (SEC-003).
+- Implemented `src/lib/encryption.ts` to protect sensitive data before reaching the cloud.
+- Integrated encryption/decryption into `CredentialsSection`, `MessageCard`, and `ChatView`.
+
 ## [1.0.4] - 2026-08-14
 ### Security
 - P0: Full Data Isolation (Backend + Frontend).

@@ -15,7 +15,7 @@
 - [x] Task ISO-03: Implement Firebase Security Rules (RLS) to prevent cross-user access. (DONE)
 
 ## PHASE 04 — Security Hardening
-- [ ] Task SEC-01: Implement client-side encryption for the Credentials module.
+- [x] Task SEC-01: Implement client-side encryption for the Credentials module. (DONE)
 - [ ] Task SEC-02: Audit and sanitize all AI prompts to prevent leakage.
 
 ## PHASE 05 — UX & Refinement
