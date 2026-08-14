@@ -5,6 +5,7 @@ import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
 const TasksSection: React.FC = () => {
+  const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState('');
   const [loading, setLoading] = useState(true);

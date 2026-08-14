@@ -28,6 +28,7 @@ const getTypeColor = (type: CredentialType) => {
 };
 
 const CredentialsSection: React.FC = () => {
+  const { user } = useAuth();
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);

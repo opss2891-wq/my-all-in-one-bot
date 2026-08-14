@@ -11,6 +11,7 @@ interface Note {
 }
 
 const NotesSection: React.FC = () => {
+  const { user } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState('');
   const [loading, setLoading] = useState(true);

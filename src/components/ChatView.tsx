@@ -62,10 +62,11 @@ const ChatView: React.FC = () => {
 
   const { t, isRTL } = useLanguage();
   const { sidebarOpen, setSidebarOpen, toggleSidebar, headerVisible, toggleHeader, theme, toggleTheme } = useUI();
+  const { user } = useAuth();
 
   useEffect(() => {
-    loadConversations();
-  }, []);
+    if (user) loadConversations();
+  }, [user]);
 
   useEffect(() => {
     if (currentConversationId) {
@@ -131,10 +132,11 @@ const ChatView: React.FC = () => {
   }, [conversations, archivedConversations, currentConversationId, showArchived]);
 
   const loadConversations = async () => {
+    if (!user) return;
     try {
       const [convs, archived] = await Promise.all([
-        getConversations(),
-        getArchivedConversations()
+        getConversations(user.uid),
+        getArchivedConversations(user.uid)
       ]);
       setConversations(convs);
       setArchivedConversations(archived);
@@ -161,9 +163,9 @@ const ChatView: React.FC = () => {
   };
 
   const loadMessages = async () => {
-    if (!currentConversationId) return;
+    if (!currentConversationId || !user) return;
     try {
-      const data = await getMessages(currentConversationId);
+      const data = await getMessages(user.uid, currentConversationId);
       setMessages(data);
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -172,8 +174,9 @@ const ChatView: React.FC = () => {
   };
 
   const handleCreateConversation = async () => {
+    if (!user) return;
     try {
-      const docRef = await createConversation();
+      const docRef = await createConversation(user.uid, t('newChat'));
       await loadConversations();
       setCurrentConversationId(docRef.id);
       localStorage.setItem('activeConversationId', docRef.id);
