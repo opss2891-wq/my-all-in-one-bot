@@ -76,6 +76,8 @@ export interface Task {
   createdAt: string;
 }
 
+export type CredentialType = 'ftp' | 'ssh' | 'cpanel' | 'hosting' | 'admin' | 'database' | 'other';
+
 export interface Credential {
   id?: string;
   userId: string;
@@ -83,7 +85,7 @@ export interface Credential {
   password?: string;
   host?: string;
   url?: string;
-  type: 'ftp' | 'ssh' | 'cpanel' | 'hosting' | 'admin' | 'database' | 'other';
+  type: CredentialType;
   createdAt: string;
 }
 
@@ -263,7 +265,25 @@ export const deleteMessage = async (id: string) => {
   if (error) throw error;
 };
 
+export const updateMessage = async (id: string, updates: Partial<Message>) => {
+  const mappedUpdates: any = {};
+  if (updates.content !== undefined) mappedUpdates.content = updates.content;
+  if (updates.tasks !== undefined) mappedUpdates.tasks = updates.tasks;
+  if (updates.credential !== undefined) mappedUpdates.credential = updates.credential;
+  if (updates.links !== undefined) mappedUpdates.links = updates.links;
+  if (updates.codeData !== undefined) mappedUpdates.code_data = updates.codeData;
+  if (updates.fileData !== undefined) mappedUpdates.file_data = updates.fileData;
+  if (updates.images !== undefined) mappedUpdates.images = updates.images;
+
+  const { error } = await supabase
+    .from('messages')
+    .update(mappedUpdates)
+    .eq('id', id);
+  if (error) throw error;
+};
+
 // Legacy Table Operations
+
 export const addTask = async (userId: string, title: string) => {
   const { data, error } = await supabase
     .from('tasks')
