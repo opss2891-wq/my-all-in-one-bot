@@ -157,7 +157,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   const CloseIcon = ChevronRight;
 
   return (
-    <div className="h-full flex flex-col bg-card border-l border-border">
+    <div id={sidebarId} className={cn(
+      "h-full flex flex-col bg-card border-l border-border transition-all duration-300 relative",
+      "group-[.dropdown-open]:translate-x-0 group-[.dropdown-open]:opacity-100",
+      className
+    )}>
       {/* Header */}
       <div className="p-4 border-b border-border safe-area-top">
         <div className="flex items-center gap-2 mb-4">

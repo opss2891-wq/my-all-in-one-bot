@@ -261,9 +261,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             <div 
               onMouseDown={handleResizeStart}
               onTouchStart={handleResizeStart}
-              className="absolute -bottom-1 left-0 right-0 h-2 cursor-ns-resize flex items-center justify-center opacity-0 group-hover/note:opacity-100 transition-opacity"
+              className="absolute -bottom-1 left-0 right-0 h-2 cursor-ns-resize flex items-center justify-center opacity-0 group-hover/note:opacity-100 transition-opacity z-10"
             >
-              <div className="w-12 h-1 bg-muted-foreground/30 rounded-full" />
+              <div className="w-12 h-1 bg-primary/40 rounded-full shadow-sm" />
             </div>
 
             {!noteHeight && isLongNote && (
