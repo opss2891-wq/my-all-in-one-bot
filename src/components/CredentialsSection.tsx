@@ -32,7 +32,6 @@ const CredentialsSection: React.FC = () => {
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
-  const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
