@@ -556,12 +556,24 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             </p>
           </div>
         </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); onDelete(message.id!); }}
-          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all opacity-50 group-hover:opacity-100"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleTogglePin}
+            className={cn(
+              "p-2 rounded-xl transition-all opacity-50 group-hover:opacity-100 hover:bg-muted",
+              message.pinned && "opacity-100 text-warning"
+            )}
+            title={message.pinned ? t('unpin') || 'إلغاء التثبيت' : t('pin') || 'تثبيت'}
+          >
+            {message.pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete(message.id!); }}
+            className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all opacity-50 group-hover:opacity-100"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
       {renderContent()}
       {selectedImage && (
