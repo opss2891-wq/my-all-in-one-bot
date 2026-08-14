@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Inter:wght@100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -130,10 +132,17 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Cairo', 'Tajawal', sans-serif;
+    @apply bg-background text-foreground antialiased;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none;
+  }
+
+  html[lang="ar"] body, [dir="rtl"] body {
+    font-family: 'Cairo', sans-serif;
+  }
+
+  html[lang="en"] body, [dir="ltr"] body {
+    font-family: 'Inter', 'sans-serif';
   }
 
   code, .font-mono {
