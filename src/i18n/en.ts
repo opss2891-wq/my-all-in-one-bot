@@ -81,6 +81,17 @@ export const en = {
   hostLabel: 'Host',
   portLabel: 'Port',
   urlLabel: 'URL',
+  credentialsTitle: 'Credentials',
+  credentialAddedSuccess: 'Credential added successfully',
+  credentialUpdatedSuccess: 'Credential updated successfully',
+  credentialDeleted: 'Credential deleted',
+  errorLoadingCredentials: 'Error loading credentials',
+  errorAddingCredential: 'Error adding credential',
+  errorUpdatingCredential: 'Error updating credential',
+  errorDeletingCredential: 'Error deleting credential',
+  noCredentials: 'No credentials saved',
+  saveCredential: 'Save Credential',
+  credentialCopied: '{label} copied!',
 
   // Settings
   settings: 'Settings',

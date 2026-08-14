@@ -81,6 +81,17 @@ export const ar = {
   hostLabel: 'مضيف',
   portLabel: 'منفذ',
   urlLabel: 'رابط',
+  credentialsTitle: 'بيانات الاعتماد',
+  credentialAddedSuccess: 'تم إضافة بيانات الاعتماد بنجاح',
+  credentialUpdatedSuccess: 'تم تحديث بيانات الاعتماد بنجاح',
+  credentialDeleted: 'تم حذف بيانات الاعتماد',
+  errorLoadingCredentials: 'خطأ في تحميل بيانات الاعتماد',
+  errorAddingCredential: 'خطأ في إضافة بيانات الاعتماد',
+  errorUpdatingCredential: 'خطأ في تحديث بيانات الاعتماد',
+  errorDeletingCredential: 'خطأ في حذف بيانات الاعتماد',
+  noCredentials: 'لا توجد بيانات اعتماد محفوظة',
+  saveCredential: 'حفظ بيانات الاعتماد',
+  credentialCopied: '{label} تم النسخ!',
 
   // Settings
   settings: 'الإعدادات',

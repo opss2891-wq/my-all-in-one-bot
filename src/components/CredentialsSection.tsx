@@ -4,6 +4,7 @@ import { addCredential, getCredentials, deleteCredential, updateCredential, Cred
 import { encryptData, decryptData } from '@/lib/encryption';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const credentialTypes: { value: CredentialType; label: string }[] = [
   { value: 'hosting', label: 'Hosting' },
@@ -30,6 +31,7 @@ const getTypeColor = (type: CredentialType) => {
 
 const CredentialsSection: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
@@ -70,7 +72,7 @@ const CredentialsSection: React.FC = () => {
       }));
       setCredentials(decryptedData);
     } catch (error) {
-      toast({ title: 'Error loading credentials', variant: 'destructive' });
+      toast({ title: t('errorLoadingCredentials'), variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -91,9 +93,9 @@ const CredentialsSection: React.FC = () => {
       setForm({ username: '', password: '', host: '', url: '', port: '', type: 'hosting' });
       setShowForm(false);
       await loadCredentials();
-      toast({ title: 'Credential added successfully' });
+      toast({ title: t('credentialAddedSuccess') });
     } catch (error) {
-      toast({ title: 'Error adding credential', variant: 'destructive' });
+      toast({ title: t('errorAddingCredential'), variant: 'destructive' });
     } finally {
       setAdding(false);
     }
@@ -103,9 +105,9 @@ const CredentialsSection: React.FC = () => {
     try {
       await deleteCredential(id);
       await loadCredentials();
-      toast({ title: 'Credential deleted' });
+      toast({ title: t('credentialDeleted') });
     } catch (error) {
-      toast({ title: 'Error deleting credential', variant: 'destructive' });
+      toast({ title: t('errorDeletingCredential'), variant: 'destructive' });
     }
   };
 
@@ -134,9 +136,9 @@ const CredentialsSection: React.FC = () => {
       await updateCredential(editingId, encryptedEditForm);
       setEditingId(null);
       await loadCredentials();
-      toast({ title: 'Credential updated successfully' });
+      toast({ title: t('credentialUpdatedSuccess') });
     } catch (error) {
-      toast({ title: 'Error updating credential', variant: 'destructive' });
+      toast({ title: t('errorUpdatingCredential'), variant: 'destructive' });
     }
   };
 
@@ -147,7 +149,7 @@ const CredentialsSection: React.FC = () => {
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: `${label} copied!` });
+    toast({ title: t('credentialCopied', { label }) });
   };
 
   const togglePassword = (id: string) => {
@@ -162,7 +164,7 @@ const CredentialsSection: React.FC = () => {
             <div className="p-3 rounded-xl bg-accent/20 glow-accent">
               <Key className="w-6 h-6 text-accent" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground">Credentials</h2>
+            <h2 className="text-2xl font-bold text-foreground">{t('credentialsTitle')}</h2>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
@@ -176,7 +178,7 @@ const CredentialsSection: React.FC = () => {
           <div className="bg-card border border-border rounded-xl p-4 mb-6 animate-slide-up">
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Type</label>
+                <label className="text-sm text-muted-foreground mb-1 block">{t('typeLabel')}</label>
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value as CredentialType })}
@@ -188,7 +190,7 @@ const CredentialsSection: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Username</label>
+                <label className="text-sm text-muted-foreground mb-1 block">{t('userLabel')}</label>
                 <input
                   type="text"
                   value={form.username}
@@ -197,7 +199,7 @@ const CredentialsSection: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Password</label>
+                <label className="text-sm text-muted-foreground mb-1 block">{t('passLabel')}</label>
                 <input
                   type="password"
                   value={form.password}
@@ -206,7 +208,7 @@ const CredentialsSection: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Host</label>
+                <label className="text-sm text-muted-foreground mb-1 block">{t('hostLabel')}</label>
                 <input
                   type="text"
                   value={form.host}
@@ -216,7 +218,7 @@ const CredentialsSection: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm text-muted-foreground mb-1 block">Port</label>
+                <label className="text-sm text-muted-foreground mb-1 block">{t('portLabel')}</label>
                 <input
                   type="text"
                   value={form.port}
@@ -227,7 +229,7 @@ const CredentialsSection: React.FC = () => {
               </div>
             </div>
             <div className="mb-4">
-              <label className="text-sm text-muted-foreground mb-1 block">URL</label>
+              <label className="text-sm text-muted-foreground mb-1 block">{t('urlLabel')}</label>
               <input
                 type="url"
                 value={form.url}
@@ -242,7 +244,7 @@ const CredentialsSection: React.FC = () => {
               className="w-full py-2 gradient-accent rounded-lg text-accent-foreground font-medium hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
             >
               {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-              Save Credential
+              {t('saveCredential')}
             </button>
           </div>
         )}
@@ -254,7 +256,7 @@ const CredentialsSection: React.FC = () => {
             </div>
           ) : credentials.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              No credentials saved
+              {t('noCredentials')}
             </div>
           ) : (
             credentials.map((cred) => (
@@ -267,7 +269,7 @@ const CredentialsSection: React.FC = () => {
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">Type</label>
+                        <label className="text-xs text-muted-foreground mb-1 block">{t('typeLabel')}</label>
                         <select
                           value={editForm.type}
                           onChange={(e) => setEditForm({ ...editForm, type: e.target.value as CredentialType })}
@@ -279,7 +281,7 @@ const CredentialsSection: React.FC = () => {
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">Username</label>
+                        <label className="text-xs text-muted-foreground mb-1 block">{t('userLabel')}</label>
                         <input
                           type="text"
                           value={editForm.username}
@@ -288,7 +290,7 @@ const CredentialsSection: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">Password</label>
+                        <label className="text-xs text-muted-foreground mb-1 block">{t('passLabel')}</label>
                         <input
                           type="text"
                           value={editForm.password}
@@ -297,7 +299,7 @@ const CredentialsSection: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">Host</label>
+                        <label className="text-xs text-muted-foreground mb-1 block">{t('hostLabel')}</label>
                         <input
                           type="text"
                           value={editForm.host}
@@ -306,7 +308,7 @@ const CredentialsSection: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">Port</label>
+                        <label className="text-xs text-muted-foreground mb-1 block">{t('portLabel')}</label>
                         <input
                           type="text"
                           value={editForm.port}
@@ -316,7 +318,7 @@ const CredentialsSection: React.FC = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">URL</label>
+                      <label className="text-xs text-muted-foreground mb-1 block">{t('urlLabel')}</label>
                       <input
                         type="url"
                         value={editForm.url}
@@ -364,16 +366,16 @@ const CredentialsSection: React.FC = () => {
                     
                     <div className="space-y-2 font-mono text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">User:</span>
+                        <span className="text-muted-foreground">{t('userLabel')}:</span>
                         <div className="flex items-center gap-2">
                           <span className="text-foreground">{cred.username}</span>
-                          <button onClick={() => copyToClipboard(cred.username, 'Username')} className="p-1 hover:bg-muted rounded">
+                          <button onClick={() => copyToClipboard(cred.username, t('userLabel'))} className="p-1 hover:bg-muted rounded">
                             <Copy className="w-3 h-3 text-muted-foreground" />
                           </button>
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Pass:</span>
+                        <span className="text-muted-foreground">{t('passLabel')}:</span>
                         <div className="flex items-center gap-2">
                           <span className="text-foreground">
                             {showPasswords[cred.id!] ? cred.password : '••••••••'}
@@ -381,7 +383,7 @@ const CredentialsSection: React.FC = () => {
                           <button onClick={() => togglePassword(cred.id!)} className="p-1 hover:bg-muted rounded">
                             {showPasswords[cred.id!] ? <EyeOff className="w-3 h-3 text-muted-foreground" /> : <Eye className="w-3 h-3 text-muted-foreground" />}
                           </button>
-                          <button onClick={() => copyToClipboard(cred.password, 'Password')} className="p-1 hover:bg-muted rounded">
+                          <button onClick={() => copyToClipboard(cred.password, t('passLabel'))} className="p-1 hover:bg-muted rounded">
                             <Copy className="w-3 h-3 text-muted-foreground" />
                           </button>
                         </div>
