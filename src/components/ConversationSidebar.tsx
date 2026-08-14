@@ -31,6 +31,7 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import GlobalSearchDialog from './GlobalSearchDialog';
 
 const colorClasses: Record<ConversationColor, string> = {
