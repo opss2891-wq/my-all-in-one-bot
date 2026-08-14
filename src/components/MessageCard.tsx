@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Pin, PinOff } from 'lucide-react';
 
 const CODE_LANGUAGES = [
   'javascript', 'typescript', 'python', 'php', 'sql',
@@ -216,7 +217,20 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'links': return t('links');
       case 'code': return t('code');
       case 'file': return t('file') || 'ملف';
+      case 'pinned': return t('pinned') || 'مثبت';
       default: return '';
+    }
+  };
+
+  const handleTogglePin = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!message.id) return;
+    try {
+      await updateMessage(message.id, { pinned: !message.pinned });
+      onUpdate();
+      toast({ title: message.pinned ? t('unpinned') || 'تم إلغاء التثبيت' : t('pinned') || 'تم التثبيت' });
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
     }
   };
 

@@ -27,6 +27,7 @@
 ## PHASE 06 — Feature Expansion & Hardening (Current)
 - [ ] Task SEC-03: Implement User-defined Master Password for Encryption.
 - [x] Task UI-01: Add Markdown support to MessageCard. (DONE)
+- [x] Task UI-02: Implement Pinned Notes within conversations. (DONE)
 - [ ] Task UI-02: Implement Pinned Notes within conversations.
 - [ ] Task AI-01: Smart Conversation Tagging via Gemini.
 
