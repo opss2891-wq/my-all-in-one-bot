@@ -30,8 +30,8 @@ export interface CredentialData {
 export interface CodeData {
   code: string;
   language: string;
-  explanation: string;
-  tags: string[];
+  explanation?: string;
+  tags?: string[];
 }
 
 export interface FileData {
