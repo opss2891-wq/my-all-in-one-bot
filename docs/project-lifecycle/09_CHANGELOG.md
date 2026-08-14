@@ -2,8 +2,8 @@
 
 ## [1.0.7] - 2026-08-14
 ### UX & Offline
-- UX-01: Enabled `enableMultiTabIndexedDbPersistence` for Firestore to allow offline usage across multiple tabs.
-- Improved data availability when the device is disconnected from the network.
+- UX-01: Enabled `enableMultiTabIndexedDbPersistence` for Firestore with safer lifecycle integration in `App.tsx`.
+- Improved stability of offline data caching for multi-tab environments.
 
 ## [1.0.6] - 2026-08-14
 ### Security
