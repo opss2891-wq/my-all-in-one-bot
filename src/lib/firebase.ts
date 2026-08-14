@@ -16,6 +16,24 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
+// Enable offline persistence
+import { enableMultiTabIndexedDbPersistence } from 'firebase/firestore';
+
+// Persistence handled in the main component to avoid SSR/Initial load issues
+export const enableOfflinePersistence = async () => {
+  if (typeof window !== 'undefined') {
+    try {
+      await enableMultiTabIndexedDbPersistence(db);
+    } catch (err: any) {
+      if (err.code === 'failed-precondition') {
+        console.warn('Firestore persistence failed: Multiple tabs open');
+      } else if (err.code === 'unimplemented') {
+        console.warn('Firestore persistence is not supported by this browser');
+      }
+    }
+  }
+};
+
 // Conversation types
 export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
 
