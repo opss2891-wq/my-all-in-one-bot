@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signInWithPopup, 
-  GoogleAuthProvider 
+  GoogleAuthProvider,
+  User
 } from 'firebase/auth';
+import { collection, addDoc, writeBatch } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,14 +21,56 @@ const Auth: React.FC = () => {
   const [error, setError] = useState('');
   const { language } = useLanguage();
 
+  const migrateData = async (user: User) => {
+    try {
+      // 1. Migrate Conversations
+      const localConvs = localStorage.getItem('conversations');
+      if (localConvs) {
+        const conversations = JSON.parse(localConvs);
+        const batch = writeBatch(db);
+        
+        for (const conv of conversations) {
+          const convRef = await addDoc(collection(db, 'conversations'), {
+            ...conv,
+            userId: user.uid,
+            updatedAt: conv.updatedAt || new Date().toISOString(),
+            createdAt: conv.createdAt || new Date().toISOString()
+          });
+          
+          // 2. Migrate Messages for this conversation
+          const localMsgs = localStorage.getItem(`messages_${conv.id}`);
+          if (localMsgs) {
+            const messages = JSON.parse(localMsgs);
+            for (const msg of messages) {
+              await addDoc(collection(db, 'messages'), {
+                ...msg,
+                userId: user.uid,
+                conversationId: convRef.id,
+                createdAt: msg.createdAt || new Date().toISOString()
+              });
+            }
+          }
+        }
+        
+        // Clear local storage after migration
+        localStorage.removeItem('conversations');
+        // We could also clear messages_*, but it's safer to keep them or clear them carefully
+      }
+    } catch (err) {
+      console.error('Migration failed:', err);
+    }
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     try {
+      let userCredential;
       if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await migrateData(userCredential.user);
       }
     } catch (err: any) {
       setError(err.message);
@@ -36,7 +80,11 @@ const Auth: React.FC = () => {
   const handleGoogleSignIn = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      
+      // Check if it's a new user (approximate check using additionalUserInfo or just attempt migration)
+      // For simplicity, we attempt migration if there's data in localStorage
+      await migrateData(result.user);
     } catch (err: any) {
       setError(err.message);
     }

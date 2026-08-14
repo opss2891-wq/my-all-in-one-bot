@@ -137,6 +137,7 @@ const isArabicText = (text: string): boolean => {
 
 const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, searchQuery = '' }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { t, language } = useLanguage();
 
   const credential = message.credential ? {
@@ -211,7 +212,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const renderContent = () => {
     switch (message.type) {
       case 'note':
-        // Default to RTL (right) direction
+        const content = message.content || '';
+        const isLongNote = content.length > 200 || content.split('\n').length > 4;
+        const displayContent = (!isLongNote || isExpanded) ? content : content.slice(0, 180) + '...';
+
         return (
           <div 
             className="cursor-pointer active:scale-[0.99] transition-transform space-y-3"
@@ -219,10 +223,20 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             style={{ textAlign: 'right' }}
           >
             <HighlightText 
-              text={message.content || ''} 
+              text={displayContent} 
               searchQuery={searchQuery}
               className="text-foreground whitespace-pre-wrap block text-sm md:text-base leading-relaxed"
             />
+            
+            {isLongNote && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+                className="text-xs font-medium text-primary hover:underline flex items-center gap-1 mt-1 mr-auto"
+              >
+                {isExpanded ? (language === 'ar' ? 'عرض أقل' : 'Show less') : (language === 'ar' ? 'عرض المزيد' : 'Show more')}
+                <ChevronDown className={cn("w-3 h-3 transition-transform", isExpanded && "rotate-180")} />
+              </button>
+            )}
             
             {/* Display Images */}
             {message.images && message.images.length > 0 && (
