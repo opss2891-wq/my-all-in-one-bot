@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Trash2, CheckSquare, Square, Loader2 } from 'lucide-react';
-import { addTask, getTasks, updateTask, deleteTask, Task } from '@/lib/firebase';
+import { addTask, getTasks, updateTask, deleteTask, Task } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -14,7 +14,7 @@ const TasksSection: React.FC = () => {
 
   useEffect(() => {
     if (user) loadTasks();
-  }, [user]);
+  }, [user?.id]);
 
   const getAudioContext = () => {
     if (!audioContextRef.current) {
@@ -57,7 +57,7 @@ const TasksSection: React.FC = () => {
   const loadTasks = async () => {
     if (!user) return;
     try {
-      const data = await getTasks(user.uid);
+      const data = await getTasks(user.id);
       setTasks(data);
     } catch (error) {
       toast({ title: 'Error loading tasks', variant: 'destructive' });
@@ -70,7 +70,7 @@ const TasksSection: React.FC = () => {
     if (!newTask.trim() || !user) return;
     setAdding(true);
     try {
-      await addTask(user.uid, newTask);
+      await addTask(user.id, newTask);
       setNewTask('');
       await loadTasks();
       toast({ title: 'Task added successfully' });
