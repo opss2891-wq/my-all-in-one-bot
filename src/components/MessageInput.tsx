@@ -36,7 +36,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
             const base64 = event.target?.result as string;
             if (base64) {
               setImages(prev => [...prev, base64]);
-              toast({ title: 'تم إضافة الصورة بنجاح' });
+              toast({ title: t('imageAdded') });
             }
           };
           reader.readAsDataURL(file);
@@ -222,7 +222,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                 )}
               >
                 <Upload className="w-6 h-6 text-purple-400" />
-                <span className="text-muted-foreground">اختر ملف (txt, doc, docx, xls, xlsx, csv)</span>
+                <span className="text-muted-foreground">{t('chooseFile')}</span>
               </button>
               {selectedFile && (
                 <div className="flex items-center gap-2 p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">
@@ -271,7 +271,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                     <button
                       onClick={() => imageInputRef.current?.click()}
                       className="px-3 rounded-2xl bg-success/10 text-success hover:bg-success/20 transition-all flex items-center justify-center"
-                      title="إضافة صورة (أو Ctrl+V)"
+                      title={t('addImageTooltip')}
                     >
                       <Image className="w-5 h-5" />
                     </button>
