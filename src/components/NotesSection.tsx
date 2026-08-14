@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, FileText, Loader2, Copy } from 'lucide-react';
-import { addNote, getNotes, deleteNote } from '@/lib/firebase';
+import { addNote, getNotes, deleteNote } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -19,12 +19,12 @@ const NotesSection: React.FC = () => {
 
   useEffect(() => {
     if (user) loadNotes();
-  }, [user]);
+  }, [user?.id]);
 
   const loadNotes = async () => {
     if (!user) return;
     try {
-      const data = await getNotes(user.uid);
+      const data = await getNotes(user.id);
       setNotes(data as Note[]);
     } catch (error) {
       toast({ title: 'Error loading notes', variant: 'destructive' });
@@ -37,7 +37,7 @@ const NotesSection: React.FC = () => {
     if (!newNote.trim() || !user) return;
     setAdding(true);
     try {
-      await addNote(user.uid, newNote);
+      await addNote(user.id, newNote);
       setNewNote('');
       await loadNotes();
       toast({ title: 'Note added successfully' });
