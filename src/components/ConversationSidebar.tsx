@@ -375,17 +375,17 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48 bg-card border-border">
-                      <DropdownMenuItem onClick={() => startEditing(conv)} className="gap-2">
+                      <DropdownMenuItem onSelect={() => startEditing(conv)} className="gap-2">
                         <Edit2 className="w-4 h-4" />
                         {t('rename')}
                       </DropdownMenuItem>
                       {conv.pinned ? (
-                        <DropdownMenuItem onClick={() => onUnpinConversation(conv.id!)} className="gap-2">
+                        <DropdownMenuItem onSelect={() => onUnpinConversation(conv.id!)} className="gap-2">
                           <PinOff className="w-4 h-4" />
                           {t('unpin')}
                         </DropdownMenuItem>
                       ) : (
-                        <DropdownMenuItem onClick={() => onPinConversation(conv.id!)} className="gap-2">
+                        <DropdownMenuItem onSelect={() => onPinConversation(conv.id!)} className="gap-2">
                           <Pin className="w-4 h-4" />
                           {t('pin')}
                         </DropdownMenuItem>
@@ -427,12 +427,12 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                       </DropdownMenuItem>
                       
                       {showArchived ? (
-                        <DropdownMenuItem onClick={() => onUnarchiveConversation(conv.id!)} className="gap-2">
+                        <DropdownMenuItem onSelect={() => onUnarchiveConversation(conv.id!)} className="gap-2">
                           <ArchiveRestore className="w-4 h-4" />
                           {t('unarchive')}
                         </DropdownMenuItem>
                       ) : (
-                        <DropdownMenuItem onClick={() => onArchiveConversation(conv.id!)} className="gap-2">
+                        <DropdownMenuItem onSelect={() => onArchiveConversation(conv.id!)} className="gap-2">
                           <Archive className="w-4 h-4" />
                           {t('archive')}
                         </DropdownMenuItem>
