@@ -10,7 +10,7 @@
 - [x] Task AUTH-03: Implement Login/Signup UI. (DONE)
 
 ## PHASE 03 — Data Isolation (The Big Shift)
-- [ ] Task ISO-01: Update Firestore Schema to include `userId` in all documents.
+- [x] Task ISO-01: Update Firestore Schema to include `userId` in all documents. (IN PROGRESS)
 - [ ] Task ISO-02: Update `src/lib/firebase.ts` CRUD operations to filter by `userId`.
 - [ ] Task ISO-03: Implement Firebase Security Rules (RLS) to prevent cross-user access.
 

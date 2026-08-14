@@ -21,6 +21,7 @@ export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' |
 
 export interface Conversation {
   id?: string;
+  userId: string;
   title: string;
   archived: boolean;
   pinned?: boolean;
@@ -68,6 +69,7 @@ export interface FileData {
 
 export interface Message {
   id?: string;
+  userId: string;
   conversationId?: string;
   type: MessageType;
   content?: string;
@@ -137,14 +139,14 @@ export const setConversationLabel = async (id: string, label: string) => {
 };
 
 // Global search across all conversations
-export const searchAllMessages = async (query: string) => {
-  if (!query.trim()) return [];
+export const searchAllMessages = async (userId: string, queryText: string) => {
+  if (!queryText.trim()) return [];
   
-  const q = collection(db, 'messages');
+  const q = query(collection(db, 'messages'), where('userId', '==', userId));
   const snapshot = await getDocs(q);
   const messages = snapshot.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Message, 'id'>) })) as Message[];
   
-  const queryLower = query.toLowerCase();
+  const queryLower = queryText.toLowerCase();
   
   return messages.filter(m => {
     if (m.type === 'note' && m.content?.toLowerCase().includes(queryLower)) return true;
@@ -185,9 +187,10 @@ export const deleteConversation = async (id: string) => {
 };
 
 // Message operations
-export const addMessage = async (message: Omit<Message, 'id' | 'createdAt'>) => {
+export const addMessage = async (userId: string, message: Omit<Message, 'id' | 'createdAt' | 'userId'>) => {
   const docRef = await addDoc(collection(db, 'messages'), {
     ...message,
+    userId,
     createdAt: new Date().toISOString(),
   });
   
@@ -200,16 +203,17 @@ export const addMessage = async (message: Omit<Message, 'id' | 'createdAt'>) => 
   return docRef;
 };
 
-export const getMessages = async (conversationId?: string) => {
+export const getMessages = async (userId: string, conversationId?: string) => {
   let q;
   if (conversationId) {
     // Simple query without composite index requirement
     q = query(
       collection(db, 'messages'), 
+      where('userId', '==', userId),
       where('conversationId', '==', conversationId)
     );
   } else {
-    q = query(collection(db, 'messages'));
+    q = query(collection(db, 'messages'), where('userId', '==', userId));
   }
   const snapshot = await getDocs(q);
   const messages = snapshot.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Message, 'id'>) })) as Message[];
