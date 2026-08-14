@@ -83,9 +83,10 @@ export interface Message {
 }
 
 // Conversation operations
-export const createConversation = async (title: string = 'New Conversation') => {
+export const createConversation = async (userId: string, title: string = 'New Conversation') => {
   const now = new Date().toISOString();
   return await addDoc(collection(db, 'conversations'), {
+    userId,
     title,
     archived: false,
     createdAt: now,
@@ -93,15 +94,23 @@ export const createConversation = async (title: string = 'New Conversation') => 
   });
 };
 
-export const getConversations = async () => {
-  const q = query(collection(db, 'conversations'), orderBy('updatedAt', 'desc'));
+export const getConversations = async (userId: string) => {
+  const q = query(
+    collection(db, 'conversations'), 
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   const convs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Conversation[];
   return convs.filter(c => !c.archived);
 };
 
-export const getArchivedConversations = async () => {
-  const q = query(collection(db, 'conversations'), orderBy('updatedAt', 'desc'));
+export const getArchivedConversations = async (userId: string) => {
+  const q = query(
+    collection(db, 'conversations'), 
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   const convs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Conversation[];
   return convs.filter(c => c.archived);
@@ -230,12 +239,12 @@ export const deleteMessage = async (id: string) => {
 };
 
 // Legacy exports for backward compatibility
-export const addNote = async (content: string) => {
-  return await addMessage({ type: 'note', content });
+export const addNote = async (userId: string, content: string) => {
+  return await addMessage(userId, { type: 'note', content });
 };
 
-export const getNotes = async () => {
-  const messages = await getMessages();
+export const getNotes = async (userId: string) => {
+  const messages = await getMessages(userId);
   return messages.filter(m => m.type === 'note').map(m => ({
     id: m.id,
     content: m.content,
