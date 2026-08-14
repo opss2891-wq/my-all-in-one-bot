@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown } from 'lucide-react';
-import { Message, updateMessage } from '@/lib/firebase';
+import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
@@ -23,12 +23,10 @@ const AddTaskInput: React.FC<{ messageId: string; onUpdate: () => void }> = ({ m
   const handleAddTask = async () => {
     if (!newTask.trim()) return;
     try {
-      const { doc, getDoc } = await import('firebase/firestore');
-      const { db } = await import('@/lib/firebase');
-      const docRef = doc(db, 'messages', messageId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const currentTasks = docSnap.data().tasks || [];
+      const { supabase: supabaseClient } = await import('@/lib/supabase');
+      const { data: docSnap, error } = await supabaseClient.from('messages').select('*').eq('id', messageId).single();
+      if (docSnap && !error) {
+        const currentTasks = docSnap.tasks || [];
         const updatedTasks = [...currentTasks, { text: newTask.trim(), completed: false }];
         await updateMessage(messageId, { tasks: updatedTasks });
         setNewTask('');

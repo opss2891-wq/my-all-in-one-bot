@@ -1,39 +1,93 @@
 import { createClient } from '@supabase/supabase-js';
-import { 
-  Conversation, 
-  ConversationColor, 
-  Message, 
-  MessageType,
-  Task,
-  Credential,
-  CredentialType,
-  TaskItem,
-  LinkItem,
-  CredentialData,
-  CodeData,
-  FileData
-} from './firebase'; 
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Re-export types from firebase to ensure they are available
-export type { 
-  Conversation, 
-  ConversationColor, 
-  Message, 
-  MessageType,
-  Task,
-  Credential,
-  CredentialType,
-  TaskItem,
-  LinkItem,
-  CredentialData,
-  CodeData,
-  FileData 
-};
+export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
+
+export interface TaskItem {
+  text: string;
+  completed: boolean;
+}
+
+export interface LinkItem {
+  title: string;
+  url: string;
+}
+
+export interface CredentialData {
+  username?: string;
+  password?: string;
+  host?: string;
+  url?: string;
+  port?: string;
+  credType: 'ftp' | 'ssh' | 'cpanel' | 'hosting' | 'admin' | 'database' | 'other';
+}
+
+export interface CodeData {
+  code: string;
+  language: string;
+  explanation?: string;
+  tags?: string[];
+}
+
+export interface FileData {
+  name: string;
+  type: string;
+  size: number;
+  content: string;
+}
+
+export interface Message {
+  id?: string;
+  userId: string;
+  conversationId?: string;
+  type: MessageType;
+  content?: string;
+  tasks?: TaskItem[];
+  credential?: CredentialData;
+  links?: LinkItem[];
+  codeData?: CodeData;
+  fileData?: FileData;
+  images?: string[];
+  createdAt: string;
+}
+
+export interface Conversation {
+  id?: string;
+  userId: string;
+  title: string;
+  archived: boolean;
+  pinned: boolean;
+  color: ConversationColor;
+  label?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Task {
+  id?: string;
+  userId: string;
+  title: string;
+  completed: boolean;
+  createdAt: string;
+}
+
+export type CredentialType = 'ftp' | 'ssh' | 'cpanel' | 'hosting' | 'admin' | 'database' | 'other';
+
+export interface Credential {
+  id?: string;
+  userId: string;
+  username?: string;
+  password?: string;
+  host?: string;
+  url?: string;
+  type: CredentialType;
+  createdAt: string;
+}
 
 // Conversation operations
 export const createConversation = async (userId: string, title: string = 'New Conversation') => {
@@ -53,9 +107,11 @@ export const getConversations = async (userId: string) => {
     .select('*')
     .eq('user_id', userId)
     .eq('archived', false)
+    .order('pinned', { ascending: false })
     .order('updated_at', { ascending: false });
   
   if (error) throw error;
+  
   return data.map(c => ({
     id: c.id,
     userId: c.user_id,
@@ -78,6 +134,7 @@ export const getArchivedConversations = async (userId: string) => {
     .order('updated_at', { ascending: false });
   
   if (error) throw error;
+  
   return data.map(c => ({
     id: c.id,
     userId: c.user_id,
@@ -91,46 +148,35 @@ export const getArchivedConversations = async (userId: string) => {
   })) as Conversation[];
 };
 
-export const updateConversation = async (id: string, data: Partial<Conversation>) => {
-  const mappedData: any = {};
-  if (data.title !== undefined) mappedData.title = data.title;
-  if (data.archived !== undefined) mappedData.archived = data.archived;
-  if (data.pinned !== undefined) mappedData.pinned = data.pinned;
-  if (data.color !== undefined) mappedData.color = data.color;
-  if (data.label !== undefined) mappedData.label = data.label;
-  
-  mappedData.updated_at = new Date().toISOString();
-
+export const updateConversation = async (id: string, updates: Partial<Conversation>) => {
   const { error } = await supabase
     .from('conversations')
-    .update(mappedData)
+    .update({
+      title: updates.title,
+      archived: updates.archived,
+      pinned: updates.pinned,
+      color: updates.color,
+      label: updates.label,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', id);
-  
   if (error) throw error;
 };
 
 export const archiveConversation = async (id: string) => {
-  await updateConversation(id, { archived: true });
+  const { error } = await supabase
+    .from('conversations')
+    .update({ archived: true, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
 };
 
 export const unarchiveConversation = async (id: string) => {
-  await updateConversation(id, { archived: false });
-};
-
-export const pinConversation = async (id: string) => {
-  await updateConversation(id, { pinned: true });
-};
-
-export const unpinConversation = async (id: string) => {
-  await updateConversation(id, { pinned: false });
-};
-
-export const setConversationColor = async (id: string, color: ConversationColor) => {
-  await updateConversation(id, { color });
-};
-
-export const setConversationLabel = async (id: string, label: string) => {
-  await updateConversation(id, { label });
+  const { error } = await supabase
+    .from('conversations')
+    .update({ archived: false, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
 };
 
 export const deleteConversation = async (id: string) => {
@@ -138,7 +184,38 @@ export const deleteConversation = async (id: string) => {
     .from('conversations')
     .delete()
     .eq('id', id);
-  
+  if (error) throw error;
+};
+
+export const pinConversation = async (id: string) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ pinned: true, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+};
+
+export const unpinConversation = async (id: string) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ pinned: false, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+};
+
+export const setConversationColor = async (id: string, color: ConversationColor) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ color, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+};
+
+export const setConversationLabel = async (id: string, label: string) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ label, updated_at: new Date().toISOString() })
+    .eq('id', id);
   if (error) throw error;
 };
 
@@ -162,22 +239,19 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
     .single();
   
   if (error) throw error;
-  
+
   if (message.conversationId) {
     await supabase
       .from('conversations')
       .update({ updated_at: new Date().toISOString() })
       .eq('id', message.conversationId);
   }
-  
+
   return { id: data.id };
 };
 
 export const getMessages = async (userId: string, conversationId?: string) => {
-  let query = supabase
-    .from('messages')
-    .select('*')
-    .eq('user_id', userId);
+  let query = supabase.from('messages').select('*').eq('user_id', userId);
   
   if (conversationId) {
     query = query.eq('conversation_id', conversationId);
@@ -207,6 +281,23 @@ export const deleteMessage = async (id: string) => {
   const { error } = await supabase
     .from('messages')
     .delete()
+    .eq('id', id);
+  if (error) throw error;
+};
+
+export const updateMessage = async (id: string, updates: Partial<Message>) => {
+  const mappedUpdates: any = {};
+  if (updates.content !== undefined) mappedUpdates.content = updates.content;
+  if (updates.tasks !== undefined) mappedUpdates.tasks = updates.tasks;
+  if (updates.credential !== undefined) mappedUpdates.credential = updates.credential;
+  if (updates.links !== undefined) mappedUpdates.links = updates.links;
+  if (updates.codeData !== undefined) mappedUpdates.code_data = updates.codeData;
+  if (updates.fileData !== undefined) mappedUpdates.file_data = updates.fileData;
+  if (updates.images !== undefined) mappedUpdates.images = updates.images;
+
+  const { error } = await supabase
+    .from('messages')
+    .update(mappedUpdates)
     .eq('id', id);
   if (error) throw error;
 };
