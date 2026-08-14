@@ -14,11 +14,13 @@ import {
   Pin,
   PinOff,
   Palette,
-  Tag
+  Tag,
+  LogOut
 } from 'lucide-react';
 import { Conversation, ConversationColor } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -96,6 +98,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   const [labelEditId, setLabelEditId] = useState<string | null>(null);
   const [labelValue, setLabelValue] = useState('');
   const { t, isRTL, language } = useLanguage();
+  const { logout, user } = useAuth();
 
   const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'];
 
@@ -427,6 +430,23 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
             ))}
           </div>
         )}
+      </div>
+
+      <div className="p-4 border-t mt-auto">
+        <div className="flex items-center justify-between gap-2 mb-2 px-2">
+          <div className="flex flex-col overflow-hidden">
+            <span className="text-xs font-medium truncate">{user?.email}</span>
+          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={logout}
+            className="text-muted-foreground hover:text-destructive shrink-0"
+            title={language === 'ar' ? 'تسجيل الخروج' : 'Logout'}
+          >
+            <LogOut className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
