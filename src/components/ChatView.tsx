@@ -30,12 +30,12 @@ const detectCodeLanguage = (code: string): string => {
   }
   return 'text';
 };
-import MessageCard from './MessageCard';
-import MessageInput from './MessageInput';
-import SearchBar from './SearchBar';
-import ConversationSidebar from './ConversationSidebar';
-import ContextMenu from './ContextMenu';
-import SettingsDialog from './SettingsDialog';
+const MessageCard = React.lazy(() => import('./MessageCard'));
+const MessageInput = React.lazy(() => import('./MessageInput'));
+const SearchBar = React.lazy(() => import('./SearchBar'));
+const ConversationSidebar = React.lazy(() => import('./ConversationSidebar'));
+const ContextMenu = React.lazy(() => import('./ContextMenu'));
+const SettingsDialog = React.lazy(() => import('./SettingsDialog'));
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
@@ -536,14 +536,15 @@ const ChatView: React.FC = () => {
 
   return (
     <div className={cn("flex h-[100dvh] bg-background overflow-hidden", isRTL && "flex-row-reverse")}>
-      {/* Context Menu */}
-      <ContextMenu 
-        onNavigate={handleNavigate}
-        onNextConversation={goToNextConversation}
-        onPrevConversation={goToPrevConversation}
-        canGoNext={canGoNext}
-        canGoPrev={canGoPrev}
-      />
+      <React.Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
+        <ContextMenu 
+          onNavigate={handleNavigate}
+          onNextConversation={goToNextConversation}
+          onPrevConversation={goToPrevConversation}
+          canGoNext={canGoNext}
+          canGoPrev={canGoPrev}
+        />
+      </React.Suspense>
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
@@ -611,28 +612,30 @@ const ChatView: React.FC = () => {
         "fixed inset-y-0 right-0 z-50 w-80 transform transition-transform duration-300 ease-out",
         sidebarOpen ? "translate-x-0" : "translate-x-full"
       )}>
-        <ConversationSidebar
-          conversations={conversations}
-          archivedConversations={archivedConversations}
-          currentConversationId={currentConversationId}
-          showArchived={showArchived}
-          onSelectConversation={(id) => {
-            setCurrentConversationId(id);
-            localStorage.setItem('activeConversationId', id);
-            setSidebarOpen(false);
-          }}
-          onCreateConversation={handleCreateConversation}
-          onArchiveConversation={handleArchiveConversation}
-          onUnarchiveConversation={handleUnarchiveConversation}
-          onDeleteConversation={handleDeleteConversation}
-          onRenameConversation={handleRenameConversation}
-          onPinConversation={handlePinConversation}
-          onUnpinConversation={handleUnpinConversation}
-          onSetColor={handleSetColor}
-          onSetLabel={handleSetLabel}
-          onToggleArchived={() => setShowArchived(!showArchived)}
-          onClose={() => setSidebarOpen(false)}
-        />
+        <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
+          <ConversationSidebar
+            conversations={conversations}
+            archivedConversations={archivedConversations}
+            currentConversationId={currentConversationId}
+            showArchived={showArchived}
+            onSelectConversation={(id) => {
+              setCurrentConversationId(id);
+              localStorage.setItem('activeConversationId', id);
+              setSidebarOpen(false);
+            }}
+            onCreateConversation={handleCreateConversation}
+            onArchiveConversation={handleArchiveConversation}
+            onUnarchiveConversation={handleUnarchiveConversation}
+            onDeleteConversation={handleDeleteConversation}
+            onRenameConversation={handleRenameConversation}
+            onPinConversation={handlePinConversation}
+            onUnpinConversation={handleUnpinConversation}
+            onSetColor={handleSetColor}
+            onSetLabel={handleSetLabel}
+            onToggleArchived={() => setShowArchived(!showArchived)}
+            onClose={() => setSidebarOpen(false)}
+          />
+        </React.Suspense>
       </div>
 
       {/* Main Content */}
@@ -689,7 +692,9 @@ const ChatView: React.FC = () => {
                 </button>
                 
                 {/* Settings */}
-                <SettingsDialog />
+                <React.Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+                  <SettingsDialog />
+                </React.Suspense>
                 
                 {/* Theme Toggle */}
                 <button
@@ -792,15 +797,17 @@ const ChatView: React.FC = () => {
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-1 gap-3 md:gap-4">
-                  {displayedMessages.map(message => (
-                    <MessageCard 
-                      key={message.id} 
-                      message={message} 
-                      onDelete={handleDelete}
-                      onUpdate={loadMessages}
-                      searchQuery={searchQuery}
-                    />
-                  ))}
+                  <React.Suspense fallback={<div className="p-4 border border-border rounded-xl bg-card animate-pulse h-24" />}>
+                    {displayedMessages.map(message => (
+                      <MessageCard 
+                        key={message.id} 
+                        message={message} 
+                        onDelete={handleDelete}
+                        onUpdate={loadMessages}
+                        searchQuery={searchQuery}
+                      />
+                    ))}
+                  </React.Suspense>
                 </div>
                 {hasMore && (
                   <div className="flex justify-center py-6">
@@ -817,7 +824,11 @@ const ChatView: React.FC = () => {
         </main>
 
         {/* Input */}
-        {currentConversationId && <MessageInput onSend={handleSend} loading={sending} />}
+        {currentConversationId && (
+          <React.Suspense fallback={<div className="p-4 border-t border-border bg-card animate-pulse h-20" />}>
+            <MessageInput onSend={handleSend} loading={sending} />
+          </React.Suspense>
+        )}
       </div>
     </div>
   );
