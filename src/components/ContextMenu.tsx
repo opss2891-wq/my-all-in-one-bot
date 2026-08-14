@@ -24,6 +24,7 @@ interface ContextMenuProps {
   onPrevConversation?: () => void;
   canGoNext?: boolean;
   canGoPrev?: boolean;
+  onRenameConversation?: () => void;
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ 
@@ -183,6 +184,15 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         <div className="p-2 border-b border-border">
           <p className="text-xs text-muted-foreground px-2 mb-2">{t('menuControls')}</p>
           <div className="space-y-1">
+            {onRenameConversation && (
+              <button
+                onClick={() => { onRenameConversation(); setIsOpen(false); }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted transition-colors text-start"
+              >
+                <Edit2 className="w-4 h-4 text-primary" />
+                <span className="text-sm text-foreground">{t('rename')}</span>
+              </button>
+            )}
             <button
               onClick={() => { toggleSidebar(); setIsOpen(false); }}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted transition-colors text-start"
