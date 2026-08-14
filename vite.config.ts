@@ -43,9 +43,7 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         maximumFileSizeToCacheInBytes: 3000000,
       },
-      devOptions: {
-        enabled: false
-      }
+      selfDestroying: true
     }),
   ].filter(Boolean),
   resolve: {
