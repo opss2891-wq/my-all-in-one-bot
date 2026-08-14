@@ -14,7 +14,152 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      conversations: {
+        Row: {
+          archived: boolean
+          color: Database["public"]["Enums"]["app_conversation_color"]
+          created_at: string
+          id: string
+          label: string | null
+          pinned: boolean
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived?: boolean
+          color?: Database["public"]["Enums"]["app_conversation_color"]
+          created_at?: string
+          id?: string
+          label?: string | null
+          pinned?: boolean
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived?: boolean
+          color?: Database["public"]["Enums"]["app_conversation_color"]
+          created_at?: string
+          id?: string
+          label?: string | null
+          pinned?: boolean
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      credentials: {
+        Row: {
+          created_at: string
+          cred_type: string | null
+          host: string | null
+          id: string
+          password: string
+          url: string | null
+          user_id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          cred_type?: string | null
+          host?: string | null
+          id?: string
+          password: string
+          url?: string | null
+          user_id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          cred_type?: string | null
+          host?: string | null
+          id?: string
+          password?: string
+          url?: string | null
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          code_data: Json | null
+          content: string | null
+          conversation_id: string | null
+          created_at: string
+          credential: Json | null
+          file_data: Json | null
+          id: string
+          images: string[] | null
+          links: Json | null
+          tasks: Json | null
+          type: Database["public"]["Enums"]["app_message_type"]
+          user_id: string
+        }
+        Insert: {
+          code_data?: Json | null
+          content?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          credential?: Json | null
+          file_data?: Json | null
+          id?: string
+          images?: string[] | null
+          links?: Json | null
+          tasks?: Json | null
+          type: Database["public"]["Enums"]["app_message_type"]
+          user_id: string
+        }
+        Update: {
+          code_data?: Json | null
+          content?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          credential?: Json | null
+          file_data?: Json | null
+          id?: string
+          images?: string[] | null
+          links?: Json | null
+          tasks?: Json | null
+          type?: Database["public"]["Enums"]["app_message_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          completed: boolean
+          created_at: string
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +168,22 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_conversation_color:
+        | "none"
+        | "red"
+        | "orange"
+        | "yellow"
+        | "green"
+        | "blue"
+        | "purple"
+        | "pink"
+      app_message_type:
+        | "note"
+        | "tasks"
+        | "credentials"
+        | "links"
+        | "code"
+        | "file"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +310,25 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_conversation_color: [
+        "none",
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "purple",
+        "pink",
+      ],
+      app_message_type: [
+        "note",
+        "tasks",
+        "credentials",
+        "links",
+        "code",
+        "file",
+      ],
+    },
   },
 } as const
