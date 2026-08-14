@@ -22,10 +22,12 @@
 - [x] Task UX-01: Improve offline persistence for Firestore. (DONE)
 - [x] Task UX-02: Final RTL/LTR consistency check. (DONE)
 - [x] Task UX-03: Improved sidebar persistence and note resizing. (DONE)
+- [x] Task UI-01: Add Markdown support to MessageCard. (DONE)
 
 ## PHASE 06 — Feature Expansion & Hardening (Current)
 - [ ] Task SEC-03: Implement User-defined Master Password for Encryption.
-- [ ] Task UI-01: Add Markdown support to MessageCard.
+- [x] Task UI-01: Add Markdown support to MessageCard. (DONE)
+- [x] Task UI-02: Implement Pinned Notes within conversations. (DONE)
 - [ ] Task UI-02: Implement Pinned Notes within conversations.
 - [ ] Task AI-01: Smart Conversation Tagging via Gemini.
 

@@ -451,36 +451,38 @@ const ChatView: React.FC = () => {
     }
   };
 
-  const filteredMessages = messages.filter(m => {
-    if (filter !== 'all' && m.type !== filter) return false;
-    if (!searchQuery.trim()) return true;
-    
-    const query = searchQuery.toLowerCase();
-    
-    if (m.type === 'note' && m.content?.toLowerCase().includes(query)) return true;
-    if (m.type === 'tasks' && m.tasks?.some(t => t.text.toLowerCase().includes(query))) return true;
-    if (m.type === 'credentials') {
-      const cred = m.credential;
-      if (cred?.username.toLowerCase().includes(query)) return true;
-      if (cred?.host?.toLowerCase().includes(query)) return true;
-    }
-    if (m.type === 'links' && m.links?.some(l => 
-      l.title.toLowerCase().includes(query) || l.url.toLowerCase().includes(query)
-    )) return true;
-    if (m.type === 'code') {
-      const codeData = m.codeData;
-      if (codeData?.code?.toLowerCase().includes(query)) return true;
-      if (codeData?.explanation?.toLowerCase().includes(query)) return true;
-      if (codeData?.tags?.some(tag => tag.toLowerCase().includes(query))) return true;
-    }
-    if (m.type === 'file') {
-      const fileData = m.fileData;
-      if (fileData?.name?.toLowerCase().includes(query)) return true;
-      if (fileData?.content?.toLowerCase().includes(query)) return true;
-    }
-    
-    return false;
-  });
+  const filteredMessages = messages
+    .filter(m => {
+      if (filter !== 'all' && m.type !== filter) return false;
+      if (!searchQuery.trim()) return true;
+      
+      const query = searchQuery.toLowerCase();
+      
+      if (m.type === 'note' && m.content?.toLowerCase().includes(query)) return true;
+      if (m.type === 'tasks' && m.tasks?.some(t => t.text.toLowerCase().includes(query))) return true;
+      if (m.type === 'credentials') {
+        const cred = m.credential;
+        if (cred?.username?.toLowerCase().includes(query)) return true;
+        if (cred?.host?.toLowerCase().includes(query)) return true;
+        if (cred?.url?.toLowerCase().includes(query)) return true;
+      }
+      if (m.type === 'links' && m.links?.some(l => 
+        l.title.toLowerCase().includes(query) || l.url.toLowerCase().includes(query)
+      )) return true;
+      if (m.type === 'code') {
+        const cd = m.codeData;
+        if (cd?.code?.toLowerCase().includes(query)) return true;
+        if (cd?.explanation?.toLowerCase().includes(query)) return true;
+        if (cd?.tags?.some(tag => tag.toLowerCase().includes(query))) return true;
+      }
+      if (m.type === 'file' && m.fileData?.name?.toLowerCase().includes(query)) return true;
+      return false;
+    })
+    .sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
   const displayedMessages = filteredMessages.slice(0, displayCount);
   const hasMore = displayCount < filteredMessages.length;
