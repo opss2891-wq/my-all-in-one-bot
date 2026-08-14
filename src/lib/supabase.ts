@@ -107,9 +107,11 @@ export const getConversations = async (userId: string) => {
     .select('*')
     .eq('user_id', userId)
     .eq('archived', false)
+    .order('pinned', { ascending: false })
     .order('updated_at', { ascending: false });
   
   if (error) throw error;
+  
   return data.map(c => ({
     id: c.id,
     userId: c.user_id,
@@ -132,6 +134,7 @@ export const getArchivedConversations = async (userId: string) => {
     .order('updated_at', { ascending: false });
   
   if (error) throw error;
+  
   return data.map(c => ({
     id: c.id,
     userId: c.user_id,
@@ -145,46 +148,35 @@ export const getArchivedConversations = async (userId: string) => {
   })) as Conversation[];
 };
 
-export const updateConversation = async (id: string, data: Partial<Conversation>) => {
-  const mappedData: any = {};
-  if (data.title !== undefined) mappedData.title = data.title;
-  if (data.archived !== undefined) mappedData.archived = data.archived;
-  if (data.pinned !== undefined) mappedData.pinned = data.pinned;
-  if (data.color !== undefined) mappedData.color = data.color;
-  if (data.label !== undefined) mappedData.label = data.label;
-  
-  mappedData.updated_at = new Date().toISOString();
-
+export const updateConversation = async (id: string, updates: Partial<Conversation>) => {
   const { error } = await supabase
     .from('conversations')
-    .update(mappedData)
+    .update({
+      title: updates.title,
+      archived: updates.archived,
+      pinned: updates.pinned,
+      color: updates.color,
+      label: updates.label,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', id);
-  
   if (error) throw error;
 };
 
 export const archiveConversation = async (id: string) => {
-  await updateConversation(id, { archived: true });
+  const { error } = await supabase
+    .from('conversations')
+    .update({ archived: true, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
 };
 
 export const unarchiveConversation = async (id: string) => {
-  await updateConversation(id, { archived: false });
-};
-
-export const pinConversation = async (id: string) => {
-  await updateConversation(id, { pinned: true });
-};
-
-export const unpinConversation = async (id: string) => {
-  await updateConversation(id, { pinned: false });
-};
-
-export const setConversationColor = async (id: string, color: ConversationColor) => {
-  await updateConversation(id, { color });
-};
-
-export const setConversationLabel = async (id: string, label: string) => {
-  await updateConversation(id, { label });
+  const { error } = await supabase
+    .from('conversations')
+    .update({ archived: false, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
 };
 
 export const deleteConversation = async (id: string) => {
@@ -192,7 +184,38 @@ export const deleteConversation = async (id: string) => {
     .from('conversations')
     .delete()
     .eq('id', id);
-  
+  if (error) throw error;
+};
+
+export const pinConversation = async (id: string) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ pinned: true, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+};
+
+export const unpinConversation = async (id: string) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ pinned: false, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+};
+
+export const setConversationColor = async (id: string, color: ConversationColor) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ color, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+};
+
+export const setConversationLabel = async (id: string, label: string) => {
+  const { error } = await supabase
+    .from('conversations')
+    .update({ label, updated_at: new Date().toISOString() })
+    .eq('id', id);
   if (error) throw error;
 };
 
@@ -216,22 +239,19 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
     .single();
   
   if (error) throw error;
-  
+
   if (message.conversationId) {
     await supabase
       .from('conversations')
       .update({ updated_at: new Date().toISOString() })
       .eq('id', message.conversationId);
   }
-  
+
   return { id: data.id };
 };
 
 export const getMessages = async (userId: string, conversationId?: string) => {
-  let query = supabase
-    .from('messages')
-    .select('*')
-    .eq('user_id', userId);
+  let query = supabase.from('messages').select('*').eq('user_id', userId);
   
   if (conversationId) {
     query = query.eq('conversation_id', conversationId);
@@ -283,7 +303,6 @@ export const updateMessage = async (id: string, updates: Partial<Message>) => {
 };
 
 // Legacy Table Operations
-
 export const addTask = async (userId: string, title: string) => {
   const { data, error } = await supabase
     .from('tasks')
@@ -357,7 +376,7 @@ export const getCredentials = async (userId: string) => {
     password: c.password,
     host: c.host,
     url: c.url,
-    type: c.cred_type as Credential['type'],
+    type: c.cred_type as CredentialType,
     createdAt: c.created_at
   })) as Credential[];
 };
