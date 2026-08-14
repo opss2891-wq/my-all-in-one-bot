@@ -1,8 +1,8 @@
 # Implementation Plan: DataBot
 
 ## PHASE 01 — Foundation & Warnings
-- [ ] Task FOUND-01: Fix React Router future flags. (Finding: TECH-001)
-- [ ] Task FOUND-02: Move hardcoded keys to environment variables. (Finding: SEC-002)
+- [x] Task FOUND-01: Fix React Router future flags. (Finding: TECH-001)
+- [x] Task FOUND-02: Move hardcoded keys to environment variables. (Finding: SEC-002)
 
 ## PHASE 02 — Authentication & Identity
 - [ ] Task AUTH-01: Enable Firebase Authentication (Email/Password or Google).

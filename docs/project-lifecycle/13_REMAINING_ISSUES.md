@@ -7,7 +7,7 @@
 
 ## P1 - Critical
 - **REM-004**: Encrypt stored credentials.
-- **REM-005**: Move API keys to environment variables.
+- [x] **REM-005**: Move API keys to environment variables. (DONE)
 
 ## P2 - High
 - **REM-006**: Improve error handling for Gemini API failures.

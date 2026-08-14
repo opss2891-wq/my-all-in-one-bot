@@ -1,11 +1,15 @@
 // Gemini API helper for generating content
 const API_KEYS = [
-  'AIzaSyD7jSzV7S-XwRa8L90KVBxM08g7LSMDeGk',
-  'AIzaSyCTYH7rvcxwjemRqYO1_zy6fftpXtJ7x7s',
-  'AIzaSyCwYAwZIqKE_727iTqIbYWLBvrt8ebW-0k',
-  'AIzaSyC2uWuYocXExJfqQxeBaV90ZIvdx1EibCc',
-  'AIzaSyDa-Ad3iE6JwBMy5mg9me2vfXbrdI3bLQo',
-];
+  import.meta.env.VITE_GEMINI_API_KEY_1,
+  import.meta.env.VITE_GEMINI_API_KEY_2,
+  import.meta.env.VITE_GEMINI_API_KEY_3,
+  import.meta.env.VITE_GEMINI_API_KEY_4,
+  import.meta.env.VITE_GEMINI_API_KEY_5,
+].filter(Boolean);
+
+if (API_KEYS.length === 0) {
+  console.warn("Gemini API keys are missing. AI features will not work.");
+}
 
 let currentKeyIndex = 0;
 
