@@ -1,9 +1,12 @@
 # Changelog: DataBot
 
+## [1.0.2] - 2026-08-14
+### Added
+- P0: Firebase Authentication system (Email/Google).
+- `AuthContext` and `ProtectedRoute` for application security.
+- Login/Signup UI and Logout functionality.
+
 ## [1.0.1] - 2026-08-14
-### Fixed
-- P4: React Router future flags warnings in `src/App.tsx`.
-### Security
 - P1: Moved hardcoded Firebase and Gemini API keys to `.env` file (SEC-002).
 
 ## [1.0.0] - 2026-08-14

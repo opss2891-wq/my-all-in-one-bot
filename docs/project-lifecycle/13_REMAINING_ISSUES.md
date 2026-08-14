@@ -1,7 +1,7 @@
 # Remaining Issues: DataBot
 
 ## P0 - Launch Blockers
-- **REM-001**: Implement User Authentication.
+- [x] **REM-001**: Implement User Authentication. (DONE)
 - **REM-002**: Scoping all database queries to the authenticated user.
 - **REM-003**: Implement Firestore Security Rules.
 

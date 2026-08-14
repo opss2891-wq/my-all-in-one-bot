@@ -8,8 +8,8 @@
 - **Impact**: Unauthorized usage of API quotas and access to Firebase project.
 - **Fix**: Move to environment variables.
 
-### SEC-VULN-002: Lack of Authentication (P0)
-- **Status**: OPEN
+### SEC-VULN-002: Lack of Authentication (VERIFIED)
+- **Status**: CLOSED (2026-08-14)
 - **Description**: No user authentication system exists.
 - **Impact**: All data is public to anyone with the app URL.
 - **Fix**: Implement Firebase Auth.

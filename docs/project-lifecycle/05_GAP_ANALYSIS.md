@@ -2,7 +2,7 @@
 
 ## Findings
 
-### SEC-001: Missing User Isolation (P0 - Launch Blocker)
+### SEC-001: Missing User Isolation (P0 - IN PROGRESS)
 - **Problem**: All users share the same Firestore collections. Any visitor can see, edit, or delete any other user's data.
 - **Root Cause**: No authentication or user-scoped queries.
 - **Evidence**: `src/lib/firebase.ts` queries collections without `where('userId', '==', ...)` clauses.
