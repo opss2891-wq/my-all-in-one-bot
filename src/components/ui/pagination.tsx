@@ -1,17 +1,21 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 import { cn } from "@/lib/utils";
 import { ButtonProps, buttonVariants } from "@/components/ui/button";
 
-const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
-  <nav
-    role="navigation"
-    aria-label="pagination"
-    className={cn("mx-auto flex w-full justify-center", className)}
-    {...props}
-  />
-);
+const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => {
+  const { t } = useLanguage();
+  return (
+    <nav
+      role="navigation"
+      aria-label={t('pagination')}
+      className={cn("mx-auto flex w-full justify-center", className)}
+      {...props}
+    />
+  );
+};
 Pagination.displayName = "Pagination";
 
 const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProps<"ul">>(

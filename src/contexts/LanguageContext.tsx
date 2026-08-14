@@ -112,6 +112,12 @@ const translations: Record<Language, Translations> = {
     previous: 'Previous',
     next: 'Next',
     add: 'Add',
+    imagePreview: 'Image Preview',
+    pagination: 'Pagination',
+    breadcrumb: 'Breadcrumb',
+    toggleSidebar: 'Toggle Sidebar',
+    goToPreviousPage: 'Go to previous page',
+    goToNextPage: 'Go to next page',
     
     // Navigation
     all: 'All',
