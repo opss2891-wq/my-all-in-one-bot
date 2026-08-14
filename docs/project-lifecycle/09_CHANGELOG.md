@@ -1,5 +1,10 @@
 # Changelog: DataBot
 
+## [1.0.6] - 2026-08-14
+### Security
+- SEC-02: Audited and sanitized AI prompts in `src/lib/gemini.ts` to prevent leakage of sensitive metadata.
+- Verified and closed remaining security findings for Phase 04.
+
 ## [1.0.5] - 2026-08-14
 ### Security
 - P1: Client-side AES encryption for all stored credentials (SEC-003).

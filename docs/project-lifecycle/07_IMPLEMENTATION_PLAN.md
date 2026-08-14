@@ -16,7 +16,7 @@
 
 ## PHASE 04 — Security Hardening
 - [x] Task SEC-01: Implement client-side encryption for the Credentials module. (DONE)
-- [ ] Task SEC-02: Audit and sanitize all AI prompts to prevent leakage.
+- [x] Task SEC-02: Audit and sanitize all AI prompts to prevent leakage. (DONE)
 
 ## PHASE 05 — UX & Refinement
 - [ ] Task UX-01: Improve offline persistence for Firestore.

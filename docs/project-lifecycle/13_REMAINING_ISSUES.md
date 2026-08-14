@@ -2,11 +2,11 @@
 
 ## P0 - Launch Blockers
 - [x] **REM-001**: Implement User Authentication. (DONE)
-- **REM-002**: Scoping all database queries to the authenticated user.
-- **REM-003**: Implement Firestore Security Rules.
+- [x] **REM-002**: Scoping all database queries to the authenticated user. (DONE)
+- [x] **REM-003**: Implement Firestore Security Rules. (DONE)
 
 ## P1 - Critical
-- **REM-004**: Encrypt stored credentials.
+- [x] **REM-004**: Encrypt stored credentials. (DONE)
 - [x] **REM-005**: Move API keys to environment variables. (DONE)
 
 ## P2 - High
