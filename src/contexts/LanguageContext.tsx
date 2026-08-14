@@ -13,6 +13,15 @@ const translations: Record<Language, Translations> = {
     personalStorage: 'تخزين البيانات الشخصية',
     loading: 'جاري التحميل...',
     search: 'بحث...',
+    previous: 'السابق',
+    next: 'التالي',
+    add: 'إضافة',
+    imagePreview: 'معاينة الصورة',
+    pagination: 'التنقل بين الصفحات',
+    breadcrumb: 'مسار التنقل',
+    toggleSidebar: 'تبديل القائمة الجانبية',
+    goToPreviousPage: 'الذهاب للصفحة السابقة',
+    goToNextPage: 'الذهاب للصفحة التالية',
     
     // Navigation
     all: 'الكل',
@@ -55,6 +64,8 @@ const translations: Record<Language, Translations> = {
     addCredentials: 'user:pass@host أو user:pass',
     addLinks: 'أضف روابط (سطر لكل رابط)...',
     send: 'إرسال',
+    chooseFile: 'اختر ملف (txt, doc, docx, xls, xlsx, csv)',
+    addImageTooltip: 'إضافة صورة (أو Ctrl+V)',
     
     // Card actions
     note: 'ملاحظة',
@@ -70,8 +81,30 @@ const translations: Record<Language, Translations> = {
     explanation: 'الشرح',
     tags: 'التصنيفات',
     addCode: 'أضف كود...',
+    addNewTask: 'إضافة مهمة جديدة',
+    taskPlaceholder: 'اكتب المهمة الجديدة...',
     
-    // Context menu
+    // Credentials labels
+    userLabel: 'مستخدم',
+    passLabel: 'كلمة سر',
+    hostLabel: 'مضيف',
+    portLabel: 'منفذ',
+    urlLabel: 'رابط',
+
+    // Settings
+    settings: 'الإعدادات',
+    apiKeys: 'مفاتيح API',
+    customCss: 'تنسيقات CSS',
+    addApiKeyPlaceholder: 'أدخل مفتاح API جديد...',
+    checkAllKeys: 'التحقق من جميع المفاتيح',
+    noKeys: 'لا توجد مفاتيح مضافة',
+    apiKeyInfo: 'سيتم استخدام المفاتيح بالتناوب. إذا فشل مفتاح سينتقل تلقائياً للمفتاح التالي.',
+    keyAddedSuccess: 'تم إضافة المفتاح بنجاح',
+    keyAddedInvalid: 'المفتاح غير صالح ولكن تم إضافته',
+    keyDeleted: 'تم حذف المفتاح',
+    keyExistsError: 'المفتاح موجود مسبقاً أو فارغ',
+
+    // Context Menu
     quickMenu: 'القائمة السريعة',
     toggleSidebar: 'إظهار/إخفاء القائمة الجانبية',
     toggleHeader: 'إظهار/إخفاء الهيدر',
@@ -79,6 +112,9 @@ const translations: Record<Language, Translations> = {
     copyAll: 'نسخ الكل',
     editCard: 'تعديل',
     deleteCard: 'حذف',
+    menuNavigation: 'التنقل بين المحادثات',
+    menuControls: 'التحكم',
+    menuFilters: 'الفلاتر',
     
     // Theme
     darkMode: 'الوضع المظلم',
@@ -101,6 +137,7 @@ const translations: Record<Language, Translations> = {
     addedSuccess: 'تمت الإضافة بنجاح',
     deletedSuccess: 'تم الحذف',
     nameUpdated: 'تم تحديث الاسم',
+    imageAdded: 'تم إضافة الصورة بنجاح',
     error: 'حدث خطأ',
   },
   en: {
