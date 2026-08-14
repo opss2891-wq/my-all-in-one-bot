@@ -93,6 +93,9 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   onToggleArchived,
   onClose,
 }) => {
+  // Add a ref or ID to the main div
+  const sidebarId = "conversation-sidebar";
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -255,7 +258,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                 )}
                 onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
               >
-                <div className={cn(
+                <div id={sidebarId} className={cn(
                   "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative",
                   currentConversationId === conv.id ? "bg-primary/20" : "bg-muted"
                 )}>
@@ -351,7 +354,15 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                 </div>
 
                 {!editingId && !labelEditId && (
-                  <DropdownMenu>
+                  <DropdownMenu onOpenChange={(open) => {
+                    // Prevent sidebar from closing when dropdown is open on mobile/responsive
+                    if (open) {
+                      // We can add a data attribute or class to the sidebar to indicate a dropdown is open
+                      document.getElementById('conversation-sidebar')?.classList.add('dropdown-open');
+                    } else {
+                      document.getElementById('conversation-sidebar')?.classList.remove('dropdown-open');
+                    }
+                  }}>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
                       <button className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
