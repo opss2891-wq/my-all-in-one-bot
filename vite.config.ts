@@ -22,8 +22,5 @@ export default defineConfig({
         manualChunks: undefined
       }
     }
-  },
-  optimizeDeps: {
-    entries: ['src/main.tsx']
   }
 });
