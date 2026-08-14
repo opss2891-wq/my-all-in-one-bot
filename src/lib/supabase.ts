@@ -47,6 +47,7 @@ export interface Message {
   conversationId?: string;
   type: MessageType;
   content?: string;
+  pinned?: boolean;
   tasks?: TaskItem[];
   credential?: CredentialData;
   links?: LinkItem[];

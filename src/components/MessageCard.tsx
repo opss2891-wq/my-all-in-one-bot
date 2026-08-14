@@ -5,6 +5,8 @@ import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
 import HighlightText from './HighlightText';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -248,11 +250,11 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 !noteHeight && !isExpanded && "max-h-[150px]"
               )}
             >
-              <HighlightText 
-                text={content} 
-                searchQuery={searchQuery}
-                className="text-foreground whitespace-pre-wrap block text-sm md:text-base leading-relaxed"
-              />
+              <div className="text-foreground text-sm md:text-base leading-relaxed markdown-content">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {content}
+                </ReactMarkdown>
+              </div>
             </div>
             
             {/* Resize handle */}
