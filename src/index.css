@@ -132,10 +132,17 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Cairo', 'Tajawal', sans-serif;
+    @apply bg-background text-foreground antialiased;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none;
+  }
+
+  html[lang="ar"] body, [dir="rtl"] body {
+    font-family: 'Cairo', sans-serif;
+  }
+
+  html[lang="en"] body, [dir="ltr"] body {
+    font-family: 'Inter', 'sans-serif';
   }
 
   code, .font-mono {
