@@ -134,4 +134,11 @@ export const en = {
   demoDataAdded: 'Demo data added successfully',
   demoDataDeleted: 'Demo data deleted successfully',
   demoDataInfo: 'This will add a new conversation with examples of all note types to explore the app.',
+  demoConversationName: 'Demo Conversation (DataBot)',
+  demoWelcomeContent: '# Welcome to DataBot!\n\nThis is a **Markdown** note. You can use:\n- *Italic*\n- **Bold**\n- [Links](https://google.com)\n- `Inline code`',
+  demoTask1: 'Explore DataBot features',
+  demoTask2: 'Add your first note',
+  demoTask3: 'Configure API keys',
+  demoTask4: 'Try Markdown formatting',
+  demoCodeExplanation: 'A simple JavaScript function to print a welcome message.',
 };

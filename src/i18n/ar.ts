@@ -134,4 +134,11 @@ export const ar = {
   demoDataAdded: 'تم إضافة البيانات التجريبية بنجاح',
   demoDataDeleted: 'تم حذف البيانات التجريبية بنجاح',
   demoDataInfo: 'هذا سيضيف محادثة جديدة تحتوي على أمثلة لكل أنواع الملاحظات لتجربة التطبيق.',
+  demoConversationName: 'محادثة تجريبية (داتا بوت)',
+  demoWelcomeContent: '# أهلاً بك في داتا بوت!\n\nهذه ملاحظة بتنسيق **Markdown**. يمكنك استخدام:\n- *مائل*\n- **عريض**\n- [روابط](https://google.com)\n- `كود داخلي`',
+  demoTask1: 'استكشاف مميزات داتا بوت',
+  demoTask2: 'إضافة أول ملاحظة لك',
+  demoTask3: 'تكوين مفاتيح API',
+  demoTask4: 'تجربة تنسيق Markdown',
+  demoCodeExplanation: 'دالة JavaScript بسيطة لطباعة رسالة ترحيب.',
 };
