@@ -11,6 +11,8 @@ export const en = {
   pagination: 'Pagination',
   breadcrumb: 'Breadcrumb',
   toggleSidebar: 'Toggle Sidebar',
+  showSidebar: 'Show Sidebar',
+  hideSidebar: 'Hide Sidebar',
   goToPreviousPage: 'Go to previous page',
   goToNextPage: 'Go to next page',
   
@@ -113,8 +115,9 @@ export const en = {
   editCard: 'Edit',
   deleteCard: 'Delete',
   menuNavigation: 'Conversation Navigation',
-  menuControls: 'Controls',
-  menuFilters: 'Filters',
+  menuControls: 'UI Controls',
+  menuFilters: 'Content Filters',
+  toggleHeader: 'Toggle Header Visibility',
 
   // Theme
   darkMode: 'Dark Mode',
