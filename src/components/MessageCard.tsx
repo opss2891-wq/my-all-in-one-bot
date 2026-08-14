@@ -139,6 +139,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const [showPassword, setShowPassword] = useState(false);
   const { t, language } = useLanguage();
 
+  const credential = message.credential ? {
+    ...message.credential,
+    username: decryptData(message.credential.username),
+    password: decryptData(message.credential.password),
+    host: message.credential.host ? decryptData(message.credential.host) : '',
+    url: message.credential.url ? decryptData(message.credential.url) : '',
+  } : undefined;
+
+
   const copyToClipboard = (text: string, label: string = 'Text') => {
     navigator.clipboard.writeText(text);
     playCopySound();
@@ -297,7 +306,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         );
 
       case 'credentials':
-        const cred = message.credential;
+        const cred = credential;
         if (!cred) return null;
         return (
           <div className="space-y-2 font-mono text-sm">
