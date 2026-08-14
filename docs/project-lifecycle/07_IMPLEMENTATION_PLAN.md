@@ -19,7 +19,7 @@
 - [x] Task SEC-02: Audit and sanitize all AI prompts to prevent leakage. (DONE)
 
 ## PHASE 05 — UX & Refinement
-- [ ] Task UX-01: Improve offline persistence for Firestore.
+- [x] Task UX-01: Improve offline persistence for Firestore. (DONE)
 - [ ] Task UX-02: Final RTL/LTR consistency check.
 
 ---

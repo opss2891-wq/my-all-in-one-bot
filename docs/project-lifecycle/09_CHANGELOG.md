@@ -1,5 +1,10 @@
 # Changelog: DataBot
 
+## [1.0.7] - 2026-08-14
+### UX & Offline
+- UX-01: Enabled `enableMultiTabIndexedDbPersistence` for Firestore to allow offline usage across multiple tabs.
+- Improved data availability when the device is disconnected from the network.
+
 ## [1.0.6] - 2026-08-14
 ### Security
 - SEC-02: Audited and sanitized AI prompts in `src/lib/gemini.ts` to prevent leakage of sensitive metadata.
