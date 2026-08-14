@@ -9,7 +9,7 @@
 - **User Impact**: Complete loss of privacy.
 - **Recommended Solution**: Implement Firebase Authentication and update all Firestore queries to include `userId`.
 
-### SEC-002: Hardcoded API Keys in Frontend (P1 - Critical)
+### SEC-002: Hardcoded API Keys in Frontend (VERIFIED)
 - **Problem**: Gemini API keys and Firebase config are exposed in the client-side code.
 - **Root Cause**: Keys are hardcoded in `src/lib/gemini.ts` and `src/lib/firebase.ts`.
 - **Evidence**: `API_KEYS` array in `gemini.ts`.

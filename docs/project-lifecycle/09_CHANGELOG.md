@@ -1,12 +1,14 @@
 # Changelog: DataBot
 
-## [2026-08-14] - Phase 01 Start
+## [1.0.1] - 2026-08-14
+### Fixed
+- P4: React Router future flags warnings in `src/App.tsx`.
+### Security
+- P1: Moved hardcoded Firebase and Gemini API keys to `.env` file (SEC-002).
 
+## [1.0.0] - 2026-08-14
 ### Added
-- **Project Documentation Layer**: Created `docs/project-lifecycle/` with initial audit, architecture, module inventory, gap analysis, and implementation plan files.
-
-### Changed
-- **React Router Configuration**: Added `v7_startTransition` and `v7_relativeSplatPath` future flags to `BrowserRouter` in `src/App.tsx` to resolve console warnings.
-
----
-*Maintained during implementation.*
+- Initial project structure and documentation in `docs/project-lifecycle/`.
+- Logical modules (Conversations, Messages, Credentials).
+- Gemini AI integration for metadata parsing.
+- PWA support.
