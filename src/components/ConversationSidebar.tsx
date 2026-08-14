@@ -401,7 +401,10 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                           {colors.map((color) => (
                             <DropdownMenuItem
                               key={color}
-                              onClick={() => onSetColor(conv.id!, color)}
+                              onSelect={(e) => {
+                                e.preventDefault();
+                                onSetColor(conv.id!, color);
+                              }}
                               className="gap-2"
                             >
                               <span className={cn("w-4 h-4 rounded-full", colorDots[color])} />
@@ -413,7 +416,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                       
                       {/* Label */}
                       <DropdownMenuItem 
-                        onClick={() => {
+                        onSelect={() => {
                           setLabelEditId(conv.id!);
                           setLabelValue(conv.label || '');
                         }} 
@@ -435,7 +438,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem 
-                        onClick={() => onDeleteConversation(conv.id!)}
+                        onSelect={() => onDeleteConversation(conv.id!)}
                         className="text-destructive focus:text-destructive gap-2"
                       >
                         <Trash2 className="w-4 h-4" />
