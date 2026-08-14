@@ -49,7 +49,7 @@ const AddTaskInput: React.FC<{ messageId: string; onUpdate: () => void }> = ({ m
         className="flex items-center gap-2 p-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl transition-all w-full"
       >
         <Plus className="w-4 h-4" />
-        <span>إضافة مهمة جديدة</span>
+        <span>{t('addNewTask')}</span>
       </button>
     );
   }
@@ -61,7 +61,7 @@ const AddTaskInput: React.FC<{ messageId: string; onUpdate: () => void }> = ({ m
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
-        placeholder="اكتب المهمة الجديدة..."
+        placeholder={t('taskPlaceholder')}
         className="flex-1 px-3 py-2 text-sm bg-muted/50 border border-warning/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-warning/30"
         autoFocus
       />
@@ -319,7 +319,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             
             {/* Username */}
             <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
-              <span className="text-muted-foreground text-xs min-w-[60px]">User</span>
+              <span className="text-muted-foreground text-xs min-w-[60px]">{t('userLabel')}</span>
               <div className="flex items-center gap-2 flex-1 justify-end">
                 <span className="text-foreground truncate max-w-[180px]">{cred.username}</span>
                 <button 
@@ -333,7 +333,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             
             {/* Password */}
             <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
-              <span className="text-muted-foreground text-xs min-w-[60px]">Pass</span>
+              <span className="text-muted-foreground text-xs min-w-[60px]">{t('passLabel')}</span>
               <div className="flex items-center gap-2 flex-1 justify-end">
                 <span className="text-foreground font-mono">
                   {showPassword ? cred.password : '••••••••'}
@@ -356,7 +356,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             {/* Host */}
             {cred.host && (
               <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
-                <span className="text-muted-foreground text-xs min-w-[60px]">Host</span>
+                <span className="text-muted-foreground text-xs min-w-[60px]">{t('hostLabel')}</span>
                 <div className="flex items-center gap-2 flex-1 justify-end">
                   <span className="text-foreground truncate max-w-[180px]">{cred.host}</span>
                   <button 
@@ -372,7 +372,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             {/* Port */}
             {cred.port && (
               <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
-                <span className="text-muted-foreground text-xs min-w-[60px]">Port</span>
+                <span className="text-muted-foreground text-xs min-w-[60px]">{t('portLabel')}</span>
                 <div className="flex items-center gap-2 flex-1 justify-end">
                   <span className="text-foreground">{cred.port}</span>
                   <button 
@@ -388,7 +388,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             {/* URL */}
             {cred.url && (
               <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
-                <span className="text-muted-foreground text-xs min-w-[60px]">URL</span>
+                <span className="text-muted-foreground text-xs min-w-[60px]">{t('urlLabel')}</span>
                 <div className="flex items-center gap-2 flex-1 justify-end">
                   <a 
                     href={cred.url} 
