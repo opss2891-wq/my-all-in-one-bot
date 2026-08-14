@@ -1,9 +1,14 @@
 # Changelog: DataBot
 
+## [1.0.4] - 2026-08-14
+### Security
+- P0: Full Data Isolation (Backend + Frontend).
+- Implemented `firestore.rules` (RLS) to enforce user-level data ownership at the database level.
+- Finalized all logic migration in `src/lib/firebase.ts` and UI components.
+
 ## [1.0.3] - 2026-08-14
 ### Security
 - P0: Logical Data Isolation. All CRUD operations now scoped to `userId` (SEC-001).
-- Updated `ChatView`, `NotesSection`, `TasksSection`, and `CredentialsSection` to support authenticated user context.
 
 ## [1.0.2] - 2026-08-14
 ### Added
