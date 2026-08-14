@@ -109,6 +109,9 @@ const translations: Record<Language, Translations> = {
     personalStorage: 'Personal Data Storage',
     loading: 'Loading...',
     search: 'Search...',
+    previous: 'Previous',
+    next: 'Next',
+    add: 'Add',
     
     // Navigation
     all: 'All',
@@ -151,6 +154,8 @@ const translations: Record<Language, Translations> = {
     addCredentials: 'user:pass@host or user:pass',
     addLinks: 'Add links (one per line)...',
     send: 'Send',
+    chooseFile: 'Choose file (txt, doc, docx, xls, xlsx, csv)',
+    addImageTooltip: 'Add image (or Ctrl+V)',
     
     // Card actions
     note: 'Note',
@@ -166,8 +171,30 @@ const translations: Record<Language, Translations> = {
     explanation: 'Explanation',
     tags: 'Tags',
     addCode: 'Add code...',
+    addNewTask: 'Add new task',
+    taskPlaceholder: 'Type new task...',
     
-    // Context menu
+    // Credentials labels
+    userLabel: 'User',
+    passLabel: 'Pass',
+    hostLabel: 'Host',
+    portLabel: 'Port',
+    urlLabel: 'URL',
+
+    // Settings
+    settings: 'Settings',
+    apiKeys: 'API Keys',
+    customCss: 'Custom CSS',
+    addApiKeyPlaceholder: 'Enter new API key...',
+    checkAllKeys: 'Check all keys',
+    noKeys: 'No keys added',
+    apiKeyInfo: 'Keys will be used in rotation. If a key fails, it will automatically skip to the next.',
+    keyAddedSuccess: 'Key added successfully',
+    keyAddedInvalid: 'Key is invalid but added',
+    keyDeleted: 'Key deleted',
+    keyExistsError: 'Key already exists or is empty',
+
+    // Context Menu
     quickMenu: 'Quick Menu',
     toggleSidebar: 'Toggle Sidebar',
     toggleHeader: 'Toggle Header',
@@ -175,7 +202,10 @@ const translations: Record<Language, Translations> = {
     copyAll: 'Copy All',
     editCard: 'Edit',
     deleteCard: 'Delete',
-    
+    menuNavigation: 'Conversation Navigation',
+    menuControls: 'Controls',
+    menuFilters: 'Filters',
+
     // Theme
     darkMode: 'Dark Mode',
     lightMode: 'Light Mode',
@@ -197,6 +227,7 @@ const translations: Record<Language, Translations> = {
     addedSuccess: 'Added successfully',
     deletedSuccess: 'Deleted',
     nameUpdated: 'Name updated',
+    imageAdded: 'Image added successfully',
     error: 'An error occurred',
   }
 };
