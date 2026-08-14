@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-
-const App = () => <div>Minimal App</div>;
+import App from "./App.tsx";
+import "./index.css";
 
 createRoot(document.getElementById("root")!).render(<App />);

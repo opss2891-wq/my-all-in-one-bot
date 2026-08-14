@@ -14,6 +14,13 @@ export default defineConfig({
     },
   },
   build: {
-    target: 'esnext'
+    target: 'esnext',
+    minify: false,
+    cssMinify: false,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   }
 });
