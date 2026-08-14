@@ -12,39 +12,8 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    VitePWA({
-      registerType: "autoUpdate",
-      includeAssets: ["icon-192.svg", "icon-512.svg"],
-      manifest: {
-        name: "DataBot - مخزن البيانات",
-        short_name: "DataBot",
-        description: "مخزن بياناتك الشخصي - ملاحظات، مهام، كلمات مرور",
-        theme_color: "#14b8a6",
-        background_color: "#13161b",
-        display: "standalone",
-        orientation: "portrait",
-        start_url: "/",
-        icons: [
-          {
-            src: "icon-192.svg",
-            sizes: "192x192",
-            type: "image/svg+xml",
-            purpose: "any maskable",
-          },
-          {
-            src: "icon-512.svg",
-            sizes: "512x512",
-            type: "image/svg+xml",
-            purpose: "any maskable",
-          },
-        ],
-      },
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        maximumFileSizeToCacheInBytes: 3000000,
-      },
-      selfDestroying: true
-    }),
+    // VitePWA disabled temporarily to fix build environment error
+    // VitePWA({ ... }),
   ].filter(Boolean),
   resolve: {
     alias: {
