@@ -135,8 +135,8 @@ const ChatView: React.FC = () => {
     if (!user) return;
     try {
       const [convs, archived] = await Promise.all([
-        getConversations(user.uid),
-        getArchivedConversations(user.uid)
+        getConversations(user.id),
+        getArchivedConversations(user.id)
       ]);
       setConversations(convs);
       setArchivedConversations(archived);

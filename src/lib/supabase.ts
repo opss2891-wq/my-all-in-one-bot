@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { 
   Conversation, 
@@ -7,13 +6,34 @@ import {
   MessageType,
   Task,
   Credential,
-  CredentialType
-} from './firebase'; // Reuse types for simplicity or define locally
+  CredentialType,
+  TaskItem,
+  LinkItem,
+  CredentialData,
+  CodeData,
+  FileData
+} from './firebase'; 
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Re-export types from firebase to ensure they are available
+export type { 
+  Conversation, 
+  ConversationColor, 
+  Message, 
+  MessageType,
+  Task,
+  Credential,
+  CredentialType,
+  TaskItem,
+  LinkItem,
+  CredentialData,
+  CodeData,
+  FileData 
+};
 
 // Conversation operations
 export const createConversation = async (userId: string, title: string = 'New Conversation') => {
