@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Key, Eye, EyeOff, Copy, Loader2, Edit2, Check, X } from 'lucide-react';
 import { addCredential, getCredentials, deleteCredential, updateCredential, Credential, CredentialType } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const credentialTypes: { value: CredentialType; label: string }[] = [
   { value: 'hosting', label: 'Hosting' },
@@ -30,6 +31,7 @@ const CredentialsSection: React.FC = () => {
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -51,12 +53,13 @@ const CredentialsSection: React.FC = () => {
   });
 
   useEffect(() => {
-    loadCredentials();
-  }, []);
+    if (user) loadCredentials();
+  }, [user]);
 
   const loadCredentials = async () => {
+    if (!user) return;
     try {
-      const data = await getCredentials();
+      const data = await getCredentials(user.uid);
       setCredentials(data);
     } catch (error) {
       toast({ title: 'Error loading credentials', variant: 'destructive' });
@@ -66,10 +69,10 @@ const CredentialsSection: React.FC = () => {
   };
 
   const handleAddCredential = async () => {
-    if (!form.username || !form.password) return;
+    if (!form.username || !form.password || !user) return;
     setAdding(true);
     try {
-      await addCredential(form);
+      await addCredential(user.uid, form);
       setForm({ username: '', password: '', host: '', url: '', port: '', type: 'hosting' });
       setShowForm(false);
       await loadCredentials();

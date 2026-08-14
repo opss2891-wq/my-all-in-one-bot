@@ -1,5 +1,10 @@
 # Changelog: DataBot
 
+## [1.0.3] - 2026-08-14
+### Security
+- P0: Logical Data Isolation. All CRUD operations now scoped to `userId` (SEC-001).
+- Updated `ChatView`, `NotesSection`, `TasksSection`, and `CredentialsSection` to support authenticated user context.
+
 ## [1.0.2] - 2026-08-14
 ### Added
 - P0: Firebase Authentication system (Email/Google).

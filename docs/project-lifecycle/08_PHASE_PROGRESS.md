@@ -4,7 +4,7 @@
 |-------|------|--------|----------|
 | 01 | Foundation & Warnings | VERIFIED | 100% |
 | 02 | Authentication & Identity | VERIFIED | 100% |
-| 03 | Data Isolation | NOT_STARTED | 0% |
+| 03 | Data Isolation | PARTIAL | 60% |
 | 04 | Security Hardening | NOT_STARTED | 0% |
 | 05 | UX & Refinement | NOT_STARTED | 0% |
 
