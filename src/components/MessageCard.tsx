@@ -217,7 +217,6 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'links': return t('links');
       case 'code': return t('code');
       case 'file': return t('file') || 'ملف';
-      case 'pinned': return t('pinned') || 'مثبت';
       default: return '';
     }
   };
