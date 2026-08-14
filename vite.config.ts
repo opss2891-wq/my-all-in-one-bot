@@ -17,15 +17,4 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: {
-    target: "esnext",
-    minify: false,
-    cssCodeSplit: false,
-    rollupOptions: {
-      output: {
-        format: 'es',
-        inlineDynamicImports: true
-      }
-    }
-  }
 }));

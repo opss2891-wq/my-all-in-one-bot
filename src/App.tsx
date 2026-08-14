@@ -16,9 +16,9 @@ import { enableOfflinePersistence } from "./lib/firebase";
 const queryClient = new QueryClient();
 
 const App = () => {
-  /* useEffect(() => {
+  useEffect(() => {
     enableOfflinePersistence();
-  }, []); */
+  }, []);
 
   return (
   <QueryClientProvider client={queryClient}>
