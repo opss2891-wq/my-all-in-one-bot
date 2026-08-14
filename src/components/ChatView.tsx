@@ -4,10 +4,12 @@ import {
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, ConversationColor, getConversations, getArchivedConversations, createConversation, 
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation,
-  pinConversation, unpinConversation, setConversationColor, setConversationLabel
+  pinConversation, unpinConversation, setConversationColor, setConversationLabel,
+  searchAllMessages
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { generateLinkTitle, explainCode } from '@/lib/gemini';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Simple language detection for code
 const detectCodeLanguage = (code: string): string => {
@@ -380,7 +382,7 @@ const ChatView: React.FC = () => {
   };
 
   const handleSend = async (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }, images?: string[]) => {
-    if (!currentConversationId) {
+    if (!currentConversationId || !user) {
       toast({ title: t('error'), variant: 'destructive' });
       return;
     }
@@ -394,7 +396,7 @@ const ChatView: React.FC = () => {
           size: file.size,
           content: file.content
         };
-        await addMessage({ 
+        await addMessage(user.uid, { 
           type: 'file',
           fileData,
           conversationId: currentConversationId 
@@ -405,10 +407,10 @@ const ChatView: React.FC = () => {
         if (type === 'note' && images && images.length > 0) {
           (messageData as Partial<Message>).images = images;
         }
-        await addMessage({ 
+        await addMessage(user.uid, { 
           ...messageData, 
           conversationId: currentConversationId 
-        } as Omit<Message, 'id' | 'createdAt'>);
+        } as Omit<Message, 'id' | 'createdAt' | 'userId'>);
       }
       await loadMessages();
       await loadConversations();
