@@ -10,7 +10,6 @@ const TasksSection: React.FC = () => {
   const [newTask, setNewTask] = useState('');
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
-  const { user } = useAuth();
   const audioContextRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
