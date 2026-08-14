@@ -1,0 +1,131 @@
+export const en = {
+  // General
+  appName: 'DataBot',
+  personalStorage: 'Personal Data Storage',
+  loading: 'Loading...',
+  search: 'Search...',
+  previous: 'Previous',
+  next: 'Next',
+  add: 'Add',
+  imagePreview: 'Image Preview',
+  pagination: 'Pagination',
+  breadcrumb: 'Breadcrumb',
+  toggleSidebar: 'Toggle Sidebar',
+  goToPreviousPage: 'Go to previous page',
+  goToNextPage: 'Go to next page',
+  
+  // Navigation
+  all: 'All',
+  notes: 'Notes',
+  tasks: 'Tasks',
+  credentials: 'Credentials',
+  links: 'Links',
+  chats: 'Chats',
+  
+  // Conversations
+  conversations: 'Conversations',
+  newConversation: 'New Conversation',
+  archive: 'Archive',
+  archived: 'Archived',
+  rename: 'Rename',
+  unarchive: 'Unarchive',
+  delete: 'Delete',
+  pin: 'Pin',
+  unpin: 'Unpin',
+  noConversations: 'No conversations',
+  noArchivedConversations: 'No archived conversations',
+  setColor: 'Set Color',
+  setLabel: 'Set Label',
+  noColor: 'No Color',
+  globalSearch: 'Global Search',
+  searchAll: 'Search all conversations...',
+  foundIn: 'Found in',
+  file: 'File',
+  
+  // Messages
+  noMessages: 'No messages yet',
+  noResults: 'No results found',
+  tryDifferent: 'Try different search terms',
+  startAdding: 'Start by adding a note, tasks, or links',
+  scrollMore: 'Scroll down to load more...',
+  
+  // Input
+  addNote: 'Add a note...',
+  addTasks: 'Add tasks (one per line)...',
+  addCredentials: 'user:pass@host or user:pass',
+  addLinks: 'Add links (one per line)...',
+  send: 'Send',
+  chooseFile: 'Choose file (txt, doc, docx, xls, xlsx, csv)',
+  addImageTooltip: 'Add image (or Ctrl+V)',
+  
+  // Card actions
+  note: 'Note',
+  task: 'Task',
+  credential: 'Credential',
+  link: 'Link',
+  code: 'Code',
+  copy: 'Copy',
+  copied: 'Copied!',
+  username: 'Username',
+  password: 'Password',
+  host: 'Host',
+  explanation: 'Explanation',
+  tags: 'Tags',
+  addCode: 'Add code...',
+  addNewTask: 'Add new task',
+  taskPlaceholder: 'Type new task...',
+  
+  // Credentials labels
+  userLabel: 'User',
+  passLabel: 'Pass',
+  hostLabel: 'Host',
+  portLabel: 'Port',
+  urlLabel: 'URL',
+
+  // Settings
+  settings: 'Settings',
+  apiKeys: 'API Keys',
+  customCss: 'Custom CSS',
+  addApiKeyPlaceholder: 'Enter new API key...',
+  checkAllKeys: 'Check all keys',
+  noKeys: 'No keys added',
+  apiKeyInfo: 'Keys will be used in rotation. If a key fails, it will automatically skip to the next.',
+  keyAddedSuccess: 'Key added successfully',
+  keyAddedInvalid: 'Key is invalid but added',
+  keyDeleted: 'Key deleted',
+  keyExistsError: 'Key already exists or is empty',
+
+  // Context Menu
+  quickMenu: 'Quick Menu',
+  changeLanguage: 'Change Language',
+  copyAll: 'Copy All',
+  editCard: 'Edit',
+  deleteCard: 'Delete',
+  menuNavigation: 'Conversation Navigation',
+  menuControls: 'Controls',
+  menuFilters: 'Filters',
+
+  // Theme
+  darkMode: 'Dark Mode',
+  lightMode: 'Light Mode',
+  toggleTheme: 'Toggle Theme',
+  
+  // Search
+  searchConversations: 'Search conversations...',
+  
+  // Time
+  today: 'Today',
+  yesterday: 'Yesterday',
+  daysAgo: '{n} days ago',
+  
+  // Welcome
+  welcome: 'Welcome!',
+  createToStart: 'Create a new conversation to start',
+  
+  // Toasts
+  addedSuccess: 'Added successfully',
+  deletedSuccess: 'Deleted',
+  nameUpdated: 'Name updated',
+  imageAdded: 'Image added successfully',
+  error: 'An error occurred',
+};

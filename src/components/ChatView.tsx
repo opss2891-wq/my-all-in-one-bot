@@ -285,14 +285,15 @@ const ChatView: React.FC = () => {
       case 'note':
         return { type: 'note', content };
 
-      case 'tasks':
+      case 'tasks': {
         const tasks: TaskItem[] = content
           .split('\n')
           .filter(line => line.trim())
           .map(line => ({ text: line.trim(), completed: false }));
         return { type: 'tasks', tasks };
+      }
 
-      case 'links':
+      case 'links': {
         const lines = content.split('\n').filter(line => line.trim());
         const links: LinkItem[] = await Promise.all(
           lines.map(async (line) => {
@@ -306,8 +307,9 @@ const ChatView: React.FC = () => {
           })
         );
         return { type: 'links', links };
+      }
 
-      case 'credentials':
+      case 'credentials': {
         // Parse credentials without AI - simple format parsing
         const lines2 = content.split('\n').filter(l => l.trim());
         let username = '', password = '', host = '', url = '', port = '', credType: CredentialData['credType'] = 'other';
@@ -368,8 +370,9 @@ const ChatView: React.FC = () => {
           type: 'credentials', 
           credential: { username, password, host, url, port, credType } 
         };
+      }
 
-      case 'code':
+      case 'code': {
         // Use AI to explain code and add tags
         const codeResult = await explainCode(content);
         const codeData: CodeData = {
@@ -379,6 +382,7 @@ const ChatView: React.FC = () => {
           tags: codeResult.tags
         };
         return { type: 'code', codeData };
+      }
 
       default:
         return { type: 'note', content };
