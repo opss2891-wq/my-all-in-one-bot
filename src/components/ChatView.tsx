@@ -479,33 +479,10 @@ const ChatView: React.FC = () => {
       return false;
     })
     .sort((a, b) => {
-      // Pinned messages first, then by date
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-    if (m.type === 'credentials') {
-      const cred = m.credential;
-      if (cred?.username.toLowerCase().includes(query)) return true;
-      if (cred?.host?.toLowerCase().includes(query)) return true;
-    }
-    if (m.type === 'links' && m.links?.some(l => 
-      l.title.toLowerCase().includes(query) || l.url.toLowerCase().includes(query)
-    )) return true;
-    if (m.type === 'code') {
-      const codeData = m.codeData;
-      if (codeData?.code?.toLowerCase().includes(query)) return true;
-      if (codeData?.explanation?.toLowerCase().includes(query)) return true;
-      if (codeData?.tags?.some(tag => tag.toLowerCase().includes(query))) return true;
-    }
-    if (m.type === 'file') {
-      const fileData = m.fileData;
-      if (fileData?.name?.toLowerCase().includes(query)) return true;
-      if (fileData?.content?.toLowerCase().includes(query)) return true;
-    }
-    
-    return false;
-  });
 
   const displayedMessages = filteredMessages.slice(0, displayCount);
   const hasMore = displayCount < filteredMessages.length;
