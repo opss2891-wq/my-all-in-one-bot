@@ -75,7 +75,7 @@ interface ConversationSidebarProps {
   onClose?: () => void;
 }
 
-const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
+const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: string }> = ({
   conversations,
   archivedConversations,
   currentConversationId,
@@ -92,6 +92,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   onSetLabel,
   onToggleArchived,
   onClose,
+  className,
 }) => {
   // Add a ref or ID to the main div
   const sidebarId = "conversation-sidebar";
