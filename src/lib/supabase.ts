@@ -312,3 +312,55 @@ export const updateCredential = async (id: string, data: Partial<Omit<Credential
     .eq('id', id);
   if (error) throw error;
 };
+
+// Legacy exports for backward compatibility
+export const addNote = async (userId: string, content: string) => {
+  return await addMessage(userId, { type: 'note', content });
+};
+
+export const getNotes = async (userId: string) => {
+  const messages = await getMessages(userId);
+  return messages.filter(m => m.type === 'note').map(m => ({
+    id: m.id,
+    content: m.content,
+    createdAt: m.createdAt
+  }));
+};
+
+export const deleteNote = async (id: string) => {
+  await deleteMessage(id);
+};
+
+// Global search across all conversations
+export const searchAllMessages = async (userId: string, queryText: string) => {
+  if (!queryText.trim()) return [];
+  
+  const messages = await getMessages(userId);
+  
+  const queryLower = queryText.toLowerCase();
+  
+  return messages.filter(m => {
+    if (m.type === 'note' && m.content?.toLowerCase().includes(queryLower)) return true;
+    if (m.type === 'tasks' && m.tasks?.some((t: any) => t.text.toLowerCase().includes(queryLower))) return true;
+    if (m.type === 'credentials') {
+      const cred = m.credential as any;
+      if (cred?.username?.toLowerCase().includes(queryLower)) return true;
+      if (cred?.host?.toLowerCase().includes(queryLower)) return true;
+      if (cred?.url?.toLowerCase().includes(queryLower)) return true;
+    }
+    if (m.type === 'links' && m.links?.some((l: any) => 
+      l.title.toLowerCase().includes(queryLower) || l.url.toLowerCase().includes(queryLower)
+    )) return true;
+    if (m.type === 'code') {
+      const codeData = m.codeData as any;
+      if (codeData?.code?.toLowerCase().includes(queryLower)) return true;
+      if (codeData?.explanation?.toLowerCase().includes(queryLower)) return true;
+      if (codeData?.tags?.some((tag: string) => tag.toLowerCase().includes(queryLower))) return true;
+    }
+    if (m.type === 'file') {
+      const fileData = m.fileData as any;
+      if (fileData?.name?.toLowerCase().includes(queryLower)) return true;
+    }
+    return false;
+  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+};
