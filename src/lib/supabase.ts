@@ -286,6 +286,23 @@ export const deleteMessage = async (id: string) => {
   if (error) throw error;
 };
 
+export const deleteDemoData = async (userId: string) => {
+  // Find the demo conversation
+  const { data: convs, error: convError } = await supabase
+    .from('conversations')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('title', 'Demo Conversation (DataBot)');
+    
+  if (convError) throw convError;
+  
+  if (convs && convs.length > 0) {
+    for (const conv of convs) {
+      await deleteConversation(conv.id);
+    }
+  }
+};
+
 export const updateMessage = async (id: string, updates: Partial<Message>) => {
   const mappedUpdates: any = {};
   if (updates.content !== undefined) mappedUpdates.content = updates.content;
