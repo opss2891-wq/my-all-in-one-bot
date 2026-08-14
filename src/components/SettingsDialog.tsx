@@ -35,20 +35,20 @@ const SettingsDialog: React.FC = () => {
     if (!user) return;
     setIsAddingDemo(true);
     try {
-      const { id: conversationId } = await createConversation(user.id, 'Demo Conversation (DataBot)');
+      const { id: conversationId } = await createConversation(user.id, t('demoConversationName'));
       
       const demoMessages = [
         {
           type: 'note' as const,
-          content: '# Welcome to DataBot!\n\nThis is a **Markdown** note. You can use:\n- *Italic*\n- **Bold**\n- [Links](https://google.com)\n- `Inline code`',
+          content: t('demoWelcomeContent'),
         },
         {
           type: 'tasks' as const,
           tasks: [
-            { text: 'Explore DataBot features', completed: true },
-            { text: 'Add your first note', completed: false },
-            { text: 'Configure API keys', completed: false },
-            { text: 'Try Markdown formatting', completed: true }
+            { text: t('demoTask1'), completed: true },
+            { text: t('demoTask2'), completed: false },
+            { text: t('demoTask3'), completed: false },
+            { text: t('demoTask4'), completed: true }
           ]
         },
         {
@@ -75,7 +75,7 @@ const SettingsDialog: React.FC = () => {
           codeData: {
             code: 'function helloWorld() {\n  console.log("Hello, DataBot!");\n}',
             language: 'javascript',
-            explanation: 'A simple JavaScript function to print a welcome message.',
+            explanation: t('demoCodeExplanation'),
             tags: ['javascript', 'starter', 'demo']
           }
         }
