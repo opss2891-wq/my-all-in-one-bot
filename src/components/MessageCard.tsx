@@ -129,7 +129,39 @@ interface MessageCardProps {
 const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, searchQuery = '' }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [noteHeight, setNoteHeight] = useState<number | null>(null);
+  const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
+
+  const handleResizeStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizing(true);
+    
+    const startY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const startHeight = noteHeight || (isExpanded ? 500 : 150);
+
+    const onMove = (moveEvent: MouseEvent | TouchEvent) => {
+      const currentY = 'touches' in moveEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
+      const delta = currentY - startY;
+      const newHeight = Math.max(80, Math.min(1000, startHeight + delta));
+      setNoteHeight(newHeight);
+    };
+
+    const onEnd = () => {
+      setIsResizing(false);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onEnd);
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('touchend', onEnd);
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchmove', onMove);
+    window.addEventListener('touchend', onEnd);
+  };
+
 
   const credential = message.credential ? {
     ...message.credential,
@@ -210,13 +242,31 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         const displayContent = (!isLongNote || isExpanded) ? content : content.slice(0, 180) + '...';
 
         return (
-          <div className="space-y-3" dir="rtl" style={{ textAlign: 'right' }}>
-            <HighlightText 
-              text={displayContent} 
-              searchQuery={searchQuery}
-              className="text-foreground whitespace-pre-wrap block text-sm md:text-base leading-relaxed"
-            />
-            {isLongNote && (
+          <div className="space-y-3 relative group/note" dir="rtl" style={{ textAlign: 'right' }}>
+            <div 
+              style={{ height: noteHeight ? `${noteHeight}px` : 'auto' }}
+              className={cn(
+                "overflow-hidden transition-[height] duration-200",
+                !noteHeight && !isExpanded && "max-h-[150px]"
+              )}
+            >
+              <HighlightText 
+                text={content} 
+                searchQuery={searchQuery}
+                className="text-foreground whitespace-pre-wrap block text-sm md:text-base leading-relaxed"
+              />
+            </div>
+            
+            {/* Resize handle */}
+            <div 
+              onMouseDown={handleResizeStart}
+              onTouchStart={handleResizeStart}
+              className="absolute -bottom-1 left-0 right-0 h-2 cursor-ns-resize flex items-center justify-center opacity-0 group-hover/note:opacity-100 transition-opacity z-10"
+            >
+              <div className="w-12 h-1 bg-primary/40 rounded-full shadow-sm" />
+            </div>
+
+            {!noteHeight && isLongNote && (
               <button
                 onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
                 className="text-xs font-medium text-primary hover:underline flex items-center gap-1 mt-1 mr-auto"

@@ -9,6 +9,7 @@ import {
   Edit2,
   Check,
   X,
+  X as CloseIcon,
   ChevronRight,
   Search,
   Pin,
@@ -75,7 +76,7 @@ interface ConversationSidebarProps {
   onClose?: () => void;
 }
 
-const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
+const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: string }> = ({
   conversations,
   archivedConversations,
   currentConversationId,
@@ -92,7 +93,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   onSetLabel,
   onToggleArchived,
   onClose,
+  className,
 }) => {
+  // Add a ref or ID to the main div
+  const sidebarId = "conversation-sidebar";
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -154,7 +159,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   const CloseIcon = ChevronRight;
 
   return (
-    <div className="h-full flex flex-col bg-card border-l border-border">
+    <div id={sidebarId} className={cn(
+      "h-full flex flex-col bg-card border-l border-border transition-all duration-300 relative",
+      "group-[.dropdown-open]:translate-x-0 group-[.dropdown-open]:opacity-100",
+      className
+    )}>
       {/* Header */}
       <div className="p-4 border-b border-border safe-area-top">
         <div className="flex items-center gap-2 mb-4">
@@ -255,7 +264,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                 )}
                 onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
               >
-                <div className={cn(
+                <div id={sidebarId} className={cn(
                   "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative",
                   currentConversationId === conv.id ? "bg-primary/20" : "bg-muted"
                 )}>
@@ -351,7 +360,15 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
                 </div>
 
                 {!editingId && !labelEditId && (
-                  <DropdownMenu>
+                  <DropdownMenu onOpenChange={(open) => {
+                    // Prevent sidebar from closing when dropdown is open on mobile/responsive
+                    if (open) {
+                      // We can add a data attribute or class to the sidebar to indicate a dropdown is open
+                      document.getElementById('conversation-sidebar')?.classList.add('dropdown-open');
+                    } else {
+                      document.getElementById('conversation-sidebar')?.classList.remove('dropdown-open');
+                    }
+                  }}>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
                       <button className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
