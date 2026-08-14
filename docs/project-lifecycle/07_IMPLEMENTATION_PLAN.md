@@ -5,14 +5,14 @@
 - [x] Task FOUND-02: Move hardcoded keys to environment variables. (Finding: SEC-002)
 
 ## PHASE 02 — Authentication & Identity
-- [ ] Task AUTH-01: Enable Firebase Authentication (Email/Password or Google).
-- [ ] Task AUTH-02: Create AuthContext to manage user state.
-- [ ] Task AUTH-03: Implement Login/Signup UI.
+- [x] Task AUTH-01: Enable Firebase Authentication (Email/Password or Google). (DONE)
+- [x] Task AUTH-02: Create AuthContext to manage user state. (DONE)
+- [x] Task AUTH-03: Implement Login/Signup UI. (DONE)
 
 ## PHASE 03 — Data Isolation (The Big Shift)
-- [ ] Task ISO-01: Update Firestore Schema to include `userId` in all documents.
-- [ ] Task ISO-02: Update `src/lib/firebase.ts` CRUD operations to filter by `userId`.
-- [ ] Task ISO-03: Implement Firebase Security Rules (RLS) to prevent cross-user access.
+- [x] Task ISO-01: Update Firestore Schema to include `userId` in all documents. (DONE)
+- [x] Task ISO-02: Update `src/lib/firebase.ts` CRUD operations to filter by `userId`. (DONE)
+- [x] Task ISO-03: Implement Firebase Security Rules (RLS) to prevent cross-user access. (DONE)
 
 ## PHASE 04 — Security Hardening
 - [ ] Task SEC-01: Implement client-side encryption for the Credentials module.

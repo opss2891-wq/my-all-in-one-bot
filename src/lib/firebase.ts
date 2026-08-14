@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy, where, writeBatch } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -13,12 +14,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 // Conversation types
 export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
 
 export interface Conversation {
   id?: string;
+  userId: string;
   title: string;
   archived: boolean;
   pinned?: boolean;
@@ -66,6 +69,7 @@ export interface FileData {
 
 export interface Message {
   id?: string;
+  userId: string;
   conversationId?: string;
   type: MessageType;
   content?: string;
@@ -79,9 +83,10 @@ export interface Message {
 }
 
 // Conversation operations
-export const createConversation = async (title: string = 'New Conversation') => {
+export const createConversation = async (userId: string, title: string = 'New Conversation') => {
   const now = new Date().toISOString();
   return await addDoc(collection(db, 'conversations'), {
+    userId,
     title,
     archived: false,
     createdAt: now,
@@ -89,15 +94,23 @@ export const createConversation = async (title: string = 'New Conversation') => 
   });
 };
 
-export const getConversations = async () => {
-  const q = query(collection(db, 'conversations'), orderBy('updatedAt', 'desc'));
+export const getConversations = async (userId: string) => {
+  const q = query(
+    collection(db, 'conversations'), 
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   const convs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Conversation[];
   return convs.filter(c => !c.archived);
 };
 
-export const getArchivedConversations = async () => {
-  const q = query(collection(db, 'conversations'), orderBy('updatedAt', 'desc'));
+export const getArchivedConversations = async (userId: string) => {
+  const q = query(
+    collection(db, 'conversations'), 
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   const convs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Conversation[];
   return convs.filter(c => c.archived);
@@ -135,14 +148,14 @@ export const setConversationLabel = async (id: string, label: string) => {
 };
 
 // Global search across all conversations
-export const searchAllMessages = async (query: string) => {
-  if (!query.trim()) return [];
+export const searchAllMessages = async (userId: string, queryText: string) => {
+  if (!queryText.trim()) return [];
   
-  const q = collection(db, 'messages');
+  const q = query(collection(db, 'messages'), where('userId', '==', userId));
   const snapshot = await getDocs(q);
   const messages = snapshot.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Message, 'id'>) })) as Message[];
   
-  const queryLower = query.toLowerCase();
+  const queryLower = queryText.toLowerCase();
   
   return messages.filter(m => {
     if (m.type === 'note' && m.content?.toLowerCase().includes(queryLower)) return true;
@@ -183,9 +196,10 @@ export const deleteConversation = async (id: string) => {
 };
 
 // Message operations
-export const addMessage = async (message: Omit<Message, 'id' | 'createdAt'>) => {
+export const addMessage = async (userId: string, message: Omit<Message, 'id' | 'createdAt' | 'userId'>) => {
   const docRef = await addDoc(collection(db, 'messages'), {
     ...message,
+    userId,
     createdAt: new Date().toISOString(),
   });
   
@@ -198,20 +212,19 @@ export const addMessage = async (message: Omit<Message, 'id' | 'createdAt'>) => 
   return docRef;
 };
 
-export const getMessages = async (conversationId?: string) => {
+export const getMessages = async (userId: string, conversationId?: string) => {
   let q;
   if (conversationId) {
-    // Simple query without composite index requirement
     q = query(
       collection(db, 'messages'), 
+      where('userId', '==', userId),
       where('conversationId', '==', conversationId)
     );
   } else {
-    q = query(collection(db, 'messages'));
+    q = query(collection(db, 'messages'), where('userId', '==', userId));
   }
   const snapshot = await getDocs(q);
   const messages = snapshot.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Message, 'id'>) })) as Message[];
-  // Sort client-side to avoid composite index requirement
   return messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 };
 
@@ -224,12 +237,12 @@ export const deleteMessage = async (id: string) => {
 };
 
 // Legacy exports for backward compatibility
-export const addNote = async (content: string) => {
-  return await addMessage({ type: 'note', content });
+export const addNote = async (userId: string, content: string) => {
+  return await addMessage(userId, { type: 'note', content });
 };
 
-export const getNotes = async () => {
-  const messages = await getMessages();
+export const getNotes = async (userId: string) => {
+  const messages = await getMessages(userId);
   return messages.filter(m => m.type === 'note').map(m => ({
     id: m.id,
     content: m.content,
@@ -243,21 +256,27 @@ export const deleteNote = async (id: string) => {
 
 export interface Task {
   id?: string;
+  userId: string;
   title: string;
   completed: boolean;
   createdAt: string;
 }
 
-export const addTask = async (title: string) => {
+export const addTask = async (userId: string, title: string) => {
   return await addDoc(collection(db, 'tasks'), {
+    userId,
     title,
     completed: false,
     createdAt: new Date().toISOString(),
   });
 };
 
-export const getTasks = async () => {
-  const q = query(collection(db, 'tasks'), orderBy('createdAt', 'desc'));
+export const getTasks = async (userId: string) => {
+  const q = query(
+    collection(db, 'tasks'), 
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Task[];
 };
@@ -274,6 +293,7 @@ export type CredentialType = 'ftp' | 'ssh' | 'hosting' | 'admin' | 'cpanel' | 'd
 
 export interface Credential {
   id?: string;
+  userId: string;
   username: string;
   password: string;
   host: string;
@@ -282,15 +302,20 @@ export interface Credential {
   createdAt: string;
 }
 
-export const addCredential = async (credential: Omit<Credential, 'id' | 'createdAt'>) => {
+export const addCredential = async (userId: string, credential: Omit<Credential, 'id' | 'createdAt' | 'userId'>) => {
   return await addDoc(collection(db, 'credentials'), {
     ...credential,
+    userId,
     createdAt: new Date().toISOString(),
   });
 };
 
-export const getCredentials = async () => {
-  const q = query(collection(db, 'credentials'), orderBy('createdAt', 'desc'));
+export const getCredentials = async (userId: string) => {
+  const q = query(
+    collection(db, 'credentials'), 
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Credential[];
 };
@@ -299,6 +324,6 @@ export const deleteCredential = async (id: string) => {
   await deleteDoc(doc(db, 'credentials', id));
 };
 
-export const updateCredential = async (id: string, data: Partial<Omit<Credential, 'id' | 'createdAt'>>) => {
+export const updateCredential = async (id: string, data: Partial<Omit<Credential, 'id' | 'createdAt' | 'userId'>>) => {
   await updateDoc(doc(db, 'credentials', id), data as Record<string, unknown>);
 };

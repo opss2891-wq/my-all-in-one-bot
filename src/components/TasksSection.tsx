@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Trash2, CheckSquare, Square, Loader2 } from 'lucide-react';
 import { addTask, getTasks, updateTask, deleteTask, Task } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const TasksSection: React.FC = () => {
+  const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState('');
   const [loading, setLoading] = useState(true);
@@ -11,8 +13,8 @@ const TasksSection: React.FC = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
-    loadTasks();
-  }, []);
+    if (user) loadTasks();
+  }, [user]);
 
   const getAudioContext = () => {
     if (!audioContextRef.current) {
@@ -53,8 +55,9 @@ const TasksSection: React.FC = () => {
   };
 
   const loadTasks = async () => {
+    if (!user) return;
     try {
-      const data = await getTasks();
+      const data = await getTasks(user.uid);
       setTasks(data);
     } catch (error) {
       toast({ title: 'Error loading tasks', variant: 'destructive' });
@@ -64,10 +67,10 @@ const TasksSection: React.FC = () => {
   };
 
   const handleAddTask = async () => {
-    if (!newTask.trim()) return;
+    if (!newTask.trim() || !user) return;
     setAdding(true);
     try {
-      await addTask(newTask);
+      await addTask(user.uid, newTask);
       setNewTask('');
       await loadTasks();
       toast({ title: 'Task added successfully' });

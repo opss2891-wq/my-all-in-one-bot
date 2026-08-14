@@ -4,10 +4,12 @@ import {
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, ConversationColor, getConversations, getArchivedConversations, createConversation, 
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation,
-  pinConversation, unpinConversation, setConversationColor, setConversationLabel
+  pinConversation, unpinConversation, setConversationColor, setConversationLabel,
+  searchAllMessages
 } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
 import { generateLinkTitle, explainCode } from '@/lib/gemini';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Simple language detection for code
 const detectCodeLanguage = (code: string): string => {
@@ -60,10 +62,11 @@ const ChatView: React.FC = () => {
 
   const { t, isRTL } = useLanguage();
   const { sidebarOpen, setSidebarOpen, toggleSidebar, headerVisible, toggleHeader, theme, toggleTheme } = useUI();
+  const { user } = useAuth();
 
   useEffect(() => {
-    loadConversations();
-  }, []);
+    if (user) loadConversations();
+  }, [user]);
 
   useEffect(() => {
     if (currentConversationId) {
@@ -129,10 +132,11 @@ const ChatView: React.FC = () => {
   }, [conversations, archivedConversations, currentConversationId, showArchived]);
 
   const loadConversations = async () => {
+    if (!user) return;
     try {
       const [convs, archived] = await Promise.all([
-        getConversations(),
-        getArchivedConversations()
+        getConversations(user.uid),
+        getArchivedConversations(user.uid)
       ]);
       setConversations(convs);
       setArchivedConversations(archived);
@@ -159,9 +163,9 @@ const ChatView: React.FC = () => {
   };
 
   const loadMessages = async () => {
-    if (!currentConversationId) return;
+    if (!currentConversationId || !user) return;
     try {
-      const data = await getMessages(currentConversationId);
+      const data = await getMessages(user.uid, currentConversationId);
       setMessages(data);
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -170,8 +174,9 @@ const ChatView: React.FC = () => {
   };
 
   const handleCreateConversation = async () => {
+    if (!user) return;
     try {
-      const docRef = await createConversation();
+      const docRef = await createConversation(user.uid, t('newChat'));
       await loadConversations();
       setCurrentConversationId(docRef.id);
       localStorage.setItem('activeConversationId', docRef.id);
@@ -380,7 +385,7 @@ const ChatView: React.FC = () => {
   };
 
   const handleSend = async (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }, images?: string[]) => {
-    if (!currentConversationId) {
+    if (!currentConversationId || !user) {
       toast({ title: t('error'), variant: 'destructive' });
       return;
     }
@@ -394,7 +399,7 @@ const ChatView: React.FC = () => {
           size: file.size,
           content: file.content
         };
-        await addMessage({ 
+        await addMessage(user.uid, { 
           type: 'file',
           fileData,
           conversationId: currentConversationId 
@@ -405,10 +410,10 @@ const ChatView: React.FC = () => {
         if (type === 'note' && images && images.length > 0) {
           (messageData as Partial<Message>).images = images;
         }
-        await addMessage({ 
+        await addMessage(user.uid, { 
           ...messageData, 
           conversationId: currentConversationId 
-        } as Omit<Message, 'id' | 'createdAt'>);
+        } as Omit<Message, 'id' | 'createdAt' | 'userId'>);
       }
       await loadMessages();
       await loadConversations();
