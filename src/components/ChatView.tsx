@@ -39,6 +39,7 @@ import SettingsDialog from './SettingsDialog';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
+import { encryptData } from '@/lib/encryption';
 
 const MESSAGES_PER_PAGE = 15;
 
@@ -406,6 +407,18 @@ const ChatView: React.FC = () => {
         });
       } else {
         const messageData = await parseContent(type, content);
+        
+        // Encrypt credentials if type is credentials
+        if (type === 'credentials' && messageData.credential) {
+          messageData.credential = {
+            ...messageData.credential,
+            username: encryptData(messageData.credential.username),
+            password: encryptData(messageData.credential.password),
+            host: messageData.credential.host ? encryptData(messageData.credential.host) : '',
+            url: messageData.credential.url ? encryptData(messageData.credential.url) : '',
+          };
+        }
+
         // Add images if it's a note
         if (type === 'note' && images && images.length > 0) {
           (messageData as Partial<Message>).images = images;

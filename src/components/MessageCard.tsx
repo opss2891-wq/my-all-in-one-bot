@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
+import { decryptData } from '@/lib/encryption';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
 import HighlightText from './HighlightText';
 import CodeHighlight from './CodeHighlight';
