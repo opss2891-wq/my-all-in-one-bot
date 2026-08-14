@@ -106,8 +106,6 @@ const translations: Record<Language, Translations> = {
 
     // Context Menu
     quickMenu: 'القائمة السريعة',
-    toggleSidebar: 'إظهار/إخفاء القائمة الجانبية',
-    toggleHeader: 'إظهار/إخفاء الهيدر',
     changeLanguage: 'تغيير اللغة',
     copyAll: 'نسخ الكل',
     editCard: 'تعديل',
@@ -239,8 +237,6 @@ const translations: Record<Language, Translations> = {
 
     // Context Menu
     quickMenu: 'Quick Menu',
-    toggleSidebar: 'Toggle Sidebar',
-    toggleHeader: 'Toggle Header',
     changeLanguage: 'Change Language',
     copyAll: 'Copy All',
     editCard: 'Edit',
