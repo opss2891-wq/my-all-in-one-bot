@@ -84,7 +84,7 @@ const SettingsDialog: React.FC = () => {
   // Add new key
   const addKey = async () => {
     if (!newKey.trim() || apiKeys.some(k => k.key === newKey.trim())) {
-      toast({ title: 'المفتاح موجود مسبقاً أو فارغ', variant: 'destructive' });
+      toast({ title: t('keyExistsError'), variant: 'destructive' });
       return;
     }
 
@@ -107,7 +107,7 @@ const SettingsDialog: React.FC = () => {
     saveKeys(updatedKeys);
 
     toast({ 
-      title: isValid ? 'تم إضافة المفتاح بنجاح' : 'المفتاح غير صالح ولكن تم إضافته',
+      title: isValid ? t('keyAddedSuccess') : t('keyAddedInvalid'),
       variant: isValid ? 'default' : 'destructive'
     });
   };
@@ -117,7 +117,7 @@ const SettingsDialog: React.FC = () => {
     const updatedKeys = apiKeys.filter(k => k.id !== id);
     setApiKeys(updatedKeys);
     saveKeys(updatedKeys);
-    toast({ title: 'تم حذف المفتاح' });
+    toast({ title: t('keyDeleted') });
   };
 
   // Toggle key visibility
@@ -138,7 +138,7 @@ const SettingsDialog: React.FC = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
             <Settings className="w-5 h-5" />
-            الإعدادات
+            {t('settings')}
           </DialogTitle>
         </DialogHeader>
 
@@ -146,11 +146,11 @@ const SettingsDialog: React.FC = () => {
           <TabsList className="w-full grid grid-cols-2">
             <TabsTrigger value="api" className="flex items-center gap-1.5 text-xs">
               <Key className="w-3.5 h-3.5" />
-              مفاتيح API
+              {t('apiKeys')}
             </TabsTrigger>
             <TabsTrigger value="css" className="flex items-center gap-1.5 text-xs">
               <Palette className="w-3.5 h-3.5" />
-              تنسيقات CSS
+              {t('customCss')}
             </TabsTrigger>
           </TabsList>
 
@@ -160,7 +160,7 @@ const SettingsDialog: React.FC = () => {
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {apiKeys.length === 0 ? (
                   <div className="text-center py-6 text-muted-foreground text-sm">
-                    لا توجد مفاتيح مضافة
+                    {t('noKeys')}
                   </div>
                 ) : (
                   apiKeys.map((apiKey) => (
@@ -204,7 +204,7 @@ const SettingsDialog: React.FC = () => {
                 <Input
                   value={newKey}
                   onChange={(e) => setNewKey(e.target.value)}
-                  placeholder="أدخل مفتاح API جديد..."
+                  placeholder={t('addApiKeyPlaceholder')}
                   className="flex-1 font-mono text-sm"
                   onKeyDown={(e) => e.key === 'Enter' && addKey()}
                 />
@@ -218,18 +218,18 @@ const SettingsDialog: React.FC = () => {
                       : "bg-muted text-muted-foreground"
                   )}
                 >
-                  إضافة
+                  {t('add')}
                 </button>
               </div>
 
               {apiKeys.length > 0 && (
                 <button onClick={checkAllKeys} className="w-full py-2 text-sm text-primary hover:bg-primary/10 rounded-xl transition-colors">
-                  التحقق من جميع المفاتيح
+                  {t('checkAllKeys')}
                 </button>
               )}
 
               <p className="text-xs text-muted-foreground text-center">
-                سيتم استخدام المفاتيح بالتناوب. إذا فشل مفتاح سينتقل تلقائياً للمفتاح التالي.
+                {t('apiKeyInfo')}
               </p>
             </div>
           </TabsContent>
