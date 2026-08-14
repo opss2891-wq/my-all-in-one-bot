@@ -128,4 +128,10 @@ export const en = {
   nameUpdated: 'Name updated',
   imageAdded: 'Image added successfully',
   error: 'An error occurred',
+  demoData: 'Demo Data',
+  addDemoData: 'Add Demo Data',
+  deleteDemoData: 'Delete Demo Data',
+  demoDataAdded: 'Demo data added successfully',
+  demoDataDeleted: 'Demo data deleted successfully',
+  demoDataInfo: 'This will add a new conversation with examples of all note types to explore the app.',
 };

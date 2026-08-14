@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Key, Check, X, Eye, EyeOff, Loader2, Palette } from 'lucide-react';
+import { Settings, Key, Check, X, Eye, EyeOff, Loader2, Palette, Database, Trash2, PlusCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -17,12 +17,97 @@ interface ApiKey {
 
 const API_KEYS_STORAGE_KEY = 'gemini_api_keys';
 
+import { addMessage, createConversation, deleteDemoData } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
+import { encryptData } from '@/lib/encryption';
+
 const SettingsDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [newKey, setNewKey] = useState('');
   const [showKeys, setShowKeys] = useState<{ [key: string]: boolean }>({});
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const [isAddingDemo, setIsAddingDemo] = useState(false);
+  const [isDeletingDemo, setIsDeletingDemo] = useState(false);
+
+  const handleAddDemoData = async () => {
+    if (!user) return;
+    setIsAddingDemo(true);
+    try {
+      const { id: conversationId } = await createConversation(user.id, 'Demo Conversation (DataBot)');
+      
+      const demoMessages = [
+        {
+          type: 'note' as const,
+          content: '# Welcome to DataBot!\n\nThis is a **Markdown** note. You can use:\n- *Italic*\n- **Bold**\n- [Links](https://google.com)\n- `Inline code`',
+        },
+        {
+          type: 'tasks' as const,
+          tasks: [
+            { text: 'Explore DataBot features', completed: true },
+            { text: 'Add your first note', completed: false },
+            { text: 'Configure API keys', completed: false },
+            { text: 'Try Markdown formatting', completed: true }
+          ]
+        },
+        {
+          type: 'credentials' as const,
+          credential: {
+            username: encryptData('admin_user'),
+            password: encryptData('SecretPass123!'),
+            host: encryptData('ftp.example.com'),
+            url: encryptData('https://admin.example.com'),
+            port: '21',
+            credType: 'ftp' as const
+          }
+        },
+        {
+          type: 'links' as const,
+          links: [
+            { title: 'Google', url: 'https://google.com' },
+            { title: 'GitHub', url: 'https://github.com' },
+            { title: 'React Documentation', url: 'https://react.dev' }
+          ]
+        },
+        {
+          type: 'code' as const,
+          codeData: {
+            code: 'function helloWorld() {\n  console.log("Hello, DataBot!");\n}',
+            language: 'javascript',
+            explanation: 'A simple JavaScript function to print a welcome message.',
+            tags: ['javascript', 'starter', 'demo']
+          }
+        }
+      ];
+
+      for (const msg of demoMessages) {
+        await addMessage(user.id, { ...msg, conversationId });
+      }
+
+      toast({ title: t('demoDataAdded') });
+      // Reload page to show new conversation or trigger a refresh in ChatView if needed
+      window.location.reload(); 
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    } finally {
+      setIsAddingDemo(false);
+    }
+  };
+
+  const handleDeleteDemoData = async () => {
+    if (!user) return;
+    setIsDeletingDemo(true);
+    try {
+      await deleteDemoData(user.id);
+      toast({ title: t('demoDataDeleted') });
+      window.location.reload();
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    } finally {
+      setIsDeletingDemo(false);
+    }
+  };
 
   // Load keys from localStorage
   useEffect(() => {
@@ -143,10 +228,14 @@ const SettingsDialog: React.FC = () => {
         </DialogHeader>
 
         <Tabs defaultValue="api" className="w-full">
-          <TabsList className="w-full grid grid-cols-2">
+          <TabsList className="w-full grid grid-cols-3">
             <TabsTrigger value="api" className="flex items-center gap-1.5 text-xs">
               <Key className="w-3.5 h-3.5" />
               {t('apiKeys')}
+            </TabsTrigger>
+            <TabsTrigger value="demo" className="flex items-center gap-1.5 text-xs">
+              <Database className="w-3.5 h-3.5" />
+              {t('demoData')}
             </TabsTrigger>
             <TabsTrigger value="css" className="flex items-center gap-1.5 text-xs">
               <Palette className="w-3.5 h-3.5" />
@@ -231,6 +320,42 @@ const SettingsDialog: React.FC = () => {
               <p className="text-xs text-muted-foreground text-center">
                 {t('apiKeyInfo')}
               </p>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="demo" className="mt-4">
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl border border-border bg-muted/30 text-sm space-y-3">
+                <p className="text-muted-foreground leading-relaxed">
+                  {t('demoDataInfo')}
+                </p>
+                <div className="flex flex-col gap-2 pt-2">
+                  <button
+                    onClick={handleAddDemoData}
+                    disabled={isAddingDemo || isDeletingDemo}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  >
+                    {isAddingDemo ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <PlusCircle className="w-4 h-4" />
+                    )}
+                    {t('addDemoData')}
+                  </button>
+                  <button
+                    onClick={handleDeleteDemoData}
+                    disabled={isAddingDemo || isDeletingDemo}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-destructive/30 text-destructive hover:bg-destructive/5 font-medium transition-colors disabled:opacity-50"
+                  >
+                    {isDeletingDemo ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-destructive" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                    {t('deleteDemoData')}
+                  </button>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
