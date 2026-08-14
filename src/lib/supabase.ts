@@ -1,39 +1,91 @@
 import { createClient } from '@supabase/supabase-js';
-import { 
-  Conversation, 
-  ConversationColor, 
-  Message, 
-  MessageType,
-  Task,
-  Credential,
-  CredentialType,
-  TaskItem,
-  LinkItem,
-  CredentialData,
-  CodeData,
-  FileData
-} from './firebase'; 
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Re-export types from firebase to ensure they are available
-export type { 
-  Conversation, 
-  ConversationColor, 
-  Message, 
-  MessageType,
-  Task,
-  Credential,
-  CredentialType,
-  TaskItem,
-  LinkItem,
-  CredentialData,
-  CodeData,
-  FileData 
-};
+export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
+
+export interface TaskItem {
+  text: string;
+  completed: boolean;
+}
+
+export interface LinkItem {
+  title: string;
+  url: string;
+}
+
+export interface CredentialData {
+  username?: string;
+  password?: string;
+  host?: string;
+  url?: string;
+  port?: string;
+  credType: 'ftp' | 'ssh' | 'cpanel' | 'hosting' | 'admin' | 'database' | 'other';
+}
+
+export interface CodeData {
+  code: string;
+  language: string;
+  explanation: string;
+  tags: string[];
+}
+
+export interface FileData {
+  name: string;
+  type: string;
+  size: number;
+  content: string;
+}
+
+export interface Message {
+  id?: string;
+  userId: string;
+  conversationId?: string;
+  type: MessageType;
+  content?: string;
+  tasks?: TaskItem[];
+  credential?: CredentialData;
+  links?: LinkItem[];
+  codeData?: CodeData;
+  fileData?: FileData;
+  images?: string[];
+  createdAt: string;
+}
+
+export interface Conversation {
+  id?: string;
+  userId: string;
+  title: string;
+  archived: boolean;
+  pinned: boolean;
+  color: ConversationColor;
+  label?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Task {
+  id?: string;
+  userId: string;
+  title: string;
+  completed: boolean;
+  createdAt: string;
+}
+
+export interface Credential {
+  id?: string;
+  userId: string;
+  username?: string;
+  password?: string;
+  host?: string;
+  url?: string;
+  type: 'ftp' | 'ssh' | 'cpanel' | 'hosting' | 'admin' | 'database' | 'other';
+  createdAt: string;
+}
 
 // Conversation operations
 export const createConversation = async (userId: string, title: string = 'New Conversation') => {
@@ -285,7 +337,7 @@ export const getCredentials = async (userId: string) => {
     password: c.password,
     host: c.host,
     url: c.url,
-    type: c.cred_type as CredentialType,
+    type: c.cred_type as Credential['type'],
     createdAt: c.created_at
   })) as Credential[];
 };
