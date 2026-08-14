@@ -529,6 +529,15 @@ const ChatView: React.FC = () => {
       toast({ title: allConvs[currentConvIndex - 1].title });
     }
   };
+  
+  const handleRenameCurrent = () => {
+    // We focus the input in the header
+    const input = document.querySelector('header input') as HTMLInputElement;
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  };
 
   const canGoNext = currentConvIndex >= 0 && currentConvIndex < allConvs.length - 1;
   const canGoPrev = currentConvIndex > 0;
@@ -542,6 +551,7 @@ const ChatView: React.FC = () => {
           onPrevConversation={goToPrevConversation}
           canGoNext={canGoNext}
           canGoPrev={canGoPrev}
+          onRenameConversation={handleRenameCurrent}
         />
       </React.Suspense>
 
