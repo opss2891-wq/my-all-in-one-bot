@@ -4,9 +4,8 @@ import {
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, ConversationColor, getConversations, getArchivedConversations, createConversation, 
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation,
-  pinConversation, unpinConversation, setConversationColor, setConversationLabel,
-  searchAllMessages
-} from '@/lib/firebase';
+  pinConversation, unpinConversation, setConversationColor, setConversationLabel
+} from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { generateLinkTitle, explainCode } from '@/lib/gemini';
 import { useAuth } from '@/contexts/AuthContext';
@@ -67,7 +66,7 @@ const ChatView: React.FC = () => {
 
   useEffect(() => {
     if (user) loadConversations();
-  }, [user]);
+  }, [user?.id]);
 
   useEffect(() => {
     if (currentConversationId) {
@@ -166,7 +165,7 @@ const ChatView: React.FC = () => {
   const loadMessages = async () => {
     if (!currentConversationId || !user) return;
     try {
-      const data = await getMessages(user.uid, currentConversationId);
+      const data = await getMessages(user.id, currentConversationId);
       setMessages(data);
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -177,7 +176,7 @@ const ChatView: React.FC = () => {
   const handleCreateConversation = async () => {
     if (!user) return;
     try {
-      const docRef = await createConversation(user.uid, t('newChat'));
+      const docRef = await createConversation(user.id, t('newChat'));
       await loadConversations();
       setCurrentConversationId(docRef.id);
       localStorage.setItem('activeConversationId', docRef.id);
@@ -404,7 +403,7 @@ const ChatView: React.FC = () => {
           size: file.size,
           content: file.content
         };
-        await addMessage(user.uid, { 
+        await addMessage(user.id, { 
           type: 'file',
           fileData,
           conversationId: currentConversationId 
@@ -427,7 +426,7 @@ const ChatView: React.FC = () => {
         if (type === 'note' && images && images.length > 0) {
           (messageData as Partial<Message>).images = images;
         }
-        await addMessage(user.uid, { 
+        await addMessage(user.id, { 
           ...messageData, 
           conversationId: currentConversationId 
         } as Omit<Message, 'id' | 'createdAt' | 'userId'>);

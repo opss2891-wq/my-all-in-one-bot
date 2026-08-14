@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Key, Eye, EyeOff, Copy, Loader2, Edit2, Check, X } from 'lucide-react';
-import { addCredential, getCredentials, deleteCredential, updateCredential, Credential, CredentialType } from '@/lib/firebase';
+import { addCredential, getCredentials, deleteCredential, updateCredential, Credential, CredentialType } from '@/lib/supabase';
 import { encryptData, decryptData } from '@/lib/encryption';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,12 +55,12 @@ const CredentialsSection: React.FC = () => {
 
   useEffect(() => {
     if (user) loadCredentials();
-  }, [user]);
+  }, [user?.id]);
 
   const loadCredentials = async () => {
     if (!user) return;
     try {
-      const data = await getCredentials(user.uid);
+      const data = await getCredentials(user.id);
       const decryptedData = data.map(cred => ({
         ...cred,
         password: decryptData(cred.password),
@@ -87,7 +87,7 @@ const CredentialsSection: React.FC = () => {
         host: encryptData(form.host || ''),
         url: encryptData(form.url || ''),
       };
-      await addCredential(user.uid, encryptedForm);
+      await addCredential(user.id, encryptedForm);
       setForm({ username: '', password: '', host: '', url: '', port: '', type: 'hosting' });
       setShowForm(false);
       await loadCredentials();
