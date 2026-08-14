@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Key, Eye, EyeOff, Copy, Loader2, Edit2, Check, X } from 'lucide-react';
 import { addCredential, getCredentials, deleteCredential, updateCredential, Credential, CredentialType } from '@/lib/firebase';
+import { encryptData, decryptData } from '@/lib/encryption';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -60,7 +61,14 @@ const CredentialsSection: React.FC = () => {
     if (!user) return;
     try {
       const data = await getCredentials(user.uid);
-      setCredentials(data);
+      const decryptedData = data.map(cred => ({
+        ...cred,
+        password: decryptData(cred.password),
+        username: decryptData(cred.username),
+        host: cred.host ? decryptData(cred.host) : '',
+        url: cred.url ? decryptData(cred.url) : '',
+      }));
+      setCredentials(decryptedData);
     } catch (error) {
       toast({ title: 'Error loading credentials', variant: 'destructive' });
     } finally {
@@ -72,7 +80,14 @@ const CredentialsSection: React.FC = () => {
     if (!form.username || !form.password || !user) return;
     setAdding(true);
     try {
-      await addCredential(user.uid, form);
+      const encryptedForm = {
+        ...form,
+        username: encryptData(form.username),
+        password: encryptData(form.password),
+        host: encryptData(form.host || ''),
+        url: encryptData(form.url || ''),
+      };
+      await addCredential(user.uid, encryptedForm);
       setForm({ username: '', password: '', host: '', url: '', port: '', type: 'hosting' });
       setShowForm(false);
       await loadCredentials();
@@ -109,7 +124,14 @@ const CredentialsSection: React.FC = () => {
   const handleUpdateCredential = async () => {
     if (!editingId || !editForm.username || !editForm.password) return;
     try {
-      await updateCredential(editingId, editForm);
+      const encryptedEditForm = {
+        ...editForm,
+        username: encryptData(editForm.username),
+        password: encryptData(editForm.password),
+        host: encryptData(editForm.host || ''),
+        url: encryptData(editForm.url || ''),
+      };
+      await updateCredential(editingId, encryptedEditForm);
       setEditingId(null);
       await loadCredentials();
       toast({ title: 'Credential updated successfully' });

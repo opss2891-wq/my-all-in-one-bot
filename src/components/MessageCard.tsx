@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
+import { decryptData } from '@/lib/encryption';
 import { playTaskSound, playCopySound } from '@/hooks/useSound';
 import HighlightText from './HighlightText';
 import CodeHighlight from './CodeHighlight';
@@ -137,6 +138,15 @@ const isArabicText = (text: string): boolean => {
 const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, searchQuery = '' }) => {
   const [showPassword, setShowPassword] = useState(false);
   const { t, language } = useLanguage();
+
+  const credential = message.credential ? {
+    ...message.credential,
+    username: decryptData(message.credential.username),
+    password: decryptData(message.credential.password),
+    host: message.credential.host ? decryptData(message.credential.host) : '',
+    url: message.credential.url ? decryptData(message.credential.url) : '',
+  } : undefined;
+
 
   const copyToClipboard = (text: string, label: string = 'Text') => {
     navigator.clipboard.writeText(text);
@@ -296,7 +306,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         );
 
       case 'credentials':
-        const cred = message.credential;
+        const cred = credential;
         if (!cred) return null;
         return (
           <div className="space-y-2 font-mono text-sm">
