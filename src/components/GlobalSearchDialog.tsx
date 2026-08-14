@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Message, Conversation, searchAllMessages, getConversations, getArchivedConversations } from '@/lib/firebase';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
 interface GlobalSearchDialogProps {
@@ -22,12 +23,13 @@ const GlobalSearchDialog: React.FC<GlobalSearchDialogProps> = ({ onSelectMessage
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(false);
   const { t, isRTL } = useLanguage();
+  const { user } = useAuth();
 
   useEffect(() => {
     const loadConversations = async () => {
       const [convs, archived] = await Promise.all([
-        getConversations(),
-        getArchivedConversations()
+        getConversations(user!.uid),
+        getArchivedConversations(user!.uid)
       ]);
       setConversations([...convs, ...archived]);
     };
@@ -39,7 +41,7 @@ const GlobalSearchDialog: React.FC<GlobalSearchDialogProps> = ({ onSelectMessage
       if (query.trim().length >= 2) {
         setLoading(true);
         try {
-          const data = await searchAllMessages(query);
+          const data = await searchAllMessages(user!.uid, query);
           setResults(data);
         } catch (error) {
           console.error('Search error:', error);
