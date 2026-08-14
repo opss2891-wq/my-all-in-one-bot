@@ -17,4 +17,15 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'firebase-vendor': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+          'ui-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
+          'highlight-vendor': ['highlight.js'],
+        }
+      }
+    }
+  }
 }));
