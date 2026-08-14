@@ -1,0 +1,19 @@
+# Remaining Issues: DataBot
+
+## P0 - Launch Blockers
+- **REM-001**: Implement User Authentication.
+- **REM-002**: Scoping all database queries to the authenticated user.
+- **REM-003**: Implement Firestore Security Rules.
+
+## P1 - Critical
+- **REM-004**: Encrypt stored credentials.
+- **REM-005**: Move API keys to environment variables.
+
+## P2 - High
+- **REM-006**: Improve error handling for Gemini API failures.
+
+## P3 - Medium
+- **REM-007**: Add unit tests for core business logic (credential parsing, etc.).
+
+---
+*Created during Remaining Issues phase.*
