@@ -11,6 +11,8 @@ export const ar = {
   pagination: 'التنقل بين الصفحات',
   breadcrumb: 'مسار التنقل',
   toggleSidebar: 'تبديل القائمة الجانبية',
+  showSidebar: 'إظهار القائمة الجانبية',
+  hideSidebar: 'إخفاء القائمة الجانبية',
   goToPreviousPage: 'الذهاب للصفحة السابقة',
   goToNextPage: 'الذهاب للصفحة التالية',
   
@@ -113,8 +115,9 @@ export const ar = {
   editCard: 'تعديل',
   deleteCard: 'حذف',
   menuNavigation: 'التنقل بين المحادثات',
-  menuControls: 'التحكم',
-  menuFilters: 'الفلاتر',
+  menuControls: 'التحكم بالواجهة',
+  menuFilters: 'تصفية المحتوى',
+  toggleHeader: 'تبديل إظهار الشريط العلوي',
   
   // Theme
   darkMode: 'الوضع المظلم',

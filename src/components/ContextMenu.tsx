@@ -203,7 +203,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
               ) : (
                 <PanelLeftOpen className="w-4 h-4 text-primary" />
               )}
-              <span className="text-sm text-foreground">{t('toggleSidebar')}</span>
+              <span className="text-sm text-foreground">{sidebarOpen ? t('hideSidebar') : t('showSidebar')}</span>
             </button>
             <button
               onClick={() => { toggleHeader(); setIsOpen(false); }}
