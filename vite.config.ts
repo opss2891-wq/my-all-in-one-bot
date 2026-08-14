@@ -20,12 +20,17 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'firebase-vendor': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
-          'ui-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
-          'highlight-vendor': ['highlight.js'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('firebase')) return 'vendor-firebase';
+            if (id.includes('lucide-react')) return 'vendor-icons';
+            if (id.includes('highlight.js')) return 'vendor-highlight';
+            if (id.includes('crypto-js')) return 'vendor-crypto';
+            return 'vendor';
+          }
         }
       }
-    }
+    },
+    chunkSizeWarningLimit: 1000
   }
 }));

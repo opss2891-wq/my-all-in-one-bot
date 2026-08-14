@@ -829,8 +829,7 @@ const ChatView: React.FC = () => {
             <MessageInput onSend={handleSend} loading={sending} />
           </React.Suspense>
         )}
-        </div>
-      </React.Suspense>
+      </div>
     </div>
   );
 };
