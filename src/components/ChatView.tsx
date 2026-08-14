@@ -670,9 +670,18 @@ const ChatView: React.FC = () => {
                   <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
-                    {currentConversation?.title || t('appName')}
-                  </h1>
+                  {currentConversationId ? (
+                    <input
+                      type="text"
+                      value={currentConversation?.title || ''}
+                      onChange={(e) => handleRenameConversation(currentConversationId, e.target.value)}
+                      className="bg-transparent border-none focus:ring-0 p-0 text-lg md:text-xl font-bold text-foreground w-full focus:outline-none"
+                    />
+                  ) : (
+                    <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
+                      {t('appName')}
+                    </h1>
+                  )}
                   <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
                 </div>
                 
