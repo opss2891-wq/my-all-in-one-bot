@@ -568,7 +568,7 @@ const ChatView: React.FC = () => {
       {/* Mobile Bottom Navigation - Grid layout */}
       <div className="fixed bottom-0 start-0 end-0 z-30 md:hidden bg-card/95 backdrop-blur-md border-t border-border safe-area-bottom">
         <div className="grid grid-cols-4 gap-1 p-2">
-          {filterButtons.slice(0, 4).map(btn => {
+          {filterButtons.map(btn => {
             const Icon = btn.icon;
             const isActive = filter === btn.type;
             return (
@@ -587,34 +587,6 @@ const ChatView: React.FC = () => {
               </button>
             );
           })}
-        </div>
-        <div className="grid grid-cols-4 gap-1 px-2 pb-2">
-          {filterButtons.slice(4).map(btn => {
-            const Icon = btn.icon;
-            const isActive = filter === btn.type;
-            return (
-              <button
-                key={btn.type}
-                onClick={() => { setFilter(btn.type); setDisplayCount(MESSAGES_PER_PAGE); }}
-                className={cn(
-                  "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
-                  isActive 
-                    ? "bg-primary text-primary-foreground" 
-                    : "text-muted-foreground"
-                )}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="text-[10px] font-medium">{btn.label}</span>
-              </button>
-            );
-          })}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="flex flex-col items-center gap-1 p-2 rounded-xl text-muted-foreground col-span-2"
-          >
-            <Menu className="w-5 h-5" />
-            <span className="text-[10px] font-medium">{t('chats')}</span>
-          </button>
         </div>
       </div>
 
