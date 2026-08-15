@@ -39,12 +39,13 @@ const Auth: React.FC = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
+          redirectTo: `${window.location.origin}/auth/callback`
         }
       });
       if (error) throw error;
     } catch (err: any) {
-      setError(err.message);
+      console.error('Google Sign In Error:', err);
+      setError(t(language).googleSignInError);
     }
   };
 
@@ -187,6 +188,7 @@ const Auth: React.FC = () => {
             variant="outline" 
             className="w-full h-11 bg-background/30 border-border/50 hover:bg-background/80 transition-all"
             onClick={handleGoogleSignIn}
+            aria-label={t(language).signInWithGoogle}
           >
             <div className="flex items-center gap-3">
               <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -207,7 +209,7 @@ const Auth: React.FC = () => {
                   fill="#EA4335"
                 />
               </svg>
-              <span className="font-medium tracking-tight">{content.google}</span>
+              <span className="font-medium tracking-tight">{t(language).signInWithGoogle}</span>
             </div>
           </Button>
         </CardContent>
