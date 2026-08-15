@@ -134,6 +134,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const [noteHeight, setNoteHeight] = useState<number | null>(null);
   const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
+  const { layout } = useUI();
 
   const handleResizeStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
