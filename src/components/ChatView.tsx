@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File, Sun, Moon } from 'lucide-react';
+import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File, Sun, Moon, Search, X } from 'lucide-react';
 import { 
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, ConversationColor, getConversations, getArchivedConversations, createConversation, 
@@ -545,7 +545,11 @@ const ChatView: React.FC = () => {
   const canGoPrev = currentConvIndex > 0;
 
   return (
-    <div className={cn("flex h-[100dvh] bg-background overflow-hidden", isRTL && "flex-row-reverse")}>
+    <div className={cn(
+      "flex h-[100dvh] overflow-hidden transition-colors duration-300",
+      isRTL ? "flex-row-reverse" : "flex-row",
+      theme === 'dark' ? "bg-slate-950" : "bg-background"
+    )}>
       <React.Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
         <ContextMenu 
           onNavigate={handleNavigate}
@@ -560,7 +564,7 @@ const ChatView: React.FC = () => {
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -624,10 +628,16 @@ const ChatView: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0">
+      <div className={cn(
+        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300",
+        theme === 'dark' ? "bg-slate-950" : "bg-background"
+      )}>
         {/* Header */}
         {headerVisible && (
-          <header className="border-b border-border bg-card/90 backdrop-blur-md sticky top-0 z-20 safe-area-top animate-fade-in">
+          <header className={cn(
+            "border-b border-border sticky top-0 z-20 safe-area-top animate-fade-in transition-colors duration-300",
+            theme === 'dark' ? "bg-slate-900/90 backdrop-blur-md" : "bg-card/90 backdrop-blur-md"
+          )}>
             <div className="p-3 md:p-4">
               <div className="flex items-center gap-3 mb-3">
                 {/* Sidebar Toggle - Desktop & Mobile */}
@@ -755,7 +765,13 @@ const ChatView: React.FC = () => {
         )}
 
         {/* Messages */}
-        <main ref={mainRef} className="flex-1 overflow-y-auto overscroll-contain">
+        <main 
+          ref={mainRef} 
+          className={cn(
+            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300",
+            theme === 'dark' ? "bg-slate-950 text-slate-50" : "bg-slate-50/30 text-slate-900"
+          )}
+        >
           <div className="p-3 md:p-4 max-w-3xl mx-auto">
             {/* Messages Grid - 2 columns on mobile */}
             {loading ? (
@@ -823,9 +839,14 @@ const ChatView: React.FC = () => {
 
         {/* Input */}
         {currentConversationId && (
-          <React.Suspense fallback={<div className="p-4 border-t border-border bg-card animate-pulse h-20" />}>
-            <MessageInput onSend={handleSend} loading={sending} />
-          </React.Suspense>
+          <div className={cn(
+            "sticky bottom-0 z-20 transition-colors duration-300",
+            theme === 'dark' ? "bg-slate-900/90 backdrop-blur-md" : "bg-card/90 backdrop-blur-md"
+          )}>
+            <React.Suspense fallback={<div className="p-4 border-t border-border bg-card animate-pulse h-20" />}>
+              <MessageInput onSend={handleSend} loading={sending} />
+            </React.Suspense>
+          </div>
         )}
       </div>
     </div>
