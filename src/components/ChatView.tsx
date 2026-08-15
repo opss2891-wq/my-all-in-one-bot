@@ -568,7 +568,7 @@ const ChatView: React.FC = () => {
       {/* Mobile Bottom Navigation - Grid layout */}
       <div className="fixed bottom-0 start-0 end-0 z-30 md:hidden bg-card/95 backdrop-blur-md border-t border-border safe-area-bottom">
         <div className="grid grid-cols-4 gap-1 p-2">
-          {filterButtons.slice(0, 4).map(btn => {
+          {filterButtons.map(btn => {
             const Icon = btn.icon;
             const isActive = filter === btn.type;
             return (
@@ -587,41 +587,15 @@ const ChatView: React.FC = () => {
               </button>
             );
           })}
-        </div>
-        <div className="grid grid-cols-4 gap-1 px-2 pb-2">
-          {filterButtons.slice(4).map(btn => {
-            const Icon = btn.icon;
-            const isActive = filter === btn.type;
-            return (
-              <button
-                key={btn.type}
-                onClick={() => { setFilter(btn.type); setDisplayCount(MESSAGES_PER_PAGE); }}
-                className={cn(
-                  "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
-                  isActive 
-                    ? "bg-primary text-primary-foreground" 
-                    : "text-muted-foreground"
-                )}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="text-[10px] font-medium">{btn.label}</span>
-              </button>
-            );
-          })}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="flex flex-col items-center gap-1 p-2 rounded-xl text-muted-foreground col-span-2"
-          >
-            <Menu className="w-5 h-5" />
-            <span className="text-[10px] font-medium">{t('chats')}</span>
-          </button>
         </div>
       </div>
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 right-0 z-50 w-80 transform transition-transform duration-300 ease-out",
-        sidebarOpen ? "translate-x-0" : "translate-x-full"
+        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out",
+        isRTL 
+          ? (sidebarOpen ? "translate-x-0 left-0" : "-translate-x-full left-0") 
+          : (sidebarOpen ? "translate-x-0 right-0" : "translate-x-full right-0")
       )}>
         <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
           <ConversationSidebar
@@ -656,12 +630,13 @@ const ChatView: React.FC = () => {
           <header className="border-b border-border bg-card/90 backdrop-blur-md sticky top-0 z-20 safe-area-top animate-fade-in">
             <div className="p-3 md:p-4">
               <div className="flex items-center gap-3 mb-3">
-                {/* Sidebar Toggle - Desktop */}
+                {/* Sidebar Toggle - Desktop & Mobile */}
                 <button
                   onClick={toggleSidebar}
-                  className="hidden md:flex p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  title={t('conversations')}
                 >
-                  <PanelLeftOpen className="w-5 h-5" />
+                  <Menu className="w-5 h-5" />
                 </button>
                 
                 {/* Previous Conversation */}

@@ -9,7 +9,7 @@ import {
   Edit2,
   Check,
   X,
-  X as CloseIcon,
+  ChevronLeft,
   ChevronRight,
   Search,
   Pin,
@@ -161,11 +161,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
     return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US');
   };
 
-  const CloseIcon = ChevronRight;
+  const CloseBtnIcon = isRTL ? ChevronRight : ChevronLeft;
 
   return (
     <div id={sidebarId} className={cn(
-      "h-full flex flex-col bg-card border-l border-border transition-all duration-300 relative",
+      "h-full flex flex-col bg-card border-x border-border transition-all duration-300 relative",
       (editingId || labelEditId) ? "translate-x-0 opacity-100" : "group-[.dropdown-open]:translate-x-0 group-[.dropdown-open]:opacity-100",
       className
     )}>
@@ -177,7 +177,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
             onClick={onClose}
             className="p-2 rounded-xl hover:bg-muted transition-colors md:hidden"
           >
-            <CloseIcon className="w-5 h-5" />
+            <CloseBtnIcon className="w-5 h-5" />
           </button>
         </div>
         <button
