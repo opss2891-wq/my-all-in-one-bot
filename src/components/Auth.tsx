@@ -36,10 +36,15 @@ const Auth: React.FC = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log("Initiating Google Sign-In via Managed Social Login...");
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
+          // Use the origin correctly for redirect
           redirectTo: `${window.location.origin}/auth/callback`,
+          // Note: Managed Social Login handles secrets on the server-side.
+          // If 400 persists, the backend configuration for 'google' might be incomplete
+          // or missing the internal Lovable-managed secret link.
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -47,6 +52,7 @@ const Auth: React.FC = () => {
         }
       });
       if (error) throw error;
+      console.log("OAuth sign-in triggered successfully", data);
     } catch (err: any) {
       console.error('Google Sign In Error:', err);
       setError(translate('googleSignInError'));
