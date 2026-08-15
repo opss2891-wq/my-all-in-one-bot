@@ -12,6 +12,7 @@ const Auth: React.FC = () => {
   const [error, setError] = useState('');
   const { language } = useLanguage();
   const { loginWithPin } = useAuth();
+  const navigate = useNavigate();
 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ const Auth: React.FC = () => {
     
     if (pin === '4419') {
       loginWithPin();
+      navigate('/');
     } else {
       setError(language === 'ar' ? 'رمز الدخول غير صحيح' : 'Invalid PIN');
       setPin('');
