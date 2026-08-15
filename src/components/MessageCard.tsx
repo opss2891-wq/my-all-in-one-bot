@@ -344,7 +344,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 key={index + 1}
                 onClick={() => handleToggleTask(index + 1)}
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all active:scale-[0.98]",
+                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98]",
+                  layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
                 )}
               >
