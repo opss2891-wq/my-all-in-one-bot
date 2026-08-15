@@ -13,7 +13,7 @@ const Auth: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { language, isRTL } = useLanguage();
+  const { language, isRTL, t: translate } = useLanguage();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +45,7 @@ const Auth: React.FC = () => {
       if (error) throw error;
     } catch (err: any) {
       console.error('Google Sign In Error:', err);
-      setError(t(language).googleSignInError);
+      setError(translate('googleSignInError'));
     }
   };
 
@@ -209,7 +209,7 @@ const Auth: React.FC = () => {
                   fill="#EA4335"
                 />
               </svg>
-              <span className="font-medium tracking-tight">{t(language).signInWithGoogle}</span>
+              <span className="font-medium tracking-tight">{translate('signInWithGoogle')}</span>
             </div>
           </Button>
         </CardContent>
