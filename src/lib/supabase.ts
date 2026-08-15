@@ -276,6 +276,7 @@ export const getMessages = async (userId: string, conversationId?: string) => {
     fileData: m.file_data as any,
 
     images: m.images,
+    description: m.description,
     createdAt: m.created_at
   })) as Message[];
 };
