@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File, Sun, Moon, Search, X } from 'lucide-react';
+import { Loader2, Sparkles, FileText, CheckSquare, Key, Link2, Code, Menu, Plus, PanelLeftOpen, PanelLeftClose, Eye, EyeOff, ChevronLeft, ChevronRight, File, Sun, Moon, Search, X, Check } from 'lucide-react';
 import { 
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, ConversationColor, getConversations, getArchivedConversations, createConversation, 
@@ -56,6 +56,8 @@ const ChatView: React.FC = () => {
   const [sending, setSending] = useState(false);
   const [filter, setFilter] = useState<MessageType | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [tempTitle, setTempTitle] = useState('');
   const [displayCount, setDisplayCount] = useState(MESSAGES_PER_PAGE);
   const [loadingMore, setLoadingMore] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
@@ -532,13 +534,22 @@ const ChatView: React.FC = () => {
      }
   };
   
-  const handleRenameCurrent = () => {
-    // We focus the input in the header
-    const input = document.querySelector('header input') as HTMLInputElement;
-    if (input) {
-      input.focus();
-      input.select();
+   const handleRenameCurrent = () => {
+    if (currentConversation) {
+      setTempTitle(currentConversation.title);
+      setEditingTitle(true);
     }
+  };
+
+  const saveHeaderRename = () => {
+    if (currentConversationId && tempTitle.trim() && tempTitle !== currentConversation?.title) {
+      handleRenameConversation(currentConversationId, tempTitle.trim());
+    }
+    setEditingTitle(false);
+  };
+
+  const cancelHeaderRename = () => {
+    setEditingTitle(false);
   };
 
   const canGoNext = currentConvIndex >= 0 && currentConvIndex < allConvs.length - 1;
@@ -666,21 +677,48 @@ const ChatView: React.FC = () => {
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl gradient-primary flex items-center justify-center glow-primary flex-shrink-0">
                   <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  {currentConversationId ? (
-                    <input
-                      type="text"
-                      value={currentConversation?.title || ''}
-                      onChange={(e) => handleRenameConversation(currentConversationId, e.target.value)}
-                      className="bg-transparent border-none focus:ring-0 p-0 text-lg md:text-xl font-bold text-foreground w-full focus:outline-none"
-                    />
-                  ) : (
-                    <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
-                      {t('appName')}
-                    </h1>
-                  )}
-                  <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
-                </div>
+                 <div className="flex-1 min-w-0">
+                   {currentConversationId ? (
+                     editingTitle ? (
+                       <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                         <input
+                           type="text"
+                           value={tempTitle}
+                           onChange={(e) => setTempTitle(e.target.value)}
+                           onKeyDown={(e) => {
+                             if (e.key === 'Enter') saveHeaderRename();
+                             if (e.key === 'Escape') cancelHeaderRename();
+                           }}
+                           className="bg-muted/50 border border-primary/30 rounded-lg px-2 py-1 text-lg font-bold text-foreground w-full focus:outline-none focus:ring-1 focus:ring-primary"
+                           autoFocus
+                         />
+                         <button onClick={saveHeaderRename} className="p-1.5 bg-success/20 hover:bg-success/30 rounded-lg transition-colors">
+                           <Check className="w-5 h-5 text-success" />
+                         </button>
+                         <button onClick={cancelHeaderRename} className="p-1.5 bg-destructive/20 hover:bg-destructive/30 rounded-lg transition-colors">
+                           <X className="w-5 h-5 text-destructive" />
+                         </button>
+                       </div>
+                     ) : (
+                       <div 
+                         className="cursor-pointer hover:bg-muted/30 rounded-lg px-1 transition-colors group relative"
+                         onClick={handleRenameCurrent}
+                       >
+                         <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
+                           {currentConversation?.title}
+                         </h1>
+                         <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
+                       </div>
+                     )
+                   ) : (
+                     <div className="flex flex-col">
+                       <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
+                         {t('appName')}
+                       </h1>
+                       <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
+                     </div>
+                   )}
+                 </div>
                 
                 {/* Next Conversation */}
                 <button

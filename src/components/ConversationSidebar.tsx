@@ -361,15 +361,18 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                 </div>
 
                 {!editingId && !labelEditId && (
-                  <DropdownMenu onOpenChange={(open) => {
-                    // Prevent sidebar from closing when dropdown is open on mobile/responsive
-                    if (open) {
-                      // We can add a data attribute or class to the sidebar to indicate a dropdown is open
-                      document.getElementById('conversation-sidebar')?.classList.add('dropdown-open');
-                    } else {
-                      document.getElementById('conversation-sidebar')?.classList.remove('dropdown-open');
-                    }
-                  }}>
+                   <DropdownMenu onOpenChange={(open) => {
+                     // Keep sidebar stable during dropdown interaction
+                     const sidebar = document.getElementById(sidebarId);
+                     if (open) {
+                       sidebar?.classList.add('dropdown-open');
+                     } else {
+                       // Small delay to prevent flickering or immediate closure on selection
+                       setTimeout(() => {
+                         sidebar?.classList.remove('dropdown-open');
+                       }, 100);
+                     }
+                   }}>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
                       <button className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
