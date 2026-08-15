@@ -157,4 +157,5 @@ export const en = {
   demoCodeExplanation: 'A simple JavaScript function to print a welcome message.',
   signInWithGoogle: 'Continue with Google',
   googleSignInError: 'Google sign-in error. Please check authorized domain settings.',
+  signupDisabled: 'New registration is currently disabled.',
 };

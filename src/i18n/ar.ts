@@ -157,4 +157,5 @@ export const ar = {
   demoCodeExplanation: 'دالة JavaScript بسيطة لطباعة رسالة ترحيب.',
   signInWithGoogle: 'المتابعة بواسطة جوجل',
   googleSignInError: 'خطأ في تسجيل الدخول بواسطة جوجل. يرجى التأكد من إعدادات النطاق المعتمد.',
+  signupDisabled: 'إنشاء حساب جديد معطل حالياً.',
 };

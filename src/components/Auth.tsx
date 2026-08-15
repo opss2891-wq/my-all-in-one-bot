@@ -8,7 +8,7 @@ import { LogIn, UserPlus, Shield, Mail, Lock, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Auth: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const isLogin = true; // Disabled signup toggle
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,8 +24,8 @@ const Auth: React.FC = () => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) throw error;
+        // Sign up is disabled
+        throw new Error(translate('signupDisabled') || 'Registration is currently disabled.');
       }
     } catch (err: any) {
       setError(err.message);
@@ -218,16 +218,6 @@ const Auth: React.FC = () => {
           </Button>
         </CardContent>
 
-        <CardFooter className="pb-8">
-          <button 
-            type="button"
-            className="w-full text-sm text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-1.5 group" 
-            onClick={() => setIsLogin(!isLogin)}
-          >
-            <span>{isLogin ? content.switchSignup : content.switchLogin}</span>
-            <Sparkles className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-all scale-0 group-hover:scale-110" />
-          </button>
-        </CardFooter>
       </Card>
 
       {/* Footer Info */}
