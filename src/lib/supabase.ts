@@ -234,7 +234,8 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
       code_data: message.codeData as any,
       file_data: message.fileData as any,
 
-      images: message.images
+      images: message.images,
+      description: message.description
     }])
     .select()
     .single();
