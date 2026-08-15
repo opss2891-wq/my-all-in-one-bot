@@ -266,7 +266,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 !noteHeight && !isExpanded && "max-h-[150px]"
               )}
             >
-              <div className="text-foreground text-sm md:text-base leading-relaxed markdown-content">
+              <div className={cn(
+                "text-foreground leading-relaxed markdown-content",
+                layout === 'compact' ? "text-xs line-clamp-2" : "text-sm md:text-base"
+              )}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {content}
                 </ReactMarkdown>
