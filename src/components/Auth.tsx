@@ -28,7 +28,11 @@ const Auth: React.FC = () => {
         throw new Error(translate('signupDisabled') || 'Registration is currently disabled.');
       }
     } catch (err: any) {
-      setError(err.message);
+      if (err.code === 'email_provider_disabled') {
+        setError(translate('emailProviderDisabled') || 'Email login is disabled in settings.');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
