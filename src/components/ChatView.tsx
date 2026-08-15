@@ -791,7 +791,10 @@ const ChatView: React.FC = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-1 gap-3 md:gap-4">
+                <div className={cn(
+                  "grid gap-3 md:gap-4",
+                  layout === 'grid' ? "grid-cols-2 md:grid-cols-2" : "grid-cols-1 md:grid-cols-1"
+                )}>
                   <React.Suspense fallback={<div className="p-4 border border-border rounded-xl bg-card animate-pulse h-24" />}>
                     {displayedMessages.map(message => (
                       <MessageCard 
