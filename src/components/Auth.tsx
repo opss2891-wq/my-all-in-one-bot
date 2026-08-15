@@ -111,73 +111,13 @@ const Auth: React.FC = () => {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div className="space-y-4">
-              <div className="relative group">
-                <div className={cn(
-                  "absolute inset-y-0 flex items-center text-muted-foreground transition-colors group-focus-within:text-primary",
-                  isRTL ? "right-3" : "left-3"
-                )}>
-                  <Mail className="h-4 w-4" />
-                </div>
-                <Input
-                  type="email"
-                  placeholder={content.email}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={cn(
-                    "bg-background/50 border-border/50 focus:border-primary/50 transition-all pl-10 h-11",
-                    isRTL ? "pr-10 pl-3" : "pl-10 pr-3"
-                  )}
-                  required
-                />
-              </div>
-
-              <div className="relative group">
-                <div className={cn(
-                  "absolute inset-y-0 flex items-center text-muted-foreground transition-colors group-focus-within:text-primary",
-                  isRTL ? "right-3" : "left-3"
-                )}>
-                  <Lock className="h-4 w-4" />
-                </div>
-                <Input
-                  type="password"
-                  placeholder={content.password}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={cn(
-                    "bg-background/50 border-border/50 focus:border-primary/50 transition-all pl-10 h-11",
-                    isRTL ? "pr-10 pl-3" : "pl-10 pr-3"
-                  )}
-                  required
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm animate-fade-in">
-                {error}
-              </div>
-            )}
-
-            <Button 
-              type="submit" 
-              className="w-full h-11 font-medium transition-all hover:shadow-lg active:scale-[0.98]"
-              disabled={loading}
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>{content.loading}</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  {isLogin ? <LogIn className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-                  <span>{isLogin ? content.login : content.signup}</span>
-                </div>
-              )}
-            </Button>
-          </form>
+          {/* Email login form removed per request to disable email logins */}
+          <div className="p-4 rounded-lg bg-muted/30 border border-border/50 text-center space-y-2">
+            <Shield className="h-8 w-8 mx-auto text-primary/60" />
+            <p className="text-sm text-muted-foreground">
+              {language === 'ar' ? 'تم تعطيل تسجيل الدخول بالبريد الإلكتروني. يرجى استخدام جوجل.' : 'Email login is disabled. Please use Google.'}
+            </p>
+          </div>
           
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
