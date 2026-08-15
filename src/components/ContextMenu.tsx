@@ -45,7 +45,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   const [activeCardType, setActiveCardType] = useState<string | null>(null);
   
   const { language, setLanguage, t, isRTL } = useLanguage();
-  const { sidebarOpen, toggleSidebar, headerVisible, toggleHeader } = useUI();
+  const { sidebarOpen, toggleSidebar, headerVisible, toggleHeader, layout, setLayout } = useUI();
 
   const handleContextMenu = useCallback((e: MouseEvent) => {
     e.preventDefault();
@@ -87,7 +87,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   if (!isOpen) return null;
 
   const menuWidth = 220;
-  const menuHeight = activeCardType ? 400 : 320;
+  const menuHeight = activeCardType ? 450 : 380;
   const adjustedX = isRTL 
     ? Math.max(position.x - menuWidth, 10)
     : Math.min(position.x, window.innerWidth - menuWidth - 10);
@@ -229,6 +229,43 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
               <span className="ms-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded-lg">
                 {language === 'ar' ? 'EN' : 'عربي'}
               </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Layout Controls */}
+        <div className="p-2 border-b border-border">
+          <p className="text-xs text-muted-foreground px-2 mb-2">{t('layout')}</p>
+          <div className="flex gap-1 p-1 bg-muted/30 rounded-xl">
+            <button
+              onClick={() => { setLayout('list'); setIsOpen(false); }}
+              className={cn(
+                "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
+                layout === 'list' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
+              )}
+              title={t('list')}
+            >
+              <LayoutList className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => { setLayout('grid'); setIsOpen(false); }}
+              className={cn(
+                "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
+                layout === 'grid' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
+              )}
+              title={t('grid')}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => { setLayout('compact'); setIsOpen(false); }}
+              className={cn(
+                "flex-1 flex-center justify-center py-2 rounded-lg transition-all",
+                layout === 'compact' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
+              )}
+              title={t('compact')}
+            >
+              <Columns className="w-4 h-4" />
             </button>
           </div>
         </div>
