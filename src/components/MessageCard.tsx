@@ -214,6 +214,17 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     }
   };
 
+  const handleUpdateDescription = async () => {
+    if (!message.id) return;
+    try {
+      await updateMessage(message.id, { description: tempDescription.trim() });
+      setIsAddingDescription(false);
+      onUpdate();
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    }
+  };
+
   const getTypeLabel = () => {
     switch (message.type) {
       case 'note': return t('note');
