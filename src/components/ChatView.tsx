@@ -620,8 +620,8 @@ const ChatView: React.FC = () => {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 right-0 z-50 w-80 transform transition-transform duration-300 ease-out",
-        sidebarOpen ? "translate-x-0" : "translate-x-full"
+        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out",
+        isRTL ? (sidebarOpen ? "translate-x-0 left-0" : "-translate-x-full left-0") : (sidebarOpen ? "translate-x-0 right-0" : "translate-x-full right-0")
       )}>
         <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
           <ConversationSidebar
