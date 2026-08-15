@@ -700,15 +700,17 @@ const ChatView: React.FC = () => {
                          </button>
                        </div>
                      ) : (
-                       <div 
-                         className="cursor-pointer hover:bg-muted/30 rounded-lg px-1 transition-colors group relative"
-                         onClick={handleRenameCurrent}
-                       >
-                         <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
-                           {currentConversation?.title}
-                         </h1>
-                         <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
-                       </div>
+                        <div 
+                          className="cursor-pointer hover:bg-muted/30 rounded-lg px-2 py-1 transition-all group relative border border-transparent hover:border-primary/20"
+                          onClick={handleRenameCurrent}
+                          title={language === 'ar' ? 'تعديل العنوان' : 'Edit title'}
+                        >
+                          <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
+                            {currentConversation?.title}
+                          </h1>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('personalStorage')}</p>
+                        </div>
+
                      )
                    ) : (
                      <div className="flex flex-col">
