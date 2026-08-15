@@ -132,6 +132,8 @@ interface MessageCardProps {
 const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, searchQuery = '' }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isAddingDescription, setIsAddingDescription] = useState(false);
+  const [tempDescription, setTempDescription] = useState('');
   const [noteHeight, setNoteHeight] = useState<number | null>(null);
   const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
