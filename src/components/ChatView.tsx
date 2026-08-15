@@ -658,12 +658,13 @@ const ChatView: React.FC = () => {
           <header className="border-b border-border bg-card/90 backdrop-blur-md sticky top-0 z-20 safe-area-top animate-fade-in">
             <div className="p-3 md:p-4">
               <div className="flex items-center gap-3 mb-3">
-                {/* Sidebar Toggle - Desktop */}
+                {/* Sidebar Toggle - Desktop & Mobile */}
                 <button
                   onClick={toggleSidebar}
-                  className="hidden md:flex p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  title={t('conversations')}
                 >
-                  <PanelLeftOpen className="w-5 h-5" />
+                  <Menu className="w-5 h-5" />
                 </button>
                 
                 {/* Previous Conversation */}
