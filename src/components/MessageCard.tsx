@@ -532,6 +532,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       data-card-type={message.type}
       className={cn(
         "bg-card border-2 rounded-2xl p-4 animate-slide-up group transition-all",
+        layout === 'compact' ? "p-2 min-h-0" : "p-4",
         getBorderColor(),
         (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.99]"
       )}
