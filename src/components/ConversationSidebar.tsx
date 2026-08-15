@@ -375,10 +375,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                     }
                   }}>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
-                      <button className={cn(
-                        "p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all",
-                        layout === 'grid' && "absolute top-1 right-1 p-1"
-                      )}>
+                      <button className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </DropdownMenuTrigger>
