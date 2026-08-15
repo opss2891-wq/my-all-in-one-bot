@@ -3,7 +3,8 @@ import {
   FileText, CheckSquare, Key, Link2, Code, X, 
   PanelLeftClose, PanelLeftOpen, Eye, EyeOff, 
   Languages, Copy, Trash2, Edit2, Sparkles,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight,
+  LayoutList, LayoutGrid, Columns
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
