@@ -523,8 +523,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         };
         return (
           <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-purple-500/5 border border-purple-500/20">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+            <div className={cn(
+              "flex items-center gap-3 rounded-xl bg-purple-500/5 border border-purple-500/20",
+              layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3"
+            )}>
+              <div className={cn(
+                "rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0",
+                layout === 'compact' ? "w-8 h-8" : "w-10 h-10"
+              )}>
                 <File className="w-5 h-5 text-purple-400" />
               </div>
               <div className="flex-1 min-w-0">
