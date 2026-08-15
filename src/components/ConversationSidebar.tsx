@@ -225,41 +225,8 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         </div>
       </div>
 
-      {/* Layout Selection & Toggle Archived */}
-      <div className="px-3 py-2 border-b border-border space-y-2">
-        <div className="flex items-center gap-1 p-1 bg-muted/30 rounded-xl">
-          <button
-            onClick={() => setLayout('list')}
-            className={cn(
-              "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-              layout === 'list' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
-            )}
-            title={t('list')}
-          >
-            <LayoutList className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setLayout('grid')}
-            className={cn(
-              "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-              layout === 'grid' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
-            )}
-            title={t('grid')}
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setLayout('compact')}
-            className={cn(
-              "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-              layout === 'compact' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
-            )}
-            title={t('compact')}
-          >
-            <Columns className="w-4 h-4" />
-          </button>
-        </div>
-
+      {/* Toggle Archived */}
+      <div className="px-3 py-2 border-b border-border">
         <button
           onClick={onToggleArchived}
           className={cn(
