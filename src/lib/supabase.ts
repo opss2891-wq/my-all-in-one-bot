@@ -52,6 +52,7 @@ export interface Message {
   codeData?: CodeData;
   fileData?: FileData;
   images?: string[];
+  description?: string;
   createdAt: string;
 }
 
@@ -233,7 +234,8 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
       code_data: message.codeData as any,
       file_data: message.fileData as any,
 
-      images: message.images
+      images: message.images,
+      description: message.description
     }])
     .select()
     .single();
@@ -274,6 +276,7 @@ export const getMessages = async (userId: string, conversationId?: string) => {
     fileData: m.file_data as any,
 
     images: m.images,
+    description: m.description,
     createdAt: m.created_at
   })) as Message[];
 };

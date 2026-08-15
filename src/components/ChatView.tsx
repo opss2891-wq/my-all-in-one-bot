@@ -62,7 +62,7 @@ const ChatView: React.FC = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language } = useLanguage();
   const { sidebarOpen, setSidebarOpen, toggleSidebar, headerVisible, toggleHeader, theme, toggleTheme, layout } = useUI();
   const { user } = useAuth();
 
@@ -700,15 +700,17 @@ const ChatView: React.FC = () => {
                          </button>
                        </div>
                      ) : (
-                       <div 
-                         className="cursor-pointer hover:bg-muted/30 rounded-lg px-1 transition-colors group relative"
-                         onClick={handleRenameCurrent}
-                       >
-                         <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
-                           {currentConversation?.title}
-                         </h1>
-                         <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
-                       </div>
+                        <div 
+                          className="cursor-pointer hover:bg-muted/30 rounded-lg px-2 py-1 transition-all group relative border border-transparent hover:border-primary/20"
+                          onClick={handleRenameCurrent}
+                          title={language === 'ar' ? 'تعديل العنوان' : 'Edit title'}
+                        >
+                          <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
+                            {currentConversation?.title}
+                          </h1>
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('personalStorage')}</p>
+                        </div>
+
                      )
                    ) : (
                      <div className="flex flex-col">
@@ -718,7 +720,36 @@ const ChatView: React.FC = () => {
                        <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
                      </div>
                    )}
-                 </div>
+                  </div>
+                  
+                  {/* Filter Pills - Desktop only to avoid crowding */}
+                  <div className="hidden lg:flex items-center gap-1.5 bg-muted/20 p-1 rounded-2xl mx-2">
+                    {['all', 'note', 'tasks', 'credentials', 'links', 'code', 'file'].map((type) => {
+                      const isActive = filter === type;
+                      return (
+                        <button
+                          key={type}
+                          onClick={() => { setFilter(type as any); setDisplayCount(MESSAGES_PER_PAGE); }}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all text-xs font-medium",
+                            isActive 
+                              ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105" 
+                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                          )}
+                        >
+                          {type === 'all' && <Sparkles className="w-3.5 h-3.5" />}
+                          {type === 'note' && <FileText className="w-3.5 h-3.5" />}
+                          {type === 'tasks' && <CheckSquare className="w-3.5 h-3.5" />}
+                          {type === 'credentials' && <Key className="w-3.5 h-3.5" />}
+                          {type === 'links' && <Link2 className="w-3.5 h-3.5" />}
+                          {type === 'code' && <Code className="w-3.5 h-3.5" />}
+                          {type === 'file' && <File className="w-3.5 h-3.5" />}
+                          <span className="hidden xl:inline">{type === 'all' ? t('all') : t(type)}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
                 
                 {/* Next Conversation */}
                 <button

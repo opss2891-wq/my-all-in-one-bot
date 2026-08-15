@@ -90,6 +90,7 @@ export type Database = {
           conversation_id: string | null
           created_at: string
           credential: Json | null
+          description: string | null
           file_data: Json | null
           id: string
           images: string[] | null
@@ -104,6 +105,7 @@ export type Database = {
           conversation_id?: string | null
           created_at?: string
           credential?: Json | null
+          description?: string | null
           file_data?: Json | null
           id?: string
           images?: string[] | null
@@ -118,6 +120,7 @@ export type Database = {
           conversation_id?: string | null
           created_at?: string
           credential?: Json | null
+          description?: string | null
           file_data?: Json | null
           id?: string
           images?: string[] | null

@@ -132,6 +132,8 @@ interface MessageCardProps {
 const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, searchQuery = '' }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isAddingDescription, setIsAddingDescription] = useState(false);
+  const [tempDescription, setTempDescription] = useState('');
   const [noteHeight, setNoteHeight] = useState<number | null>(null);
   const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
@@ -209,6 +211,17 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'code': return <Code className="w-5 h-5 text-info" />;
       case 'file': return <File className="w-5 h-5 text-purple-400" />;
       default: return <FileText className="w-5 h-5" />;
+    }
+  };
+
+  const handleUpdateDescription = async () => {
+    if (!message.id) return;
+    try {
+      await updateMessage(message.id, { description: tempDescription.trim() });
+      setIsAddingDescription(false);
+      onUpdate();
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
     }
   };
 
@@ -311,6 +324,67 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 ))}
               </div>
             )}
+            
+            {/* Optional Description Section */}
+            {(message.description || isAddingDescription) ? (
+              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc">
+                {isAddingDescription ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      placeholder={language === 'ar' ? 'أضف ملاحظة فرعية...' : 'Add a sub-note...'}
+                      className="w-full bg-card border border-success/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
+                      rows={2}
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setIsAddingDescription(false); }}
+                        className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleUpdateDescription(); }}
+                        className="p-1.5 bg-success/20 hover:bg-success/30 rounded-lg transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-success" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-xs text-success/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                      {message.description}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                      className="absolute top-0 end-0 p-1 opacity-0 group-hover/desc:opacity-100 hover:bg-success/10 rounded transition-all"
+                    >
+                      <Plus className="w-3 h-3 text-success" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription('');
+                  setIsAddingDescription(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-success transition-colors opacity-0 group-hover/note:opacity-100"
+              >
+                <Plus className="w-3 h-3" />
+                <span>{language === 'ar' ? 'أضف وصفاً/ملاحظة فرعية' : 'Add description/sub-note'}</span>
+              </button>
+            )}
           </div>
         );
       }
@@ -365,6 +439,126 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               </div>
             ))}
             <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
+            {/* Optional Description Section for Tasks */}
+            {(message.description || isAddingDescription) ? (
+              <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc">
+                {isAddingDescription ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للمهام...' : 'Add a sub-note for tasks...'}
+                      className="w-full bg-card border border-warning/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-warning"
+                      rows={2}
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setIsAddingDescription(false); }}
+                        className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleUpdateDescription(); }}
+                        className="p-1.5 bg-warning/20 hover:bg-warning/30 rounded-lg transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-warning" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-xs text-warning/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                      {message.description}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                      className="absolute top-0 end-0 p-1 opacity-0 group-hover/desc:opacity-100 hover:bg-warning/10 rounded transition-all"
+                    >
+                      <Plus className="w-3 h-3 text-warning" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription('');
+                  setIsAddingDescription(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-warning transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <Plus className="w-3 h-3" />
+                <span>{language === 'ar' ? 'أضف وصفاً/ملاحظة فرعية' : 'Add description/sub-note'}</span>
+              </button>
+            )}
+            {/* Optional Description Section for Credentials */}
+            {(message.description || isAddingDescription) ? (
+              <div className="mt-3 pt-3 border-t border-accent/10 bg-accent/5 rounded-xl p-3 relative group/desc">
+                {isAddingDescription ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للبيانات...' : 'Add a sub-note for credentials...'}
+                      className="w-full bg-card border border-accent/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                      rows={2}
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setIsAddingDescription(false); }}
+                        className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleUpdateDescription(); }}
+                        className="p-1.5 bg-accent/20 hover:bg-accent/30 rounded-lg transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-accent" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-xs text-accent/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                      {message.description}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                      className="absolute top-0 end-0 p-1 opacity-0 group-hover/desc:opacity-100 hover:bg-accent/10 rounded transition-all"
+                    >
+                      <Plus className="w-3 h-3 text-accent" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription('');
+                  setIsAddingDescription(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <Plus className="w-3 h-3" />
+                <span>{language === 'ar' ? 'أضف وصفاً/ملاحظة فرعية' : 'Add description/sub-note'}</span>
+              </button>
+            )}
           </div>
         );
       }
@@ -435,6 +629,66 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 </div>
               </div>
             )}
+            {/* Optional Description Section for Credentials */}
+            {(message.description || isAddingDescription) ? (
+              <div className="mt-3 pt-3 border-t border-accent/10 bg-accent/5 rounded-xl p-3 relative group/desc">
+                {isAddingDescription ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للبيانات...' : 'Add a sub-note for credentials...'}
+                      className="w-full bg-card border border-accent/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                      rows={2}
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setIsAddingDescription(false); }}
+                        className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleUpdateDescription(); }}
+                        className="p-1.5 bg-accent/20 hover:bg-accent/30 rounded-lg transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-accent" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-xs text-accent/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                      {message.description}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                      className="absolute top-0 end-0 p-1 opacity-0 group-hover/desc:opacity-100 hover:bg-accent/10 rounded transition-all"
+                    >
+                      <Plus className="w-3 h-3 text-accent" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription('');
+                  setIsAddingDescription(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <Plus className="w-3 h-3" />
+                <span>{language === 'ar' ? 'أضف وصفاً/ملاحظة فرعية' : 'Add description/sub-note'}</span>
+              </button>
+            )}
           </div>
         );
       }
@@ -471,6 +725,66 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 </a>
               );
             })}
+            {/* Optional Description Section for Links */}
+            {(message.description || isAddingDescription) ? (
+              <div className="mt-3 pt-3 border-t border-primary/10 bg-primary/5 rounded-xl p-3 relative group/desc">
+                {isAddingDescription ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للروابط...' : 'Add a sub-note for links...'}
+                      className="w-full bg-card border border-primary/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                      rows={2}
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setIsAddingDescription(false); }}
+                        className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleUpdateDescription(); }}
+                        className="p-1.5 bg-primary/20 hover:bg-primary/30 rounded-lg transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-primary" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-xs text-primary/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                      {message.description}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                      className="absolute top-0 end-0 p-1 opacity-0 group-hover/desc:opacity-100 hover:bg-primary/10 rounded transition-all"
+                    >
+                      <Plus className="w-3 h-3 text-primary" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription('');
+                  setIsAddingDescription(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <Plus className="w-3 h-3" />
+                <span>{language === 'ar' ? 'أضف وصفاً/ملاحظة فرعية' : 'Add description/sub-note'}</span>
+              </button>
+            )}
           </div>
         );
       }
@@ -502,6 +816,66 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                   <span key={index} className="px-2.5 py-1 text-xs font-medium bg-info/10 text-info rounded-lg">#{tag}</span>
                 ))}
               </div>
+            )}
+            {/* Optional Description Section for Code */}
+            {(message.description || isAddingDescription) ? (
+              <div className="mt-3 pt-3 border-t border-info/10 bg-info/5 rounded-xl p-3 relative group/desc">
+                {isAddingDescription ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للكود...' : 'Add a sub-note for code...'}
+                      className="w-full bg-card border border-info/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-info"
+                      rows={2}
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setIsAddingDescription(false); }}
+                        className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleUpdateDescription(); }}
+                        className="p-1.5 bg-info/20 hover:bg-info/30 rounded-lg transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-info" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-xs text-info/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                      {message.description}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                      className="absolute top-0 end-0 p-1 opacity-0 group-hover/desc:opacity-100 hover:bg-info/10 rounded transition-all"
+                    >
+                      <Plus className="w-3 h-3 text-info" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription('');
+                  setIsAddingDescription(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-info transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <Plus className="w-3 h-3" />
+                <span>{language === 'ar' ? 'أضف وصفاً/ملاحظة فرعية' : 'Add description/sub-note'}</span>
+              </button>
             )}
           </div>
         );
@@ -547,6 +921,66 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                   {fileData.content.length > 2000 ? fileData.content.slice(0, 2000) + '...' : fileData.content}
                 </pre>
               </div>
+            )}
+            {/* Optional Description Section for Files */}
+            {(message.description || isAddingDescription) ? (
+              <div className="mt-3 pt-3 border-t border-purple-500/10 bg-purple-500/5 rounded-xl p-3 relative group/desc">
+                {isAddingDescription ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للملف...' : 'Add a sub-note for file...'}
+                      className="w-full bg-card border border-purple-500/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                      rows={2}
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setIsAddingDescription(false); }}
+                        className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleUpdateDescription(); }}
+                        className="p-1.5 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg transition-colors"
+                      >
+                        <Plus className="w-4 h-4 text-purple-400" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <p className="text-xs text-purple-400/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                      {message.description}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                      className="absolute top-0 end-0 p-1 opacity-0 group-hover/desc:opacity-100 hover:bg-purple-500/10 rounded transition-all"
+                    >
+                      <Plus className="w-3 h-3 text-purple-400" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription('');
+                  setIsAddingDescription(true);
+                }}
+                className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-purple-400 transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <Plus className="w-3 h-3" />
+                <span>{language === 'ar' ? 'أضف وصفاً/ملاحظة فرعية' : 'Add description/sub-note'}</span>
+              </button>
             )}
           </div>
         );
