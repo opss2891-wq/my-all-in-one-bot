@@ -61,7 +61,7 @@ const ChatView: React.FC = () => {
   const mainRef = useRef<HTMLDivElement>(null);
 
   const { t, isRTL } = useLanguage();
-  const { sidebarOpen, setSidebarOpen, toggleSidebar, headerVisible, toggleHeader, theme, toggleTheme } = useUI();
+  const { sidebarOpen, setSidebarOpen, toggleSidebar, headerVisible, toggleHeader, theme, toggleTheme, layout } = useUI();
   const { user } = useAuth();
 
   useEffect(() => {
