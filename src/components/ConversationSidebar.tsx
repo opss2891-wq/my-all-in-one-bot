@@ -106,7 +106,6 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   const [labelValue, setLabelValue] = useState('');
   const { t, isRTL, language } = useLanguage();
   const { logout, user } = useAuth();
-  const { user } = useAuth();
 
   const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'];
 
