@@ -155,4 +155,6 @@ export const ar = {
   demoTask3: 'تكوين مفاتيح API',
   demoTask4: 'تجربة تنسيق Markdown',
   demoCodeExplanation: 'دالة JavaScript بسيطة لطباعة رسالة ترحيب.',
+  signInWithGoogle: 'المتابعة بواسطة جوجل',
+  googleSignInError: 'خطأ في تسجيل الدخول بواسطة جوجل. يرجى التأكد من إعدادات النطاق المعتمد.',
 };
