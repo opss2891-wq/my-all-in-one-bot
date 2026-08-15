@@ -87,7 +87,9 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   if (!isOpen) return null;
 
   const menuWidth = 220;
-  const menuHeight = activeCardType ? 450 : 380;
+  const layoutItemsCount = 3;
+  const baseHeight = activeCardType ? 450 : 380;
+  const menuHeight = baseHeight + (layoutItemsCount * 10); // Add extra space for expanded layout
   const adjustedX = isRTL 
     ? Math.max(position.x - menuWidth, 10)
     : Math.min(position.x, window.innerWidth - menuWidth - 10);
@@ -236,36 +238,48 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         {/* Layout Controls */}
         <div className="p-2 border-b border-border">
           <p className="text-xs text-muted-foreground px-2 mb-2">{t('layout')}</p>
-          <div className="flex gap-1 p-1 bg-muted/30 rounded-xl">
+          <div className="space-y-1">
             <button
-              onClick={() => { setLayout('list'); setIsOpen(false); }}
+              onClick={() => setLayout('list')}
               className={cn(
-                "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-                layout === 'list' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-start",
+                layout === 'list' 
+                  ? "bg-primary/10 text-primary border border-primary/20" 
+                  : "text-foreground hover:bg-muted border border-transparent"
               )}
-              title={t('list')}
             >
               <LayoutList className="w-4 h-4" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{t('list')}</span>
+              </div>
             </button>
             <button
-              onClick={() => { setLayout('grid'); setIsOpen(false); }}
+              onClick={() => setLayout('grid')}
               className={cn(
-                "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-                layout === 'grid' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-start",
+                layout === 'grid' 
+                  ? "bg-primary/10 text-primary border border-primary/20" 
+                  : "text-foreground hover:bg-muted border border-transparent"
               )}
-              title={t('grid')}
             >
               <LayoutGrid className="w-4 h-4" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{t('grid')}</span>
+              </div>
             </button>
             <button
-              onClick={() => { setLayout('compact'); setIsOpen(false); }}
+              onClick={() => setLayout('compact')}
               className={cn(
-                "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-                layout === 'compact' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-start",
+                layout === 'compact' 
+                  ? "bg-primary/10 text-primary border border-primary/20" 
+                  : "text-foreground hover:bg-muted border border-transparent"
               )}
-              title={t('compact')}
             >
               <Columns className="w-4 h-4" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{t('compact')}</span>
+              </div>
             </button>
           </div>
         </div>
