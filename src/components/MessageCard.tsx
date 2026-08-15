@@ -406,7 +406,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               </div>
             </div>
             {cred.host && (
-              <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+              <div className={cn(
+                "flex items-center justify-between gap-2 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors",
+                layout === 'compact' ? "p-1.5" : "p-2.5"
+              )}>
                 <span className="text-muted-foreground text-xs min-w-[60px]">{t('hostLabel')}</span>
                 <div className="flex items-center gap-2 flex-1 justify-end">
                   <span className="text-foreground truncate max-w-[180px]">{cred.host}</span>
