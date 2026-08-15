@@ -113,17 +113,17 @@ const ChatView: React.FC = () => {
         if (currentIndex >= 0 && currentIndex < convs.length - 1) {
           const nextId = convs[currentIndex + 1].id!;
           setCurrentConversationId(nextId);
-          localStorage.setItem('activeConversationId', nextId);
-          toast({ title: convs[currentIndex + 1].title });
-        }
+           localStorage.setItem('activeConversationId', nextId);
+           // Toast removed to avoid distraction during typing/navigation
+         }
       } else if (e.key === 'ArrowRight') {
         // Go to previous conversation
         if (currentIndex > 0) {
           const prevId = convs[currentIndex - 1].id!;
           setCurrentConversationId(prevId);
-          localStorage.setItem('activeConversationId', prevId);
-          toast({ title: convs[currentIndex - 1].title });
-        }
+           localStorage.setItem('activeConversationId', prevId);
+           // Toast removed to avoid distraction during typing/navigation
+         }
       }
     };
 
@@ -233,7 +233,7 @@ const ChatView: React.FC = () => {
     try {
       await updateConversation(id, { title });
       await loadConversations();
-      toast({ title: t('nameUpdated') });
+      // toast removed to prevent distraction during quick actions
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -243,7 +243,7 @@ const ChatView: React.FC = () => {
     try {
       await pinConversation(id);
       await loadConversations();
-      toast({ title: t('pin') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -253,7 +253,7 @@ const ChatView: React.FC = () => {
     try {
       await unpinConversation(id);
       await loadConversations();
-      toast({ title: t('unpin') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -263,7 +263,7 @@ const ChatView: React.FC = () => {
     try {
       await setConversationColor(id, color);
       await loadConversations();
-      toast({ title: t('setColor') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -273,7 +273,7 @@ const ChatView: React.FC = () => {
     try {
       await setConversationLabel(id, label);
       await loadConversations();
-      toast({ title: t('setLabel') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -518,18 +518,18 @@ const ChatView: React.FC = () => {
     if (currentConvIndex >= 0 && currentConvIndex < allConvs.length - 1) {
       const nextId = allConvs[currentConvIndex + 1].id!;
       setCurrentConversationId(nextId);
-      localStorage.setItem('activeConversationId', nextId);
-      toast({ title: allConvs[currentConvIndex + 1].title });
-    }
+       localStorage.setItem('activeConversationId', nextId);
+       // Toast removed to avoid distraction
+     }
   };
 
   const goToPrevConversation = () => {
     if (currentConvIndex > 0) {
       const prevId = allConvs[currentConvIndex - 1].id!;
       setCurrentConversationId(prevId);
-      localStorage.setItem('activeConversationId', prevId);
-      toast({ title: allConvs[currentConvIndex - 1].title });
-    }
+       localStorage.setItem('activeConversationId', prevId);
+       // Toast removed to avoid distraction
+     }
   };
   
   const handleRenameCurrent = () => {

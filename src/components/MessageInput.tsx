@@ -35,9 +35,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
           reader.onload = (event) => {
             const base64 = event.target?.result as string;
             if (base64) {
-              setImages(prev => [...prev, base64]);
-              toast({ title: t('imageAdded') });
-            }
+               setImages(prev => [...prev, base64]);
+               // Toast removed to avoid distraction
+             }
           };
           reader.readAsDataURL(file);
         }

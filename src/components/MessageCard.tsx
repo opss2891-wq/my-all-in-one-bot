@@ -230,7 +230,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     try {
       await updateMessage(message.id, { pinned: !message.pinned });
       onUpdate();
-      toast({ title: message.pinned ? t('unpinned') || 'تم إلغاء التثبيت' : t('pinned') || 'تم التثبيت' });
+      // toast removed to avoid noise when pinning from message list
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
