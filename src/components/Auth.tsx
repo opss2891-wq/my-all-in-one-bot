@@ -125,11 +125,54 @@ const Auth: React.FC = () => {
 
         <CardContent className="space-y-6">
           {/* Email login form removed per request to disable email logins */}
-          <div className="p-4 rounded-lg bg-muted/30 border border-border/50 text-center space-y-2">
-            <Shield className="h-8 w-8 mx-auto text-primary/60" />
-            <p className="text-sm text-muted-foreground">
-              {language === 'ar' ? 'تم تعطيل تسجيل الدخول بالبريد الإلكتروني. يرجى استخدام جوجل.' : 'Email login is disabled. Please use Google.'}
-            </p>
+          <div className="p-6 rounded-xl bg-muted/30 border border-border/50 space-y-4">
+            <div className="flex items-center gap-3 text-primary">
+              <LogIn className="h-5 w-5" />
+              <h3 className="font-semibold">{language === 'ar' ? 'تسجيل دخول المسؤول' : 'Admin Login'}</h3>
+            </div>
+            
+            <form onSubmit={handleAuth} className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  type="email"
+                  placeholder={content.email}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-background/50"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Input
+                  type="password"
+                  placeholder={content.password}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-background/50"
+                  required
+                />
+              </div>
+              
+              {error && (
+                <div className="text-xs text-destructive bg-destructive/10 p-2 rounded border border-destructive/20 animate-in fade-in slide-in-from-top-1">
+                  {error}
+                </div>
+              )}
+
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-primary hover:opacity-90 transition-opacity shadow-md"
+                disabled={loading}
+              >
+                {loading ? content.loading : content.login}
+              </Button>
+            </form>
+
+            <div className="pt-2 border-t border-border/40 mt-4">
+              <p className="text-[10px] text-muted-foreground text-center">
+                {language === 'ar' ? 'استخدم بيانات المسؤول للدخول المؤقت حتى حل مشكلة جوجل' : 'Use admin credentials for temporary access until Google is resolved'}
+              </p>
+            </div>
           </div>
           
           <div className="relative">
