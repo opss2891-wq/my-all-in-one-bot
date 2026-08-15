@@ -260,7 +260,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             <button
               onClick={() => { setLayout('compact'); setIsOpen(false); }}
               className={cn(
-                "flex-1 flex-center justify-center py-2 rounded-lg transition-all",
+                "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
                 layout === 'compact' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
               )}
               title={t('compact')}
