@@ -345,15 +345,12 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                   ) : (
                     <>
                       <p className={cn(
-                        "font-medium truncate text-foreground",
-                        layout === 'compact' ? "text-xs" : "text-sm",
-                        conv.pinned && "flex items-center gap-1",
-                        layout === 'grid' && "text-center w-full"
+                        "text-sm font-medium truncate text-foreground",
+                        conv.pinned && "flex items-center gap-1"
                       )}>
                         {conv.title}
                       </p>
-                      {layout !== 'compact' && (
-                        <div className={cn("flex items-center gap-2", layout === 'grid' && "justify-center")}>
+                      <div className="flex items-center gap-2">
                         <p className="text-xs text-muted-foreground">
                           {formatDate(conv.updatedAt)}
                         </p>
@@ -363,7 +360,6 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                           </span>
                         )}
                       </div>
-                      )}
                     </>
                   )}
                 </div>
