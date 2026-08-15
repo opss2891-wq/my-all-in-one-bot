@@ -156,6 +156,6 @@ export const en = {
   demoTask4: 'Try Markdown formatting',
   demoCodeExplanation: 'A simple JavaScript function to print a welcome message.',
   signInWithGoogle: 'Continue with Google',
-  googleSignInError: 'Google sign-in error. Please check authorized domain settings.',
+  googleSignInError: 'Google sign-in error (OAuth secret missing). Please ensure managed provider is enabled in settings.',
   signupDisabled: 'New registration is currently disabled.',
 };

@@ -37,25 +37,32 @@ const Auth: React.FC = () => {
   const handleGoogleSignIn = async () => {
     try {
       console.log("Initiating Google Sign-In via Managed Social Login...");
+      setError('');
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          // Use the origin correctly for redirect
+          // Use the exact current origin for redirect
           redirectTo: `${window.location.origin}/auth/callback`,
-          // Note: Managed Social Login handles secrets on the server-side.
-          // If 400 persists, the backend configuration for 'google' might be incomplete
-          // or missing the internal Lovable-managed secret link.
+          // access_type and prompt are often required for consistent behavior
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
           },
         }
       });
+      
       if (error) throw error;
-      console.log("OAuth sign-in triggered successfully", data);
+      
+      if (data?.url) {
+        console.log("Redirecting to OAuth URL:", data.url);
+        // Direct assignment to window.location can sometimes be more reliable
+        // if the Supabase client redirect doesn't trigger immediately
+        window.location.href = data.url;
+      }
     } catch (err: any) {
       console.error('Google Sign In Error:', err);
-      setError(translate('googleSignInError'));
+      setError(translate('googleSignInError') || 'Google sign-in error. Please try again.');
     }
   };
 
