@@ -256,20 +256,12 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
             </p>
           </div>
         ) : (
-          <div className={cn(
-            "gap-2",
-            layout === 'grid' ? "grid grid-cols-2" : "flex flex-col"
-          )}>
+          <div className="flex flex-col gap-2">
             {displayedConversations.map((conv) => (
               <div
                 key={conv.id}
                 className={cn(
-                  "group relative flex cursor-pointer transition-all border border-transparent",
-                  layout === 'grid' 
-                    ? "flex-col items-center text-center p-3 rounded-2xl" 
-                    : layout === 'compact'
-                      ? "items-center gap-2 p-1.5 rounded-lg"
-                      : "items-center gap-3 p-3 rounded-xl",
+                  "group relative flex items-center gap-3 p-3 cursor-pointer transition-all border border-transparent rounded-xl",
                   currentConversationId === conv.id
                     ? "bg-primary/15 border-primary/30"
                     : "hover:bg-muted/80 active:scale-[0.98]",
@@ -278,13 +270,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                 onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
               >
                 <div id={sidebarId} className={cn(
-                  "rounded-xl flex items-center justify-center flex-shrink-0 relative transition-all",
-                  layout === 'grid' ? "w-12 h-12 mb-2" : layout === 'compact' ? "w-7 h-7" : "w-10 h-10",
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative transition-all",
                   currentConversationId === conv.id ? "bg-primary/20" : "bg-muted"
                 )}>
                   <MessageSquare className={cn(
-                    "transition-all",
-                    layout === 'grid' ? "w-6 h-6" : layout === 'compact' ? "w-3.5 h-3.5" : "w-5 h-5",
+                    "w-5 h-5 transition-all",
                     currentConversationId === conv.id ? "text-primary" : "text-muted-foreground"
                   )} />
                   {conv.pinned && (
