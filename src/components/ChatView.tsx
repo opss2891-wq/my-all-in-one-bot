@@ -233,7 +233,7 @@ const ChatView: React.FC = () => {
     try {
       await updateConversation(id, { title });
       await loadConversations();
-      toast({ title: t('nameUpdated') });
+      // toast removed to prevent distraction during quick actions
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -243,7 +243,7 @@ const ChatView: React.FC = () => {
     try {
       await pinConversation(id);
       await loadConversations();
-      toast({ title: t('pin') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -253,7 +253,7 @@ const ChatView: React.FC = () => {
     try {
       await unpinConversation(id);
       await loadConversations();
-      toast({ title: t('unpin') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -263,7 +263,7 @@ const ChatView: React.FC = () => {
     try {
       await setConversationColor(id, color);
       await loadConversations();
-      toast({ title: t('setColor') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
@@ -273,7 +273,7 @@ const ChatView: React.FC = () => {
     try {
       await setConversationLabel(id, label);
       await loadConversations();
-      toast({ title: t('setLabel') });
+      // toast removed
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
