@@ -161,7 +161,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
     return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US');
   };
 
-  const CloseIcon = ChevronRight;
+  const CloseBtnIcon = isRTL ? ChevronRight : ChevronLeft;
 
   return (
     <div id={sidebarId} className={cn(
