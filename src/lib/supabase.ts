@@ -52,6 +52,7 @@ export interface Message {
   codeData?: CodeData;
   fileData?: FileData;
   images?: string[];
+  description?: string;
   createdAt: string;
 }
 
