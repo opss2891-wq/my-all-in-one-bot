@@ -450,8 +450,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 faviconUrl = undefined;
               }
               return (
-                <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all group active:scale-[0.98]">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors overflow-hidden">
+                <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className={cn(
+                  "flex items-center gap-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all group active:scale-[0.98]",
+                  layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3"
+                )}>
+                  <div className={cn(
+                    "rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors overflow-hidden",
+                    layout === 'compact' ? "w-8 h-8" : "w-10 h-10"
+                  )}>
                     {faviconUrl ? (
                       <img src={faviconUrl} alt="" className="w-6 h-6 object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add('fallback-icon'); }} />
                     ) : (
