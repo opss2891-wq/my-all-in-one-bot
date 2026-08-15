@@ -720,7 +720,36 @@ const ChatView: React.FC = () => {
                        <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
                      </div>
                    )}
-                 </div>
+                  </div>
+                  
+                  {/* Filter Pills - Desktop only to avoid crowding */}
+                  <div className="hidden lg:flex items-center gap-1.5 bg-muted/20 p-1 rounded-2xl mx-2">
+                    {['all', 'note', 'tasks', 'credentials', 'links', 'code', 'file'].map((type) => {
+                      const isActive = filter === type;
+                      return (
+                        <button
+                          key={type}
+                          onClick={() => { setFilter(type as any); setDisplayCount(MESSAGES_PER_PAGE); }}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all text-xs font-medium",
+                            isActive 
+                              ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105" 
+                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                          )}
+                        >
+                          {type === 'all' && <Sparkles className="w-3.5 h-3.5" />}
+                          {type === 'note' && <FileText className="w-3.5 h-3.5" />}
+                          {type === 'tasks' && <CheckSquare className="w-3.5 h-3.5" />}
+                          {type === 'credentials' && <Key className="w-3.5 h-3.5" />}
+                          {type === 'links' && <Link2 className="w-3.5 h-3.5" />}
+                          {type === 'code' && <Code className="w-3.5 h-3.5" />}
+                          {type === 'file' && <File className="w-3.5 h-3.5" />}
+                          <span className="hidden xl:inline">{type === 'all' ? t('all') : t(type)}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
                 
                 {/* Next Conversation */}
                 <button
