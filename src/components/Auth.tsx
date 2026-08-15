@@ -188,7 +188,7 @@ const Auth: React.FC = () => {
             variant="outline" 
             className="w-full h-11 bg-background/30 border-border/50 hover:bg-background/80 transition-all"
             onClick={handleGoogleSignIn}
-            aria-label={t(language).signInWithGoogle}
+            aria-label={translate('signInWithGoogle')}
           >
             <div className="flex items-center gap-3">
               <svg className="h-5 w-5" viewBox="0 0 24 24">
