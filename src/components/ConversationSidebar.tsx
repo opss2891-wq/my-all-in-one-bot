@@ -16,10 +16,7 @@ import {
   PinOff,
   Palette,
   Tag,
-  LogOut,
-  LayoutList,
-  LayoutGrid,
-  Columns
+  LogOut
 } from 'lucide-react';
 import { Conversation, ConversationColor } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
@@ -109,7 +106,6 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   const [labelValue, setLabelValue] = useState('');
   const { t, isRTL, language } = useLanguage();
   const { logout, user } = useAuth();
-  const { layout, setLayout } = useUI();
 
   const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'];
 
@@ -225,41 +221,8 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         </div>
       </div>
 
-      {/* Layout Selection & Toggle Archived */}
-      <div className="px-3 py-2 border-b border-border space-y-2">
-        <div className="flex items-center gap-1 p-1 bg-muted/30 rounded-xl">
-          <button
-            onClick={() => setLayout('list')}
-            className={cn(
-              "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-              layout === 'list' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
-            )}
-            title={t('list')}
-          >
-            <LayoutList className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setLayout('grid')}
-            className={cn(
-              "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-              layout === 'grid' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
-            )}
-            title={t('grid')}
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setLayout('compact')}
-            className={cn(
-              "flex-1 flex items-center justify-center py-2 rounded-lg transition-all",
-              layout === 'compact' ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/50"
-            )}
-            title={t('compact')}
-          >
-            <Columns className="w-4 h-4" />
-          </button>
-        </div>
-
+      {/* Toggle Archived */}
+      <div className="px-3 py-2 border-b border-border">
         <button
           onClick={onToggleArchived}
           className={cn(
@@ -289,20 +252,12 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
             </p>
           </div>
         ) : (
-          <div className={cn(
-            "gap-2",
-            layout === 'grid' ? "grid grid-cols-2" : "flex flex-col"
-          )}>
+          <div className="flex flex-col gap-2">
             {displayedConversations.map((conv) => (
               <div
                 key={conv.id}
                 className={cn(
-                  "group relative flex cursor-pointer transition-all border border-transparent",
-                  layout === 'grid' 
-                    ? "flex-col items-center text-center p-3 rounded-2xl" 
-                    : layout === 'compact'
-                      ? "items-center gap-2 p-1.5 rounded-lg"
-                      : "items-center gap-3 p-3 rounded-xl",
+                  "group relative flex items-center gap-3 p-3 cursor-pointer transition-all border border-transparent rounded-xl",
                   currentConversationId === conv.id
                     ? "bg-primary/15 border-primary/30"
                     : "hover:bg-muted/80 active:scale-[0.98]",
@@ -311,13 +266,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                 onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
               >
                 <div id={sidebarId} className={cn(
-                  "rounded-xl flex items-center justify-center flex-shrink-0 relative transition-all",
-                  layout === 'grid' ? "w-12 h-12 mb-2" : layout === 'compact' ? "w-7 h-7" : "w-10 h-10",
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative transition-all",
                   currentConversationId === conv.id ? "bg-primary/20" : "bg-muted"
                 )}>
                   <MessageSquare className={cn(
-                    "transition-all",
-                    layout === 'grid' ? "w-6 h-6" : layout === 'compact' ? "w-3.5 h-3.5" : "w-5 h-5",
+                    "w-5 h-5 transition-all",
                     currentConversationId === conv.id ? "text-primary" : "text-muted-foreground"
                   )} />
                   {conv.pinned && (
@@ -388,15 +341,12 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                   ) : (
                     <>
                       <p className={cn(
-                        "font-medium truncate text-foreground",
-                        layout === 'compact' ? "text-xs" : "text-sm",
-                        conv.pinned && "flex items-center gap-1",
-                        layout === 'grid' && "text-center w-full"
+                        "text-sm font-medium truncate text-foreground",
+                        conv.pinned && "flex items-center gap-1"
                       )}>
                         {conv.title}
                       </p>
-                      {layout !== 'compact' && (
-                        <div className={cn("flex items-center gap-2", layout === 'grid' && "justify-center")}>
+                      <div className="flex items-center gap-2">
                         <p className="text-xs text-muted-foreground">
                           {formatDate(conv.updatedAt)}
                         </p>
@@ -406,7 +356,6 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                           </span>
                         )}
                       </div>
-                      )}
                     </>
                   )}
                 </div>
@@ -422,10 +371,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                     }
                   }}>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
-                      <button className={cn(
-                        "p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all",
-                        layout === 'grid' && "absolute top-1 right-1 p-1"
-                      )}>
+                      <button className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </DropdownMenuTrigger>
