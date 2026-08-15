@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useUI } from '@/contexts/UIContext';
 import { Pin, PinOff } from 'lucide-react';
 
 const CODE_LANGUAGES = [
@@ -134,6 +135,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const [noteHeight, setNoteHeight] = useState<number | null>(null);
   const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
+  const { layout } = useUI();
 
   const handleResizeStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -264,7 +266,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 !noteHeight && !isExpanded && "max-h-[150px]"
               )}
             >
-              <div className="text-foreground text-sm md:text-base leading-relaxed markdown-content">
+              <div className={cn(
+                "text-foreground leading-relaxed markdown-content",
+                layout === 'compact' ? "text-xs line-clamp-2" : "text-sm md:text-base"
+              )}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {content}
                 </ReactMarkdown>
@@ -339,7 +344,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 key={index + 1}
                 onClick={() => handleToggleTask(index + 1)}
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all active:scale-[0.98]",
+                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98]",
+                  layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
                 )}
               >
@@ -372,7 +378,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {cred.credType?.toUpperCase() || 'OTHER'}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+            <div className={cn(
+              "flex items-center justify-between gap-2 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors",
+              layout === 'compact' ? "p-1.5" : "p-2.5"
+            )}>
               <span className="text-muted-foreground text-xs min-w-[60px]">{t('userLabel')}</span>
               <div className="flex items-center gap-2 flex-1 justify-end">
                 <span className="text-foreground truncate max-w-[180px]">{cred.username}</span>
@@ -381,7 +390,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+            <div className={cn(
+              "flex items-center justify-between gap-2 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors",
+              layout === 'compact' ? "p-1.5" : "p-2.5"
+            )}>
               <span className="text-muted-foreground text-xs min-w-[60px]">{t('passLabel')}</span>
               <div className="flex items-center gap-2 flex-1 justify-end">
                 <span className="text-foreground font-mono">{showPassword ? cred.password : '••••••••'}</span>
@@ -394,7 +406,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               </div>
             </div>
             {cred.host && (
-              <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+              <div className={cn(
+                "flex items-center justify-between gap-2 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors",
+                layout === 'compact' ? "p-1.5" : "p-2.5"
+              )}>
                 <span className="text-muted-foreground text-xs min-w-[60px]">{t('hostLabel')}</span>
                 <div className="flex items-center gap-2 flex-1 justify-end">
                   <span className="text-foreground truncate max-w-[180px]">{cred.host}</span>
@@ -405,7 +420,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               </div>
             )}
             {cred.url && (
-              <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors">
+              <div className={cn(
+                "flex items-center justify-between gap-2 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors",
+                layout === 'compact' ? "p-1.5" : "p-2.5"
+              )}>
                 <span className="text-muted-foreground text-xs min-w-[60px]">{t('urlLabel')}</span>
                 <div className="flex items-center gap-2 flex-1 justify-end">
                   <a href={cred.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-[150px]" onClick={(e) => e.stopPropagation()}>
@@ -432,8 +450,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 faviconUrl = undefined;
               }
               return (
-                <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all group active:scale-[0.98]">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors overflow-hidden">
+                <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className={cn(
+                  "flex items-center gap-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all group active:scale-[0.98]",
+                  layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3"
+                )}>
+                  <div className={cn(
+                    "rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors overflow-hidden",
+                    layout === 'compact' ? "w-8 h-8" : "w-10 h-10"
+                  )}>
                     {faviconUrl ? (
                       <img src={faviconUrl} alt="" className="w-6 h-6 object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add('fallback-icon'); }} />
                     ) : (
@@ -499,8 +523,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         };
         return (
           <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-purple-500/5 border border-purple-500/20">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+            <div className={cn(
+              "flex items-center gap-3 rounded-xl bg-purple-500/5 border border-purple-500/20",
+              layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3"
+            )}>
+              <div className={cn(
+                "rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0",
+                layout === 'compact' ? "w-8 h-8" : "w-10 h-10"
+              )}>
                 <File className="w-5 h-5 text-purple-400" />
               </div>
               <div className="flex-1 min-w-0">
@@ -530,6 +560,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       data-card-type={message.type}
       className={cn(
         "bg-card border-2 rounded-2xl p-4 animate-slide-up group transition-all",
+        layout === 'compact' ? "p-2 min-h-0" : "p-4",
         getBorderColor(),
         (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.99]"
       )}
