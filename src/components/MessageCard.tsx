@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useUI } from '@/contexts/UIContext';
 import { Pin, PinOff } from 'lucide-react';
 
 const CODE_LANGUAGES = [
