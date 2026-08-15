@@ -158,4 +158,5 @@ export const en = {
   signInWithGoogle: 'Continue with Google',
   googleSignInError: 'Google sign-in error (OAuth secret missing). Please ensure managed provider is enabled in settings.',
   signupDisabled: 'New registration is currently disabled.',
+  emailProviderDisabled: 'Email login is disabled in system settings. Please enable it from the backend interface.',
 };
