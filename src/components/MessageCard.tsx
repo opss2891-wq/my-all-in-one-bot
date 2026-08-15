@@ -29,9 +29,10 @@ const AddTaskInput: React.FC<{ messageId: string; onUpdate: () => void }> = ({ m
       const { supabase: supabaseClient } = await import('@/lib/supabase');
       const { data: docSnap, error } = await supabaseClient.from('messages').select('*').eq('id', messageId).single();
       if (docSnap && !error) {
-        const currentTasks = docSnap.tasks || [];
+        const currentTasks = (docSnap.tasks as any) || [];
         const updatedTasks = [...currentTasks, { text: newTask.trim(), completed: false }];
-        await updateMessage(messageId, { tasks: updatedTasks });
+        await updateMessage(messageId, { tasks: updatedTasks as any });
+
         setNewTask('');
         setIsAdding(false);
         onUpdate();

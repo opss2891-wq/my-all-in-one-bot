@@ -1,9 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
+export { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
 export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
@@ -229,11 +227,12 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
       conversation_id: message.conversationId,
       type: message.type,
       content: message.content,
-      tasks: message.tasks,
-      credential: message.credential,
-      links: message.links,
-      code_data: message.codeData,
-      file_data: message.fileData,
+      tasks: message.tasks as any,
+      credential: message.credential as any,
+      links: message.links as any,
+      code_data: message.codeData as any,
+      file_data: message.fileData as any,
+
       images: message.images
     }])
     .select()
@@ -268,11 +267,12 @@ export const getMessages = async (userId: string, conversationId?: string) => {
     conversationId: m.conversation_id,
     type: m.type as MessageType,
     content: m.content,
-    tasks: m.tasks,
-    credential: m.credential,
-    links: m.links,
-    codeData: m.code_data,
-    fileData: m.file_data,
+    tasks: m.tasks as any,
+    credential: m.credential as any,
+    links: m.links as any,
+    codeData: m.code_data as any,
+    fileData: m.file_data as any,
+
     images: m.images,
     createdAt: m.created_at
   })) as Message[];
