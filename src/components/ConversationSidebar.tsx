@@ -9,7 +9,7 @@ import {
   Edit2,
   Check,
   X,
-  X as CloseIcon,
+  ChevronLeft,
   ChevronRight,
   Search,
   Pin,
@@ -177,7 +177,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
             onClick={onClose}
             className="p-2 rounded-xl hover:bg-muted transition-colors md:hidden"
           >
-            <CloseIcon className="w-5 h-5" />
+            <CloseBtnIcon className="w-5 h-5" />
           </button>
         </div>
         <button
