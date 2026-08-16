@@ -120,7 +120,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   const { t, isRTL, language } = useLanguage();
   const { logout, user } = useAuth();
 
-  const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'emerald', 'teal', 'blue', 'indigo', 'purple', 'pink', 'rose', 'slate'];
+  const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'emerald', 'teal', 'blue', 'indigo', 'purple', 'pink', 'rose', 'slate', 'cyan', 'amber'];
 
   const baseConversations = showArchived ? archivedConversations : conversations;
   

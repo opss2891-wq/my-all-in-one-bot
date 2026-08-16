@@ -284,6 +284,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         case 'pink': return 'border-pink-500 bg-pink-500/10 dark:bg-pink-500/20 shadow-none !important';
         case 'rose': return 'border-rose-500 bg-rose-500/10 dark:bg-rose-500/20 shadow-none !important';
         case 'slate': return 'border-slate-500 bg-slate-500/10 dark:bg-slate-500/20 shadow-none !important';
+        case 'cyan': return 'border-cyan-500 bg-cyan-500/10 dark:bg-cyan-500/20 shadow-none !important';
+        case 'amber': return 'border-amber-500 bg-amber-500/10 dark:bg-amber-500/20 shadow-none !important';
         default: return 'border-border/30 shadow-none !important';
       }
     }
