@@ -559,9 +559,10 @@ const ChatView: React.FC = () => {
       theme === 'dark' ? "bg-[#0a0c10]" : "bg-background"
     )}>
       {/* Background patterns */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-60 cyber-grid" />
-      <div className="absolute top-[-10%] start-[-5%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[150px] pointer-events-none animate-pulse" />
-      <div className="absolute bottom-[-10%] end-[-5%] w-[50%] h-[50%] bg-accent/10 rounded-full blur-[150px] pointer-events-none animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-80 cyber-grid" />
+      <div className="absolute top-[-15%] start-[-10%] w-[70%] h-[70%] bg-primary/20 rounded-full blur-[180px] pointer-events-none animate-pulse" />
+      <div className="absolute bottom-[-15%] end-[-10%] w-[70%] h-[70%] bg-accent/20 rounded-full blur-[180px] pointer-events-none animate-pulse" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-[30%] end-[5%] w-[40%] h-[40%] bg-info/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-[20%] end-[10%] w-[30%] h-[30%] bg-info/5 rounded-full blur-[100px] pointer-events-none" />
 
       <React.Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
