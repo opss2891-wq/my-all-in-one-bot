@@ -113,6 +113,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
 }) => {
   // Add a ref or ID to the main div
   const sidebarId = "conversation-sidebar";
+  const [isReady, setIsReady] = useState(false);
+  
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
@@ -190,6 +195,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   return (
     <div id={sidebarId} className={cn(
       "h-full flex flex-col bg-[#0A0A0B] backdrop-blur-3xl border-x border-white/5 transition-all duration-500 relative shadow-2xl z-[60] cyber-sidebar",
+      !isReady && "opacity-0",
       className
     )}>
       {/* Header */}
