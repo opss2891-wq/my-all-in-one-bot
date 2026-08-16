@@ -547,6 +547,13 @@ const ChatView: React.FC = () => {
     { type: 'file' as const, label: t('file') || 'ملف', icon: File },
   ];
 
+  const typeCounts = messages.reduce<Record<string, number>>((acc, m) => {
+    acc[m.type] = (acc[m.type] || 0) + 1;
+    return acc;
+  }, {});
+  const countFor = (type: string) => (type === 'all' ? messages.length : (typeCounts[type] || 0));
+
+
   const handleNavigate = (section: string) => {
     if (section === 'all') {
       setFilter('all');
