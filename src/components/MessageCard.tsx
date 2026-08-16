@@ -880,7 +880,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             )}
             {/* Optional Description Section for Code */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-info/10 bg-info/5 rounded-xl p-3 relative group/desc animate-fade-in">
+              <div className="mt-3 pt-3 border-t border-info/10 bg-info/5 rounded-xl p-3 relative group/desc">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -1138,7 +1138,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               <Palette className="w-4 h-4" />
             </button>
             {showColorPicker && (
-              <div className="absolute top-full right-0 mt-2 p-2 bg-card border border-border rounded-xl shadow-2xl z-50 flex gap-1 min-w-[160px] animate-fade-in">
+              <div className="absolute top-full right-0 mt-2 p-2 bg-card border border-border rounded-xl shadow-2xl z-50 flex gap-1 min-w-[160px]">
                 {['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((color) => (
                   <button
                     key={color}
