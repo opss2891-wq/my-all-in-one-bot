@@ -39,7 +39,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   onPrevConversation,
   canGoNext,
   canGoPrev,
-  onRenameConversation
+  onRenameConversation,
+  onSetCardColor
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
