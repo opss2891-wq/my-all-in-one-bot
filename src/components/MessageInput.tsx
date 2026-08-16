@@ -245,10 +245,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   return (
-    <div className="border-t border-white/5 bg-[#0A0A0B]/80 p-4 md:p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.8)] relative z-[150] rounded-t-[2.5rem] backdrop-blur-3xl">
+    <div className="border-t border-white/5 bg-[#0A0A0B]/80 p-4 md:p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.8)] relative z-[200] rounded-t-[2.5rem] backdrop-blur-3xl">
       <div className="max-w-4xl mx-auto">
         {/* Type Selector - Horizontal Pills */}
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1 relative z-[151]">
+        <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1 relative z-[201]">
           {(Object.entries(typeConfig) as [MessageType, typeof config][]).map(([key, cfg]) => {
             const TypeIcon = cfg.icon;
             const isActive = type === key;
@@ -261,7 +261,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   setType(key);
                 }}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[11px] uppercase tracking-wider whitespace-nowrap transition-all border-2 pointer-events-auto relative z-[152] font-black",
+                  "flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[11px] uppercase tracking-wider whitespace-nowrap transition-all border-2 pointer-events-auto relative z-[202] font-black",
                   isActive 
                     ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor} shadow-xl shadow-primary/10 scale-105 -translate-y-0.5` 
                     : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:border-white/10"
@@ -275,7 +275,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
         </div>
 
         {/* Input Area - Conditional Forms based on Type */}
-        <div className={cn("flex gap-3 items-stretch relative z-[151]", isRTL && "flex-row-reverse")}>
+        <div className={cn("flex gap-3 items-stretch relative z-[201]", isRTL && "flex-row-reverse")}>
           {type === 'file' ? (
             <div className="flex-1 flex flex-col gap-2 animate-fade-in">
               <input
@@ -549,7 +549,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                 </div>
               )}
               
-              <div className="flex gap-3 items-stretch relative z-[151]">
+              <div className="flex gap-3 items-stretch relative z-[201]">
                 {type === 'note' && (
                   <>
                     <input
@@ -578,7 +578,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   rows={2}
                   dir="auto"
                   className={cn(
-                    "flex-1 bg-white/[0.02] border-2 rounded-[1.5rem] px-5 py-4 text-foreground placeholder:text-muted-foreground/30 resize-none transition-all focus:outline-none text-lg pointer-events-auto relative z-[151]",
+                    "flex-1 bg-white/[0.02] border-2 rounded-[1.5rem] px-5 py-4 text-foreground placeholder:text-muted-foreground/30 resize-none transition-all focus:outline-none text-lg pointer-events-auto relative z-[201]",
                     config.borderColor,
                     "focus:ring-4 focus:ring-primary/5 shadow-2xl focus:bg-white/[0.05]"
                   )}
@@ -592,7 +592,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
             onClick={handleSend}
             disabled={loading}
             className={cn(
-              "px-8 rounded-[1.8rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-90 relative z-[151] pointer-events-auto group/send overflow-hidden",
+              "px-8 rounded-[1.8rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-90 relative z-[201] pointer-events-auto group/send overflow-hidden",
               loading ? "opacity-50 cursor-not-allowed" : "gradient-primary text-primary-foreground hover:brightness-125 shadow-2xl shadow-primary/30 border-b-4 border-primary/50"
             )}
           >
