@@ -309,9 +309,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
             </div>
           ) : type === 'tasks' ? (
             <div className="flex-1 flex flex-col gap-3 animate-fade-in">
-              <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-3 custom-scrollbar cyber-card-inner p-4">
                 {tasks.map((task, idx) => (
-                  <div key={idx} className="flex gap-2">
+                  <div key={idx} className="flex gap-2 items-center animate-fade-in group">
+                    <div className={cn(
+                      "w-2 h-2 rounded-full",
+                      idx === 0 ? "bg-warning" : "bg-warning/30"
+                    )} />
                     <input
                       type="text"
                       value={task}
@@ -322,146 +326,185 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                       }}
                       placeholder={idx === 0 ? (isRTL ? 'عنوان القائمة...' : 'List title...') : (isRTL ? 'مهمة جديدة...' : 'New task...')}
                       className={cn(
-                        "flex-1 bg-white/5 border rounded-xl px-4 py-2 text-foreground focus:outline-none",
-                        idx === 0 ? "font-bold border-warning/40" : "border-white/10"
+                        "flex-1 cyber-form-input",
+                        idx === 0 ? "font-bold text-lg border-warning/20" : "text-sm border-white/5"
                       )}
                     />
                     {tasks.length > 1 && (
                       <button 
                         onClick={() => setTasks(tasks.filter((_, i) => i !== idx))}
-                        className="p-2 text-muted-foreground hover:text-destructive"
+                        className="p-2 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-5 h-5" />
                       </button>
                     )}
                   </div>
                 ))}
+                <button 
+                  onClick={() => setTasks([...tasks, ''])}
+                  className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-warning/20 rounded-2xl text-warning hover:bg-warning/5 transition-all text-sm font-bold uppercase tracking-widest mt-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span>{isRTL ? 'إضافة مهمة' : 'Add Task'}</span>
+                </button>
               </div>
-              <button 
-                onClick={() => setTasks([...tasks, ''])}
-                className="flex items-center justify-center gap-2 py-2 border border-dashed border-warning/30 rounded-xl text-warning hover:bg-warning/5 transition-all text-sm"
-              >
-                <Plus className="w-4 h-4" />
-                <span>{isRTL ? 'إضافة مهمة' : 'Add Task'}</span>
-              </button>
             </div>
           ) : type === 'credentials' ? (
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 animate-fade-in">
-              <input
-                type="text"
-                value={credential.host || ''}
-                onChange={(e) => setCredential({...credential, host: e.target.value})}
-                placeholder={isRTL ? 'المضيف (Host/URL)...' : 'Host/URL...'}
-                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-              />
-              <select
-                value={credential.credType}
-                onChange={(e) => setCredential({...credential, credType: e.target.value as any})}
-                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-              >
-                <option value="other">Other</option>
-                <option value="admin">Admin</option>
-                <option value="ftp">FTP</option>
-                <option value="ssh">SSH</option>
-                <option value="database">Database</option>
-              </select>
-              <input
-                type="text"
-                value={credential.username || ''}
-                onChange={(e) => setCredential({...credential, username: e.target.value})}
-                placeholder={isRTL ? 'اسم المستخدم...' : 'Username...'}
-                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-              />
-              <input
-                type="password"
-                value={credential.password || ''}
-                onChange={(e) => setCredential({...credential, password: e.target.value})}
-                placeholder={isRTL ? 'كلمة المرور...' : 'Password...'}
-                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-              />
+              <div className="cyber-card-inner p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-accent tracking-tighter ml-2">{isRTL ? 'المضيف' : 'HOST'}</label>
+                  <input
+                    type="text"
+                    value={credential.host || ''}
+                    onChange={(e) => setCredential({...credential, host: e.target.value})}
+                    placeholder="example.com"
+                    className="w-full cyber-form-input border-accent/20"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-accent tracking-tighter ml-2">{isRTL ? 'النوع' : 'TYPE'}</label>
+                  <select
+                    value={credential.credType}
+                    onChange={(e) => setCredential({...credential, credType: e.target.value as any})}
+                    className="w-full cyber-select border-accent/20 text-sm"
+                  >
+                    <option value="other">Other</option>
+                    <option value="admin">Admin</option>
+                    <option value="ftp">FTP</option>
+                    <option value="ssh">SSH</option>
+                    <option value="database">Database</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-accent tracking-tighter ml-2">{isRTL ? 'المستخدم' : 'USERNAME'}</label>
+                  <input
+                    type="text"
+                    value={credential.username || ''}
+                    onChange={(e) => setCredential({...credential, username: e.target.value})}
+                    placeholder="admin"
+                    className="w-full cyber-form-input border-accent/20"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-accent tracking-tighter ml-2">{isRTL ? 'كلمة المرور' : 'PASSWORD'}</label>
+                  <input
+                    type="password"
+                    value={credential.password || ''}
+                    onChange={(e) => setCredential({...credential, password: e.target.value})}
+                    placeholder="••••••••"
+                    className="w-full cyber-form-input border-accent/20"
+                  />
+                </div>
+              </div>
             </div>
           ) : type === 'links' ? (
             <div className="flex-1 flex flex-col gap-3 animate-fade-in">
-              {links.map((link, idx) => (
-                <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    value={link.title}
-                    onChange={(e) => {
-                      const newLinks = [...links];
-                      newLinks[idx].title = e.target.value;
-                      setLinks(newLinks);
-                    }}
-                    placeholder={isRTL ? 'عنوان الرابط...' : 'Link title...'}
-                    className="bg-white/5 border border-primary/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-                  />
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={link.url}
-                      onChange={(e) => {
-                        const newLinks = [...links];
-                        newLinks[idx].url = e.target.value;
-                        setLinks(newLinks);
-                      }}
-                      placeholder="https://..."
-                      className="flex-1 bg-white/5 border border-primary/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-                    />
-                    {links.length > 1 && (
-                      <button onClick={() => setLinks(links.filter((_, i) => i !== idx))} className="p-2 text-muted-foreground hover:text-destructive">
-                        <X className="w-4 h-4" />
-                      </button>
-                    )}
+              <div className="cyber-card-inner p-4 space-y-4">
+                {links.map((link, idx) => (
+                  <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-3 bg-white/5 rounded-2xl border border-white/5 animate-fade-in group relative">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold text-primary tracking-tighter ml-2">{isRTL ? 'العنوان' : 'TITLE'}</label>
+                      <input
+                        type="text"
+                        value={link.title}
+                        onChange={(e) => {
+                          const newLinks = [...links];
+                          newLinks[idx].title = e.target.value;
+                          setLinks(newLinks);
+                        }}
+                        placeholder={isRTL ? 'عنوان الرابط...' : 'Link title...'}
+                        className="w-full cyber-form-input border-primary/20"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold text-primary tracking-tighter ml-2">URL</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={link.url}
+                          onChange={(e) => {
+                            const newLinks = [...links];
+                            newLinks[idx].url = e.target.value;
+                            setLinks(newLinks);
+                          }}
+                          placeholder="https://..."
+                          className="flex-1 cyber-form-input border-primary/20"
+                        />
+                        {links.length > 1 && (
+                          <button onClick={() => setLinks(links.filter((_, i) => i !== idx))} className="p-2 text-muted-foreground hover:text-destructive transition-colors">
+                            <X className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
-              <button onClick={() => setLinks([...links, { title: '', url: '' }])} className="py-2 border border-dashed border-primary/30 rounded-xl text-primary hover:bg-primary/5 text-sm">
-                + {isRTL ? 'رابط إضافي' : 'Add Link'}
-              </button>
+                ))}
+                <button 
+                  onClick={() => setLinks([...links, { title: '', url: '' }])} 
+                  className="w-full py-3 border-2 border-dashed border-primary/20 rounded-2xl text-primary hover:bg-primary/5 transition-all text-sm font-bold uppercase tracking-widest"
+                >
+                  <Plus className="w-5 h-5 inline-block mr-2" />
+                  <span>{isRTL ? 'إضافة رابط إضافي' : 'Add Another Link'}</span>
+                </button>
+              </div>
             </div>
           ) : type === 'code' ? (
             <div className="flex-1 flex flex-col gap-3 animate-fade-in">
-              <select
-                value={codeData.language}
-                onChange={(e) => setCodeData({...codeData, language: e.target.value})}
-                className="bg-white/5 border border-info/30 rounded-xl px-4 py-2 text-foreground focus:outline-none text-sm"
-              >
-                <option value="javascript">JavaScript</option>
-                <option value="typescript">TypeScript</option>
-                <option value="python">Python</option>
-                <option value="html">HTML</option>
-                <option value="css">CSS</option>
-                <option value="sql">SQL</option>
-              </select>
-              <textarea
-                value={codeData.code}
-                onChange={(e) => setCodeData({...codeData, code: e.target.value})}
-                placeholder={isRTL ? 'الصق الكود هنا...' : 'Paste code here...'}
-                className="bg-[#0f1115] border border-info/30 rounded-xl px-4 py-3 text-info font-mono text-sm focus:outline-none min-h-[150px] resize-y"
-              />
-              <input
-                type="text"
-                value={codeData.explanation || ''}
-                onChange={(e) => setCodeData({...codeData, explanation: e.target.value})}
-                placeholder={isRTL ? 'شرح بسيط (اختياري)...' : 'Brief explanation (optional)...'}
-                className="bg-white/5 border border-info/30 rounded-xl px-4 py-2 text-foreground focus:outline-none text-sm"
-              />
+              <div className="cyber-card-inner p-4 flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] uppercase font-bold text-info tracking-widest">{isRTL ? 'محرر الكود' : 'CODE EDITOR'}</label>
+                  <select
+                    value={codeData.language}
+                    onChange={(e) => setCodeData({...codeData, language: e.target.value})}
+                    className="cyber-select border-info/20 text-xs py-1.5 px-3 min-w-[120px]"
+                  >
+                    <option value="javascript">JavaScript</option>
+                    <option value="typescript">TypeScript</option>
+                    <option value="python">Python</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="sql">SQL</option>
+                  </select>
+                </div>
+                <textarea
+                  value={codeData.code}
+                  onChange={(e) => setCodeData({...codeData, code: e.target.value})}
+                  placeholder={isRTL ? '// الصق الكود هنا...' : '// Paste code here...'}
+                  className="w-full bg-[#0f1115] border-2 border-info/10 rounded-2xl px-5 py-4 text-info font-mono text-sm focus:outline-none focus:border-info/30 min-h-[200px] resize-y shadow-inner"
+                />
+                <input
+                  type="text"
+                  value={codeData.explanation || ''}
+                  onChange={(e) => setCodeData({...codeData, explanation: e.target.value})}
+                  placeholder={isRTL ? 'شرح بسيط لما يفعله الكود...' : 'Brief explanation of what the code does...'}
+                  className="w-full cyber-form-input border-info/20 text-sm"
+                />
+              </div>
             </div>
           ) : type === 'location' ? (
             <div className="flex-1 flex flex-col gap-3 animate-fade-in">
-              <input
-                type="text"
-                value={location.address}
-                onChange={(e) => setLocation({...location, address: e.target.value})}
-                placeholder={isRTL ? 'اسم المرجع أو العنوان...' : 'Reference name or title...'}
-                className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-              />
-              <textarea
-                value={location.lat}
-                onChange={(e) => setLocation({...location, lat: e.target.value})}
-                placeholder={isRTL ? 'أدخل البيانات الإضافية هنا...' : 'Enter additional data here...'}
-                className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none min-h-[80px]"
-              />
+              <div className="cyber-card-inner p-4 space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-emerald-400 tracking-widest ml-2">{isRTL ? 'العنوان / المرجع' : 'TITLE / REFERENCE'}</label>
+                  <input
+                    type="text"
+                    value={location.address}
+                    onChange={(e) => setLocation({...location, address: e.target.value})}
+                    placeholder={isRTL ? 'مثال: قاعدة بيانات المستخدمين...' : 'e.g. User Database...'}
+                    className="w-full cyber-form-input border-emerald-400/20"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-emerald-400 tracking-widest ml-2">{isRTL ? 'البيانات' : 'DATA'}</label>
+                  <textarea
+                    value={location.lat}
+                    onChange={(e) => setLocation({...location, lat: e.target.value})}
+                    placeholder={isRTL ? 'أدخل البيانات الإضافية هنا بشكل مفصل...' : 'Enter detailed additional data here...'}
+                    className="w-full cyber-form-input border-emerald-400/20 min-h-[120px] resize-y"
+                  />
+                </div>
+              </div>
             </div>
           ) : type === 'audio' || type === 'voice' ? (
             <div className="flex-1 flex flex-col gap-3 animate-fade-in">

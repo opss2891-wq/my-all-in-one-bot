@@ -323,6 +323,40 @@
   50% { box-shadow: none !important; }
 }
 
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.cyber-form-input {
+  @apply bg-black/40 border-2 border-white/5 rounded-2xl px-5 py-3 text-foreground transition-all duration-300;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.cyber-form-input:focus {
+  @apply border-primary/40 bg-black/60 outline-none ring-4 ring-primary/5;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 0 20px -5px rgba(45, 212, 191, 0.2);
+}
+
+.cyber-select {
+  @apply bg-black/60 border-2 border-white/10 rounded-2xl px-4 py-3 text-foreground cursor-pointer transition-all;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+[dir="rtl"] .cyber-select {
+  background-position: left 1rem center;
+}
+
+.cyber-card-inner {
+  background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
