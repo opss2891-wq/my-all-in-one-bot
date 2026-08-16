@@ -4,7 +4,7 @@ import {
   PanelLeftClose, PanelLeftOpen, Eye, EyeOff, 
   Languages, Copy, Trash2, Edit2, Sparkles,
   ChevronLeft, ChevronRight,
-  LayoutList, LayoutGrid, Columns
+  LayoutList, LayoutGrid, Columns, Palette
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
@@ -26,6 +26,7 @@ interface ContextMenuProps {
   canGoNext?: boolean;
   canGoPrev?: boolean;
   onRenameConversation?: () => void;
+  onSetCardColor?: (color: any) => void;
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ 
@@ -150,6 +151,36 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                 </button>
               )}
             </div>
+            {onSetCardColor && (
+              <div className="mt-2 pt-2 border-t border-border px-2">
+                <p className="text-[10px] text-muted-foreground mb-2 flex items-center gap-1">
+                  <Palette className="w-3 h-3" />
+                  {language === 'ar' ? 'تغيير اللون' : 'Change Color'}
+                </p>
+                <div className="flex flex-wrap gap-1.5 pb-2">
+                  {['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => { onSetCardColor(color); setIsOpen(false); }}
+                      className={cn(
+                        "w-5 h-5 rounded-full border border-white/20 transition-transform hover:scale-125",
+                        color === 'none' && "bg-transparent flex items-center justify-center border-dashed border-muted-foreground",
+                        color === 'red' && "bg-red-500",
+                        color === 'orange' && "bg-orange-500",
+                        color === 'yellow' && "bg-yellow-500",
+                        color === 'green' && "bg-green-500",
+                        color === 'blue' && "bg-blue-500",
+                        color === 'purple' && "bg-purple-500",
+                        color === 'pink' && "bg-pink-500"
+                      )}
+                      title={color}
+                    >
+                      {color === 'none' && <X className="w-2 h-2 text-muted-foreground" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
