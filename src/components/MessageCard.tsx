@@ -357,7 +357,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 ) : (
                   <div className="relative">
                     <p className="text-xs text-success/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
-                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                    <p 
+                      className="text-sm text-foreground/90 leading-relaxed italic cursor-pointer select-none"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                    >
                       {message.description}
                     </p>
                     <button
@@ -471,7 +478,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 ) : (
                   <div className="relative">
                     <p className="text-xs text-warning/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
-                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                    <p 
+                      className="text-sm text-foreground/90 leading-relaxed italic cursor-pointer select-none"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                    >
                       {message.description}
                     </p>
                     <button
@@ -531,7 +545,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 ) : (
                   <div className="relative">
                     <p className="text-xs text-accent/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
-                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                    <p 
+                      className="text-sm text-foreground/90 leading-relaxed italic cursor-pointer select-none"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                    >
                       {message.description}
                     </p>
                     <button
@@ -661,7 +682,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 ) : (
                   <div className="relative">
                     <p className="text-xs text-accent/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
-                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                    <p 
+                      className="text-sm text-foreground/90 leading-relaxed italic cursor-pointer select-none"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                    >
                       {message.description}
                     </p>
                     <button
@@ -757,7 +785,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 ) : (
                   <div className="relative">
                     <p className="text-xs text-primary/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
-                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                    <p 
+                      className="text-sm text-foreground/90 leading-relaxed italic cursor-pointer select-none"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                    >
                       {message.description}
                     </p>
                     <button
@@ -849,7 +884,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 ) : (
                   <div className="relative">
                     <p className="text-xs text-info/70 mb-1 font-medium">{language === 'ar' ? 'ملاحظة إضافية:' : 'Additional Note:'}</p>
-                    <p className="text-sm text-foreground/90 leading-relaxed italic">
+                    <p 
+                      className="text-sm text-foreground/90 leading-relaxed italic cursor-pointer select-none"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        setTempDescription(message.description || '');
+                        setIsAddingDescription(true);
+                      }}
+                    >
                       {message.description}
                     </p>
                     <button
