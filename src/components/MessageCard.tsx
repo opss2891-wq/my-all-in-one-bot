@@ -1022,6 +1022,57 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           </div>
         );
       }
+      case 'audio':
+      case 'voice': {
+        return (
+          <div className="space-y-3 bg-pink-500/5 dark:bg-pink-500/10 p-4 rounded-2xl border border-pink-500/20 shadow-none !important">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+                {message.type === 'audio' ? <Music className="w-5 h-5 text-pink-400" /> : <Mic className="w-5 h-5 text-rose-400" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{message.content}</p>
+                <div className="h-1.5 w-full bg-pink-500/10 rounded-full mt-2 overflow-hidden">
+                  <div className="h-full w-1/3 bg-pink-400 rounded-full animate-pulse" />
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center text-[10px] text-pink-400/60 font-mono">
+              <span>0:00</span>
+              <span>--:--</span>
+            </div>
+          </div>
+        );
+      }
+      case 'location': {
+        const coords = message.content?.match(/-?\d+\.\d+,\s*-?\d+\.\d+/);
+        const mapUrl = coords ? `https://www.google.com/maps?q=${coords[0]}` : `https://www.google.com/maps/search/${encodeURIComponent(message.content || '')}`;
+        return (
+          <div className="space-y-3 bg-emerald-500/5 dark:bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20 shadow-none !important">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-emerald-400" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium line-clamp-2">{message.content}</p>
+                <a 
+                  href={mapUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:underline mt-1"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  {language === 'ar' ? 'فتح في الخرائط' : 'Open in Maps'}
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      }
+      case 'audio':
+      case 'voice':
+      case 'location':
+        return null; // Already handled above
       case 'file': {
         const fileData = message.fileData;
         if (!fileData) return null;

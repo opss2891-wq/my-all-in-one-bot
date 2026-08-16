@@ -180,7 +180,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   return (
-    <div className="border-t border-white/10 glass-panel p-4 md:p-6 shadow-2xl relative z-10 rounded-t-3xl backdrop-blur-2xl">
+    <div className="border-t border-white/10 glass-panel p-4 md:p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)] relative z-10 rounded-t-[2.5rem] backdrop-blur-3xl">
       <div className="max-w-4xl mx-auto">
         {/* Type Selector - Horizontal Pills */}
         <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1">
@@ -288,9 +288,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   rows={2}
                   dir="auto"
                   className={cn(
-                    "flex-1 bg-white/5 border-2 rounded-2xl px-5 py-4 text-foreground placeholder:text-muted-foreground/50 resize-none transition-all focus:outline-none min-h-[80px] text-lg",
+                    "flex-1 bg-white/[0.03] border-2 rounded-[1.5rem] px-5 py-4 text-foreground placeholder:text-muted-foreground/40 resize-none transition-all focus:outline-none min-h-[90px] text-lg",
                     config.borderColor,
-                    "focus:ring-4 focus:ring-primary/10 shadow-xl"
+                    "focus:ring-4 focus:ring-primary/5 shadow-2xl focus:bg-white/[0.05]"
                   )}
                 />
               </div>
@@ -302,10 +302,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
             onClick={handleSend}
             disabled={loading || (type === 'file' ? !selectedFile : (!content.trim() && images.length === 0))}
             className={cn(
-              "px-5 rounded-2xl transition-all flex items-center justify-center flex-shrink-0",
+              "px-6 rounded-[1.5rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-95",
               (type === 'file' ? selectedFile : (content.trim() || images.length > 0))
-                ? "gradient-primary text-primary-foreground hover:opacity-90 shadow-lg" 
-                : "bg-muted text-muted-foreground"
+                ? "gradient-primary text-primary-foreground hover:brightness-110 shadow-lg shadow-primary/20" 
+                : "bg-white/5 text-muted-foreground border border-white/5"
             )}
           >
             {loading ? (

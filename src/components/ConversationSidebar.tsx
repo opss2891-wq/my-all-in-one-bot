@@ -189,7 +189,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
 
   return (
     <div id={sidebarId} className={cn(
-      "h-full flex flex-col bg-card/60 backdrop-blur-2xl border-x border-white/5 transition-all duration-300 relative",
+      "h-full flex flex-col bg-card/40 backdrop-blur-3xl border-x border-white/5 transition-all duration-500 relative shadow-2xl",
       (editingId || labelEditId) ? "translate-x-0 opacity-100" : "group-[.dropdown-open]:translate-x-0 group-[.dropdown-open]:opacity-100",
       className
     )}>
@@ -285,10 +285,10 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
               <div
                 key={conv.id}
                 className={cn(
-                  "group relative flex items-center gap-3 p-3 cursor-pointer transition-all border border-transparent rounded-xl",
+                  "group relative flex items-center gap-3 p-3.5 cursor-pointer transition-all border border-white/5 rounded-[1.25rem] mb-1",
                   currentConversationId === conv.id
-                    ? "bg-primary/15 border-primary/30"
-                    : "hover:bg-muted/80 active:scale-[0.98]",
+                    ? "bg-primary/20 border-primary/30 shadow-lg shadow-primary/5 scale-[1.02]"
+                    : "hover:bg-white/5 hover:border-white/10 active:scale-[0.98]",
                   conv.color && colorClasses[conv.color]
                 )}
                 onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
