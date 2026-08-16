@@ -35,12 +35,13 @@ const SearchBar = React.lazy(() => import('./SearchBar'));
 const ConversationSidebar = React.lazy(() => import('./ConversationSidebar'));
 const ContextMenu = React.lazy(() => import('./ContextMenu'));
 const SettingsDialog = React.lazy(() => import('./SettingsDialog'));
+const Pagination = React.lazy(() => import('./Pagination'));
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
 import { encryptData } from '@/lib/encryption';
 
-const MESSAGES_PER_PAGE = 15;
+const MESSAGES_PER_PAGE = 12;
 
 const ChatView: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,8 +59,7 @@ const ChatView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingTitle, setEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState('');
-  const [displayCount, setDisplayCount] = useState(MESSAGES_PER_PAGE);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
   const mainRef = useRef<HTMLDivElement>(null);
 
   const { t, isRTL, language } = useLanguage();
@@ -73,31 +73,25 @@ const ChatView: React.FC = () => {
   useEffect(() => {
     if (currentConversationId) {
       loadMessages();
+      setPage(1); // Reset page when conversation changes
     }
   }, [currentConversationId]);
 
-  const handleScroll = useCallback(() => {
-    if (!mainRef.current || loadingMore) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = mainRef.current;
-    const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
-    
-    if (scrollPercentage > 0.8) {
-      setLoadingMore(true);
-      setTimeout(() => {
-        setDisplayCount(prev => prev + MESSAGES_PER_PAGE);
-        setLoadingMore(false);
-      }, 300);
-    }
-  }, [loadingMore]);
-
+  // Reset page when filter or search changes
   useEffect(() => {
-    const mainElement = mainRef.current;
-    if (mainElement) {
-      mainElement.addEventListener('scroll', handleScroll);
-      return () => mainElement.removeEventListener('scroll', handleScroll);
+    setPage(1);
+  }, [filter, searchQuery]);
+
+  const scrollToTop = () => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [handleScroll]);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    scrollToTop();
+  };
 
   // Keyboard navigation for conversations (ArrowLeft/ArrowRight)
   useEffect(() => {
