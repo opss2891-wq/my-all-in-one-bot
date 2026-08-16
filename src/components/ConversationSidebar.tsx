@@ -192,7 +192,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         </div>
         <button
           onClick={onCreateConversation}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl gradient-primary text-primary-foreground hover:opacity-90 transition-all font-medium shadow-lg shadow-primary/20"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl gradient-primary text-primary-foreground hover:opacity-90 transition-all font-medium"
         >
           <Plus className="w-5 h-5" />
           <span>{t('newConversation')}</span>
@@ -242,7 +242,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
           className={cn(
             "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all",
             showArchived 
-              ? "bg-accent/20 text-accent shadow-lg shadow-accent/10 border border-accent/20" 
+              ? "bg-accent/20 text-accent border border-accent/20" 
               : "text-muted-foreground hover:bg-white/5 border border-transparent"
           )}
         >
@@ -285,7 +285,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                 )}>
                   <svg viewBox="0 0 100 100" className={cn(
                     "w-5 h-5 transition-all fill-none",
-                    currentConversationId === conv.id ? "text-primary drop-shadow-[0_0_5px_rgba(20,184,166,0.3)]" : "text-muted-foreground"
+                    currentConversationId === conv.id ? "text-primary" : "text-muted-foreground"
                   )} xmlns="http://www.w3.org/2000/svg">
                     <path d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" stroke="currentColor" strokeWidth="8" />
                   </svg>

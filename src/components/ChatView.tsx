@@ -570,10 +570,8 @@ const ChatView: React.FC = () => {
     )}>
       {/* Background patterns */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-80 cyber-grid" />
-      <div className="absolute top-[-15%] start-[-10%] w-[70%] h-[70%] bg-primary/20 rounded-full blur-[180px] pointer-events-none animate-pulse" />
-      <div className="absolute bottom-[-15%] end-[-10%] w-[70%] h-[70%] bg-accent/20 rounded-full blur-[180px] pointer-events-none animate-pulse" style={{ animationDelay: '1.5s' }} />
-      <div className="absolute top-[30%] end-[5%] w-[40%] h-[40%] bg-info/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-[20%] end-[10%] w-[30%] h-[30%] bg-info/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20" />
+
 
       <React.Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
         <ContextMenu 
@@ -627,7 +625,7 @@ const ChatView: React.FC = () => {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out shadow-2xl",
+        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out shadow-none",
         isRTL 
           ? (sidebarOpen ? "translate-x-0 left-0" : "-translate-x-full left-0") 
           : (sidebarOpen ? "translate-x-0 right-0" : "translate-x-full right-0")
@@ -692,7 +690,7 @@ const ChatView: React.FC = () => {
                 </button>
                 
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 group overflow-hidden">
-                  <svg viewBox="0 0 100 100" className="w-6 h-6 md:w-8 md:h-8 fill-none drop-shadow-[0_0_8px_rgba(20,184,166,0.4)]" xmlns="http://www.w3.org/2000/svg">
+                  <svg viewBox="0 0 100 100" className="w-6 h-6 md:w-8 md:h-8 fill-none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" stroke="currentColor" strokeWidth="6" className="text-primary" />
                     <circle cx="50" cy="45" r="12" stroke="currentColor" strokeWidth="4" className="text-primary" />
                     <path d="M50 57V68M45 73H55" stroke="currentColor" strokeWidth="6" strokeLinecap="round" className="text-primary" />
@@ -754,7 +752,7 @@ const ChatView: React.FC = () => {
                           className={cn(
                             "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all text-xs font-medium",
                             isActive 
-                              ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105" 
+                              ? "bg-primary text-primary-foreground shadow-none" 
                               : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                           )}
                         >
@@ -830,7 +828,7 @@ const ChatView: React.FC = () => {
                       className={cn(
                         "flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all font-medium",
                         isActive 
-                          ? "bg-primary text-primary-foreground shadow-lg" 
+                          ? "bg-primary text-primary-foreground shadow-none" 
                           : "bg-muted/50 text-muted-foreground hover:bg-muted"
                       )}
                     >
@@ -848,7 +846,7 @@ const ChatView: React.FC = () => {
         {!headerVisible && (
           <button
             onClick={toggleHeader}
-            className="fixed top-4 start-4 z-30 p-3 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-lg text-muted-foreground hover:text-foreground transition-colors animate-fade-in"
+            className="fixed top-4 start-4 z-30 p-3 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-none text-muted-foreground hover:text-foreground transition-colors"
           >
             <Eye className="w-5 h-5" />
           </button>
@@ -871,7 +869,7 @@ const ChatView: React.FC = () => {
               </div>
             ) : !currentConversationId ? (
               <div className="text-center py-20">
-                <div className="w-20 h-20 rounded-3xl gradient-primary mx-auto mb-6 flex items-center justify-center glow-primary">
+                <div className="w-20 h-20 rounded-3xl gradient-primary mx-auto mb-6 flex items-center justify-center">
                   <Sparkles className="w-10 h-10 text-primary-foreground" />
                 </div>
                 <h2 className="text-xl font-bold text-foreground mb-2">{t('welcome')}</h2>
