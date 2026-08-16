@@ -373,8 +373,10 @@
 
 .cyber-input-wrapper {
   background: transparent !important;
-  @apply pointer-events-auto relative z-[999];
+  @apply pointer-events-auto relative z-[999] overflow-visible;
+  padding-bottom: env(safe-area-inset-bottom);
 }
+
 
 .cyber-input-wrapper * {
   pointer-events: auto !important;

@@ -863,11 +863,12 @@ const ChatView: React.FC = () => {
         <main 
           ref={mainRef} 
           className={cn(
-            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300 scroll-smooth",
+            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300 scroll-smooth pb-32 md:pb-40 relative z-10",
             theme === 'dark' ? "bg-transparent text-slate-50" : "bg-slate-50/30 text-slate-900"
           )}
         >
           <div className="p-3 md:p-4 max-w-3xl mx-auto relative z-10">
+
             {/* Messages Grid - 2 columns on mobile */}
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
@@ -937,17 +938,19 @@ const ChatView: React.FC = () => {
           </div>
         </main>
 
-        {/* Input area wrapper with elevated z-index and explicit interaction */}
+        {/* Floating Input area - repositioned for maximum reachability */}
         {currentConversationId && (
           <div 
-            className="fixed bottom-0 left-0 right-0 z-[999] pointer-events-auto cyber-input-wrapper"
+            className="fixed bottom-0 left-0 right-0 z-[999] pointer-events-auto cyber-input-wrapper overflow-visible"
             onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
           >
             <React.Suspense fallback={<div className="p-4 bg-black/50 animate-pulse h-20" />}>
               <MessageInput onSend={handleSend} loading={sending} />
             </React.Suspense>
           </div>
         )}
+
 
       </div>
 

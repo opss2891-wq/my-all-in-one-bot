@@ -248,7 +248,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
     <div className="border-t border-white/5 bg-[#0A0A0B]/95 p-4 md:p-6 shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.9)] relative z-[999] rounded-t-[2.5rem] backdrop-blur-3xl pointer-events-auto">
       <div className="max-w-4xl mx-auto pointer-events-auto">
         {/* Type Selector - Horizontal Pills */}
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-2 -mx-1 px-1 relative z-[1001] pointer-events-auto scrollbar-hide">
+        <div className="flex gap-2 mb-3 overflow-x-auto pb-2 -mx-1 px-1 relative z-[1001] pointer-events-auto no-scrollbar scrollbar-hide">
           {(Object.entries(typeConfig) as [MessageType, typeof config][]).map(([key, cfg]) => {
             const TypeIcon = cfg.icon;
             const isActive = type === key;
@@ -256,18 +256,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
               <button
                 key={key}
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setType(key);
-                }}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setType(key);
                 }}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[11px] uppercase tracking-wider whitespace-nowrap transition-all border-2 pointer-events-auto relative z-[1002] font-black cursor-pointer",
+                  "flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[11px] uppercase tracking-wider whitespace-nowrap transition-all border-2 pointer-events-auto relative z-[1002] font-black cursor-pointer select-none",
                   isActive 
                     ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor} shadow-xl shadow-primary/10 scale-105 -translate-y-0.5` 
                     : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:border-white/10"
@@ -279,6 +274,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
             );
           })}
         </div>
+
 
         {/* Input Area - Conditional Forms based on Type */}
         <div className={cn("flex gap-3 items-stretch relative z-[1001] pointer-events-auto", isRTL && "flex-row-reverse")}>

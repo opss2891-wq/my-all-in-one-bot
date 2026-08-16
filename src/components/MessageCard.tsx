@@ -291,16 +291,17 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     }
 
     switch (message.type) {
-      case 'note': return 'border-success/50 bg-success/5 dark:bg-success/10 shadow-none !important pointer-events-auto';
-      case 'tasks': return 'border-warning/50 bg-warning/5 dark:bg-warning/10 shadow-none !important pointer-events-auto';
-      case 'credentials': return 'border-accent/50 bg-accent/5 dark:bg-accent/10 shadow-none !important pointer-events-auto';
-      case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none !important pointer-events-auto';
-      case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none !important pointer-events-auto';
-      case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none !important pointer-events-auto';
-      case 'audio': return 'border-pink-500/50 bg-pink-500/5 dark:bg-pink-500/10 shadow-none !important pointer-events-auto';
-      case 'voice': return 'border-rose-500/50 bg-rose-500/5 dark:bg-rose-500/10 shadow-none !important pointer-events-auto';
-      case 'location': return 'border-emerald-500/50 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-none !important pointer-events-auto';
-      default: return 'border-border/30 shadow-none !important pointer-events-auto';
+      case 'note': return 'border-success/50 bg-success/5 dark:bg-success/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'tasks': return 'border-warning/50 bg-warning/5 dark:bg-warning/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'credentials': return 'border-accent/50 bg-accent/5 dark:bg-accent/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'audio': return 'border-pink-500/50 bg-pink-500/5 dark:bg-pink-500/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'voice': return 'border-rose-500/50 bg-rose-500/5 dark:bg-rose-500/10 shadow-none !important pointer-events-auto relative z-10';
+      case 'location': return 'border-emerald-500/50 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-none !important pointer-events-auto relative z-10';
+      default: return 'border-border/30 shadow-none !important pointer-events-auto relative z-10';
+
     }
   };
 
@@ -339,7 +340,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               )}
             >
               <div className={cn(
-                "text-foreground leading-relaxed markdown-content pointer-events-auto !pointer-events-auto",
+                "text-foreground leading-relaxed markdown-content pointer-events-auto !pointer-events-auto select-text",
+
                 layout === 'compact' ? "text-xs line-clamp-2" : "text-sm md:text-base"
               )}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
