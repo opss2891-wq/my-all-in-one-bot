@@ -166,15 +166,28 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   const getPlaceholder = () => {
+    if (isRTL) {
+      switch (type) {
+        case 'note': return 'اكتب ملاحظة جديدة...';
+        case 'tasks': return 'اكتب المهمة (السطر الأول هو العنوان)...';
+        case 'credentials': return 'أضف بيانات اعتماد (اسم مستخدم، كلمة مرور)...';
+        case 'links': return 'أضف رابطاً...';
+        case 'code': return 'أضف كود برمجي...';
+        case 'audio': return 'اكتب وصفاً للتسجيل أو رابط...';
+        case 'voice': return 'سجل ملاحظة صوتية...';
+        case 'location': return 'أضف إحداثيات أو اسم الموقع...';
+        default: return 'اكتب شيئاً...';
+      }
+    }
     switch (type) {
       case 'note': return t('addNote');
       case 'tasks': return t('addTasks');
       case 'credentials': return t('addCredentials');
       case 'links': return t('addLinks');
       case 'code': return t('addCode');
-      case 'audio': return isRTL ? 'أضف رابط صوتي أو مسار...' : 'Add audio link or path...';
-      case 'voice': return isRTL ? 'أضف ملاحظة صوتية...' : 'Add voice note...';
-      case 'location': return isRTL ? 'أضف إحداثيات أو اسم الموقع...' : 'Add coordinates or location name...';
+      case 'audio': return 'Add audio link or path...';
+      case 'voice': return 'Add voice note...';
+      case 'location': return 'Add coordinates or location name...';
       default: return '';
     }
   };
