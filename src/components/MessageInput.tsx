@@ -1,12 +1,21 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X, Mic, Music, MapPin } from 'lucide-react';
-import { MessageType } from '@/lib/firebase';
+import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X, Mic, Music, MapPin, Plus } from 'lucide-react';
+import { MessageType, TaskItem, CredentialData, LinkItem, CodeData } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
 
 interface MessageInputProps {
-  onSend: (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }, images?: string[]) => Promise<void>;
+  onSend: (
+    type: MessageType, 
+    content: string, 
+    file?: { name: string; type: string; size: number; content: string }, 
+    images?: string[],
+    tasks?: TaskItem[],
+    credential?: CredentialData,
+    links?: LinkItem[],
+    codeData?: CodeData
+  ) => Promise<void>;
   loading: boolean;
 }
 
@@ -15,9 +24,22 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   const [content, setContent] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<{ name: string; type: string; size: number; content: string } | null>(null);
+  const [tasks, setTasks] = useState<string[]>(['']);
+  const [credential, setCredential] = useState<CredentialData>({
+    username: '',
+    password: '',
+    host: '',
+    url: '',
+    credType: 'other'
+  });
+  const [links, setLinks] = useState<LinkItem[]>([{ title: '', url: '' }]);
+  const [codeData, setCodeData] = useState<CodeData>({ code: '', language: 'javascript', explanation: '' });
+  const [location, setLocation] = useState({ lat: '', lng: '', address: '' });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const { t, isRTL } = useLanguage();
+
+  const [noteHeight, setNoteHeight] = useState<number | null>(null);
 
   // Handle paste for images
   const handleImagePaste = useCallback((e: ClipboardEvent) => {
@@ -138,13 +160,43 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   const handleSend = async () => {
-    if (type === 'file' && selectedFile) {
-      await onSend(type, selectedFile.name, selectedFile);
-      setSelectedFile(null);
-    } else if ((content.trim() || images.length > 0) && !loading) {
-      await onSend(type, content, undefined, type === 'note' ? images : undefined);
-      setContent('');
-      setImages([]);
+    if (loading) return;
+
+    try {
+      if (type === 'file' && selectedFile) {
+        await onSend(type, selectedFile.name, selectedFile);
+        setSelectedFile(null);
+      } else if (type === 'tasks') {
+        const filteredTasks = tasks.filter(t => t.trim() !== '').map(t => ({ text: t, completed: false }));
+        if (filteredTasks.length === 0) return;
+        await onSend(type, filteredTasks[0].text, undefined, undefined, filteredTasks);
+        setTasks(['']);
+      } else if (type === 'credentials') {
+        if (!credential.username && !credential.password) return;
+        await onSend(type, credential.host || credential.username || 'Credential', undefined, undefined, undefined, credential);
+        setCredential({ username: '', password: '', host: '', url: '', credType: 'other' });
+      } else if (type === 'links') {
+        const filteredLinks = links.filter(l => l.url.trim() !== '');
+        if (filteredLinks.length === 0) return;
+        await onSend(type, filteredLinks[0].title || filteredLinks[0].url, undefined, undefined, undefined, undefined, filteredLinks);
+        setLinks([{ title: '', url: '' }]);
+      } else if (type === 'code') {
+        if (!codeData.code.trim()) return;
+        await onSend(type, codeData.code.substring(0, 50), undefined, undefined, undefined, undefined, undefined, codeData);
+        setCodeData({ code: '', language: 'javascript', explanation: '' });
+      } else if (type === 'location') {
+        if (!location.lat || !location.lng) return;
+        const locContent = `${location.address || 'Location'}: ${location.lat}, ${location.lng}`;
+        await onSend(type, locContent);
+        setLocation({ lat: '', lng: '', address: '' });
+      } else if ((content.trim() || images.length > 0)) {
+        await onSend(type, content, undefined, type === 'note' ? images : undefined);
+        setContent('');
+        setImages([]);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({ title: isRTL ? 'خطأ في الإرسال' : 'Error sending', variant: 'destructive' });
     }
   };
 
@@ -222,36 +274,224 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
           })}
         </div>
 
-        {/* Input Area - Textarea with Send Button aligned */}
+        {/* Input Area - Conditional Forms based on Type */}
         <div className={cn("flex gap-3 items-stretch relative z-[151]", isRTL && "flex-row-reverse")}>
           {type === 'file' ? (
-            <div className="flex-1 flex flex-col gap-2">
+            <div className="flex-1 flex flex-col gap-2 animate-fade-in">
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".txt,.doc,.docx,.xls,.xlsx,.csv"
                 onChange={handleFileSelect}
                 className="hidden"
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-3 bg-white/5 border-2 border-dashed rounded-2xl px-4 py-6 text-foreground transition-all hover:bg-white/10",
+                  "flex-1 flex items-center justify-center gap-3 bg-white/5 border-2 border-dashed rounded-2xl px-4 py-8 text-foreground transition-all hover:bg-white/10",
                   config.borderColor
                 )}
               >
-                <Upload className="w-6 h-6 text-purple-400" />
-                <span className="text-muted-foreground">{t('chooseFile')}</span>
+                <Upload className="w-8 h-8 text-purple-400" />
+                <div className="flex flex-col items-start">
+                  <span className="font-bold text-lg">{isRTL ? 'رفع ملف' : 'Upload File'}</span>
+                  <span className="text-sm text-muted-foreground">{isRTL ? 'اختر ملفاً من جهازك' : 'Choose a file from your device'}</span>
+                </div>
               </button>
               {selectedFile && (
-                <div className="flex items-center gap-2 p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">
-                  <File className="w-4 h-4 text-purple-400" />
-                  <span className="text-sm text-foreground flex-1 truncate">{selectedFile.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {(selectedFile.size / 1024).toFixed(1)} KB
-                  </span>
+                <div className="flex items-center gap-3 p-3 bg-purple-500/10 rounded-xl border border-purple-500/20">
+                  <File className="w-5 h-5 text-purple-400" />
+                  <span className="text-sm font-medium text-foreground flex-1 truncate">{selectedFile.name}</span>
+                  <button onClick={() => setSelectedFile(null)} className="p-1 hover:bg-white/10 rounded">
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
               )}
+            </div>
+          ) : type === 'tasks' ? (
+            <div className="flex-1 flex flex-col gap-3 animate-fade-in">
+              <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                {tasks.map((task, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={task}
+                      onChange={(e) => {
+                        const newTasks = [...tasks];
+                        newTasks[idx] = e.target.value;
+                        setTasks(newTasks);
+                      }}
+                      placeholder={idx === 0 ? (isRTL ? 'عنوان القائمة...' : 'List title...') : (isRTL ? 'مهمة جديدة...' : 'New task...')}
+                      className={cn(
+                        "flex-1 bg-white/5 border rounded-xl px-4 py-2 text-foreground focus:outline-none",
+                        idx === 0 ? "font-bold border-warning/40" : "border-white/10"
+                      )}
+                    />
+                    {tasks.length > 1 && (
+                      <button 
+                        onClick={() => setTasks(tasks.filter((_, i) => i !== idx))}
+                        className="p-2 text-muted-foreground hover:text-destructive"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button 
+                onClick={() => setTasks([...tasks, ''])}
+                className="flex items-center justify-center gap-2 py-2 border border-dashed border-warning/30 rounded-xl text-warning hover:bg-warning/5 transition-all text-sm"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isRTL ? 'إضافة مهمة' : 'Add Task'}</span>
+              </button>
+            </div>
+          ) : type === 'credentials' ? (
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 animate-fade-in">
+              <input
+                type="text"
+                value={credential.host || ''}
+                onChange={(e) => setCredential({...credential, host: e.target.value})}
+                placeholder={isRTL ? 'المضيف (Host/URL)...' : 'Host/URL...'}
+                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+              />
+              <select
+                value={credential.credType}
+                onChange={(e) => setCredential({...credential, credType: e.target.value as any})}
+                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+              >
+                <option value="other">Other</option>
+                <option value="admin">Admin</option>
+                <option value="ftp">FTP</option>
+                <option value="ssh">SSH</option>
+                <option value="database">Database</option>
+              </select>
+              <input
+                type="text"
+                value={credential.username || ''}
+                onChange={(e) => setCredential({...credential, username: e.target.value})}
+                placeholder={isRTL ? 'اسم المستخدم...' : 'Username...'}
+                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+              />
+              <input
+                type="password"
+                value={credential.password || ''}
+                onChange={(e) => setCredential({...credential, password: e.target.value})}
+                placeholder={isRTL ? 'كلمة المرور...' : 'Password...'}
+                className="bg-white/5 border border-accent/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+              />
+            </div>
+          ) : type === 'links' ? (
+            <div className="flex-1 flex flex-col gap-3 animate-fade-in">
+              {links.map((link, idx) => (
+                <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={link.title}
+                    onChange={(e) => {
+                      const newLinks = [...links];
+                      newLinks[idx].title = e.target.value;
+                      setLinks(newLinks);
+                    }}
+                    placeholder={isRTL ? 'عنوان الرابط...' : 'Link title...'}
+                    className="bg-white/5 border border-primary/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={link.url}
+                      onChange={(e) => {
+                        const newLinks = [...links];
+                        newLinks[idx].url = e.target.value;
+                        setLinks(newLinks);
+                      }}
+                      placeholder="https://..."
+                      className="flex-1 bg-white/5 border border-primary/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+                    />
+                    {links.length > 1 && (
+                      <button onClick={() => setLinks(links.filter((_, i) => i !== idx))} className="p-2 text-muted-foreground hover:text-destructive">
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <button onClick={() => setLinks([...links, { title: '', url: '' }])} className="py-2 border border-dashed border-primary/30 rounded-xl text-primary hover:bg-primary/5 text-sm">
+                + {isRTL ? 'رابط إضافي' : 'Add Link'}
+              </button>
+            </div>
+          ) : type === 'code' ? (
+            <div className="flex-1 flex flex-col gap-3 animate-fade-in">
+              <select
+                value={codeData.language}
+                onChange={(e) => setCodeData({...codeData, language: e.target.value})}
+                className="bg-white/5 border border-info/30 rounded-xl px-4 py-2 text-foreground focus:outline-none text-sm"
+              >
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="sql">SQL</option>
+              </select>
+              <textarea
+                value={codeData.code}
+                onChange={(e) => setCodeData({...codeData, code: e.target.value})}
+                placeholder={isRTL ? 'الصق الكود هنا...' : 'Paste code here...'}
+                className="bg-[#0f1115] border border-info/30 rounded-xl px-4 py-3 text-info font-mono text-sm focus:outline-none min-h-[150px] resize-y"
+              />
+              <input
+                type="text"
+                value={codeData.explanation || ''}
+                onChange={(e) => setCodeData({...codeData, explanation: e.target.value})}
+                placeholder={isRTL ? 'شرح بسيط (اختياري)...' : 'Brief explanation (optional)...'}
+                className="bg-white/5 border border-info/30 rounded-xl px-4 py-2 text-foreground focus:outline-none text-sm"
+              />
+            </div>
+          ) : type === 'location' ? (
+            <div className="flex-1 flex flex-col gap-3 animate-fade-in">
+              <input
+                type="text"
+                value={location.address}
+                onChange={(e) => setLocation({...location, address: e.target.value})}
+                placeholder={isRTL ? 'اسم الموقع أو العنوان...' : 'Location name or address...'}
+                className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  value={location.lat}
+                  onChange={(e) => setLocation({...location, lat: e.target.value})}
+                  placeholder="Latitude (30.0444)"
+                  className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+                />
+                <input
+                  type="text"
+                  value={location.lng}
+                  onChange={(e) => setLocation({...location, lng: e.target.value})}
+                  placeholder="Longitude (31.2357)"
+                  className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
+                />
+              </div>
+            </div>
+          ) : type === 'audio' || type === 'voice' ? (
+            <div className="flex-1 flex flex-col gap-3 animate-fade-in">
+               <div className="flex items-center justify-center p-8 bg-rose-500/10 border-2 border-dashed border-rose-500/30 rounded-2xl">
+                 <div className="flex flex-col items-center gap-4">
+                   <div className="w-16 h-16 rounded-full bg-rose-500 flex items-center justify-center animate-pulse shadow-lg shadow-rose-500/20">
+                     <Mic className="w-8 h-8 text-white" />
+                   </div>
+                   <div className="text-center">
+                     <h4 className="font-bold text-lg text-rose-400">{isRTL ? 'تسجيل صوتي قيد التطوير' : 'Voice Recording Coming Soon'}</h4>
+                     <p className="text-sm text-muted-foreground">{isRTL ? 'يمكنك حالياً إضافة وصف نصي للملاحظة الصوتية' : 'You can currently add a text description for the voice note'}</p>
+                   </div>
+                 </div>
+               </div>
+               <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder={getPlaceholder()}
+                className="flex-1 bg-white/5 border border-rose-500/30 rounded-xl px-4 py-3 text-foreground focus:outline-none min-h-[80px]"
+              />
             </div>
           ) : (
             <div className="flex-1 flex flex-col gap-2">
@@ -302,35 +542,31 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   onChange={(e) => setContent(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={getPlaceholder()}
-                  rows={type === 'tasks' ? 5 : type === 'code' ? 8 : type === 'credentials' ? 4 : 2}
+                  rows={2}
                   dir="auto"
                   className={cn(
                     "flex-1 bg-white/[0.02] border-2 rounded-[1.5rem] px-5 py-4 text-foreground placeholder:text-muted-foreground/30 resize-none transition-all focus:outline-none text-lg pointer-events-auto relative z-[151]",
                     config.borderColor,
-                    "focus:ring-4 focus:ring-primary/5 shadow-2xl focus:bg-white/[0.05]",
-                    type === 'code' && "font-mono text-sm",
-                    (type === 'tasks' || type === 'code' || type === 'credentials') && "min-h-[150px]"
+                    "focus:ring-4 focus:ring-primary/5 shadow-2xl focus:bg-white/[0.05]"
                   )}
                 />
               </div>
             </div>
           )}
 
-          {/* Send Button - Aligned to match textarea height */}
+          {/* Send Button */}
           <button
             onClick={handleSend}
-            disabled={loading || (type === 'file' ? !selectedFile : (!content.trim() && images.length === 0))}
+            disabled={loading}
             className={cn(
               "px-6 rounded-[1.5rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-95 relative z-[151] pointer-events-auto",
-              (type === 'file' ? selectedFile : (content.trim() || images.length > 0))
-                ? "gradient-primary text-primary-foreground hover:brightness-110 shadow-lg shadow-primary/20" 
-                : "bg-white/5 text-muted-foreground border border-white/5"
+              loading ? "opacity-50 cursor-not-allowed" : "gradient-primary text-primary-foreground hover:brightness-110 shadow-lg shadow-primary/20"
             )}
           >
             {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-6 h-6 animate-spin" />
             ) : (
-              <Send className={cn("w-5 h-5", isRTL && "rotate-180")} />
+              <Send className={cn("w-6 h-6", isRTL && "rotate-180")} />
             )}
           </button>
         </div>

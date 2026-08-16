@@ -384,7 +384,16 @@ const ChatView: React.FC = () => {
     }
   };
 
-  const handleSend = async (type: MessageType, content: string, file?: { name: string; type: string; size: number; content: string }, images?: string[]) => {
+  const handleSend = async (
+    type: MessageType, 
+    content: string, 
+    file?: { name: string; type: string; size: number; content: string }, 
+    images?: string[],
+    tasks?: TaskItem[],
+    credential?: CredentialData,
+    links?: LinkItem[],
+    codeData?: CodeData
+  ) => {
     if (!currentConversationId || !user) {
       toast({ title: t('error'), variant: 'destructive' });
       return;
@@ -405,22 +414,43 @@ const ChatView: React.FC = () => {
           conversationId: currentConversationId 
         });
       } else {
-        const messageData = await parseContent(type, content);
-        
-        // Encrypt credentials if type is credentials
-        if (type === 'credentials' && messageData.credential) {
-          messageData.credential = {
-            ...messageData.credential,
-            username: encryptData(messageData.credential.username),
-            password: encryptData(messageData.credential.password),
-            host: messageData.credential.host ? encryptData(messageData.credential.host) : '',
-            url: messageData.credential.url ? encryptData(messageData.credential.url) : '',
-          };
-        }
+        let messageData: Partial<Message> = {};
 
-        // Add images if it's a note
-        if (type === 'note' && images && images.length > 0) {
-          (messageData as Partial<Message>).images = images;
+        if (tasks) {
+          messageData = { type, tasks, content };
+        } else if (credential) {
+          messageData = { 
+            type, 
+            credential: {
+              ...credential,
+              username: encryptData(credential.username || ''),
+              password: encryptData(credential.password || ''),
+              host: credential.host ? encryptData(credential.host) : '',
+              url: credential.url ? encryptData(credential.url) : '',
+            } 
+          };
+        } else if (links) {
+          messageData = { type, links };
+        } else if (codeData) {
+          messageData = { type, codeData };
+        } else {
+          messageData = await parseContent(type, content);
+          
+          // Encrypt credentials if they came from parseContent
+          if (type === 'credentials' && messageData.credential) {
+            messageData.credential = {
+              ...messageData.credential,
+              username: encryptData(messageData.credential.username),
+              password: encryptData(messageData.credential.password),
+              host: messageData.credential.host ? encryptData(messageData.credential.host) : '',
+              url: messageData.credential.url ? encryptData(messageData.credential.url) : '',
+            };
+          }
+
+          // Add images if it's a note
+          if (type === 'note' && images && images.length > 0) {
+            messageData.images = images;
+          }
         }
         
         // If type is audio, voice or location, ensure content is set correctly
