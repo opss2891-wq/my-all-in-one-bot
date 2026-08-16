@@ -251,12 +251,12 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
 
   const getBorderColor = () => {
     switch (message.type) {
-      case 'note': return 'border-success/20 group-hover:border-success/50';
-      case 'tasks': return 'border-warning/20 group-hover:border-warning/50';
-      case 'credentials': return 'border-accent/20 group-hover:border-accent/50';
-      case 'links': return 'border-primary/20 group-hover:border-primary/50';
-      case 'code': return 'border-info/20 group-hover:border-info/50';
-      case 'file': return 'border-purple-500/20 group-hover:border-purple-500/50';
+      case 'note': return 'border-success/20 group-hover:border-success/50 hover:shadow-[0_0_15px_rgba(34,197,94,0.1)]';
+      case 'tasks': return 'border-warning/20 group-hover:border-warning/50 hover:shadow-[0_0_15px_rgba(234,179,8,0.1)]';
+      case 'credentials': return 'border-accent/20 group-hover:border-accent/50 hover:shadow-[0_0_15px_rgba(168,85,247,0.1)]';
+      case 'links': return 'border-primary/20 group-hover:border-primary/50 hover:shadow-[0_0_15px_rgba(20,184,166,0.1)]';
+      case 'code': return 'border-info/20 group-hover:border-info/50 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)]';
+      case 'file': return 'border-purple-500/20 group-hover:border-purple-500/50 hover:shadow-[0_0_15px_rgba(168,85,247,0.1)]';
       default: return 'border-border/30 group-hover:border-primary/30';
     }
   };
