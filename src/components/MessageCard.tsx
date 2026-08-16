@@ -228,7 +228,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'file': return <Zap className={cn(iconClass, "text-purple-400")} />;
       case 'audio': return <Music className={cn(iconClass, "text-pink-400")} />;
       case 'voice': return <Mic className={cn(iconClass, "text-rose-400")} />;
-      case 'location': return <MapPin className={cn(iconClass, "text-emerald-400")} />;
+      case 'location': return <Database className={cn(iconClass, "text-emerald-400")} />;
       default: return <FileText className={iconClass} />;
     }
   };
@@ -1050,27 +1050,24 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         );
       }
       case 'location': {
-        const coords = message.content?.match(/-?\d+\.\d+,\s*-?\d+\.\d+/);
-        const mapUrl = coords ? `https://www.google.com/maps?q=${coords[0]}` : `https://www.google.com/maps/search/${encodeURIComponent(message.content || '')}`;
         return (
           <div className="space-y-3 bg-emerald-500/5 dark:bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20 shadow-none !important">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-emerald-400" />
+                <Database className="w-5 h-5 text-emerald-400" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium line-clamp-2">{message.content}</p>
-                <a 
-                  href={mapUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:underline mt-1"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  {language === 'ar' ? 'فتح في الخرائط' : 'Open in Maps'}
-                </a>
+                <p className="text-sm font-medium">{message.content}</p>
               </div>
             </div>
+            {message.description && (
+              <p className="text-xs text-muted-foreground italic border-t border-emerald-500/10 pt-2">
+                {message.description}
+              </p>
+            )}
+          </div>
+        );
+      }
           </div>
         );
       }
