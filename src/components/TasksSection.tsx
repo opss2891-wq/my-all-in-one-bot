@@ -161,7 +161,7 @@ const TasksSection: React.FC = () => {
               <div
                 key={task.id}
                 onClick={() => handleToggleTask(task.id!, task.completed)}
-                className={`bg-card border rounded-lg p-4 animate-slide-up group flex items-center gap-3 transition-all cursor-pointer select-none active:scale-[0.98] ${
+                className={`bg-card border rounded-lg p-4 animate-slide-up group flex items-center gap-3 transition-all cursor-pointer select-none active:scale-[0.98] pointer-events-auto relative z-10 ${
                   task.completed ? 'border-success/50 bg-success/5' : 'border-border hover:border-warning/50'
                 }`}
               >

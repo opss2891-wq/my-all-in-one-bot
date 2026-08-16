@@ -325,7 +325,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         const displayContent = (!isLongNote || isExpanded) ? content : content.slice(0, 180) + '...';
 
         return (
-          <div className="space-y-3 relative group/note pointer-events-auto" dir="rtl" style={{ textAlign: 'right' }}>
+          <div className="space-y-3 relative group/note pointer-events-auto z-10" dir="rtl" style={{ textAlign: 'right' }}>
             <div 
               onDoubleClick={(e) => {
                 e.stopPropagation();
@@ -334,7 +334,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               }}
               style={{ height: noteHeight ? `${noteHeight}px` : 'auto' }}
               className={cn(
-                "overflow-hidden transition-[height] duration-200 pointer-events-auto",
+                "overflow-hidden transition-[height] duration-200 pointer-events-auto relative z-10",
                 !noteHeight && !isExpanded && "max-h-[150px]"
               )}
             >
@@ -386,7 +386,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             
             {/* Optional Description Section */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc pointer-events-auto z-10">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -491,7 +491,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 key={index + 1}
                 onClick={() => handleToggleTask(index + 1)}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-10",
+                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[20]",
                   layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
                 )}
@@ -511,7 +511,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 />
               </div>
             ))}
-            <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
+            <div className="pointer-events-auto relative z-[20]">
+              <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
+            </div>
             {/* Optional Description Section for Tasks */}
             {(message.description || isAddingDescription) ? (
               <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc">
@@ -1262,7 +1264,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "shadow-none hover:shadow-none !important",
-        "cursor-pointer pointer-events-auto relative z-10",
+        "cursor-pointer pointer-events-auto relative z-[5]",
         message.color === 'red' && "bg-red-500/10 border-red-500/50",
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
@@ -1335,7 +1337,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 relative z-20 pointer-events-auto">
           <div className="relative">
             <button
               onClick={(e) => { e.stopPropagation(); setShowColorPicker(!showColorPicker); }}

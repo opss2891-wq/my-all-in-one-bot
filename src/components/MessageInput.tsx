@@ -180,10 +180,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   return (
-    <div className="border-t border-white/5 bg-[#0A0A0B]/80 p-4 md:p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.8)] relative z-[50] rounded-t-[2.5rem] backdrop-blur-3xl">
+    <div className="border-t border-white/5 bg-[#0A0A0B]/80 p-4 md:p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.8)] relative z-[150] rounded-t-[2.5rem] backdrop-blur-3xl">
       <div className="max-w-4xl mx-auto">
         {/* Type Selector - Horizontal Pills */}
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1">
+        <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1 relative z-[151]">
           {(Object.entries(typeConfig) as [MessageType, typeof config][]).map(([key, cfg]) => {
             const TypeIcon = cfg.icon;
             const isActive = type === key;
@@ -196,7 +196,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   setType(key);
                 }}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-xl text-sm whitespace-nowrap transition-all border pointer-events-auto relative z-[51]",
+                  "flex items-center gap-2 px-3 py-2 rounded-xl text-sm whitespace-nowrap transition-all border pointer-events-auto relative z-[152]",
                   isActive 
                     ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor} shadow-lg shadow-primary/10` 
                     : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10"
@@ -210,7 +210,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
         </div>
 
         {/* Input Area - Textarea with Send Button aligned */}
-        <div className={cn("flex gap-3 items-stretch", isRTL && "flex-row-reverse")}>
+        <div className={cn("flex gap-3 items-stretch relative z-[151]", isRTL && "flex-row-reverse")}>
           {type === 'file' ? (
             <div className="flex-1 flex flex-col gap-2">
               <input
@@ -263,7 +263,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                 </div>
               )}
               
-              <div className="flex gap-3 items-stretch">
+              <div className="flex gap-3 items-stretch relative z-[151]">
                 {type === 'note' && (
                   <>
                     <input
@@ -289,12 +289,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   onChange={(e) => setContent(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={getPlaceholder()}
-                  rows={2}
+                  rows={type === 'tasks' ? 5 : type === 'code' ? 8 : type === 'credentials' ? 4 : 2}
                   dir="auto"
                   className={cn(
-                    "flex-1 bg-white/[0.02] border-2 rounded-[1.5rem] px-5 py-4 text-foreground placeholder:text-muted-foreground/30 resize-none transition-all focus:outline-none min-h-[90px] text-lg pointer-events-auto relative z-[51]",
+                    "flex-1 bg-white/[0.02] border-2 rounded-[1.5rem] px-5 py-4 text-foreground placeholder:text-muted-foreground/30 resize-none transition-all focus:outline-none text-lg pointer-events-auto relative z-[151]",
                     config.borderColor,
-                    "focus:ring-4 focus:ring-primary/5 shadow-2xl focus:bg-white/[0.05]"
+                    "focus:ring-4 focus:ring-primary/5 shadow-2xl focus:bg-white/[0.05]",
+                    type === 'code' && "font-mono text-sm"
                   )}
                 />
               </div>
@@ -306,7 +307,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
             onClick={handleSend}
             disabled={loading || (type === 'file' ? !selectedFile : (!content.trim() && images.length === 0))}
             className={cn(
-              "px-6 rounded-[1.5rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-95",
+              "px-6 rounded-[1.5rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-95 relative z-[151] pointer-events-auto",
               (type === 'file' ? selectedFile : (content.trim() || images.length > 0))
                 ? "gradient-primary text-primary-foreground hover:brightness-110 shadow-lg shadow-primary/20" 
                 : "bg-white/5 text-muted-foreground border border-white/5"
