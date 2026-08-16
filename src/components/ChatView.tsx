@@ -923,7 +923,7 @@ const ChatView: React.FC = () => {
 
       {/* Sidebar - Wrapped in conditional and moved AFTER main content to ensure it doesn't block inputs unless open */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-[200] transition-all duration-300">
+        <div className="fixed inset-0 z-[200]">
           {/* Backdrop for mobile */}
           <div 
             className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[-1] md:hidden"
