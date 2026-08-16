@@ -909,7 +909,7 @@ const ChatView: React.FC = () => {
         {/* Input area wrapper with elevated z-index and explicit interaction */}
         {currentConversationId && (
           <div className={cn(
-            "sticky bottom-0 z-[150] transition-colors duration-300 pointer-events-auto",
+            "sticky bottom-0 z-[160] transition-colors duration-300 pointer-events-auto",
             theme === 'dark' ? "bg-slate-900/95 backdrop-blur-xl" : "bg-card/95 backdrop-blur-xl"
           )}>
             <React.Suspense fallback={<div className="p-4 border-t border-border bg-card animate-pulse h-20" />}>
