@@ -315,6 +315,8 @@ export const updateMessage = async (id: string, updates: Partial<Message>) => {
   if (updates.codeData !== undefined) mappedUpdates.code_data = updates.codeData;
   if (updates.fileData !== undefined) mappedUpdates.file_data = updates.fileData;
   if (updates.images !== undefined) mappedUpdates.images = updates.images;
+  if (updates.description !== undefined) mappedUpdates.description = updates.description;
+  if (updates.pinned !== undefined) mappedUpdates.pinned = updates.pinned;
 
   const { error } = await supabase
     .from('messages')
