@@ -1069,38 +1069,38 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         (e.currentTarget as HTMLElement).removeAttribute('data-active-card');
       }}
       className={cn(
-        "group relative glass-panel rounded-2xl p-4 md:p-6 transition-all duration-500",
+        "group relative glass-panel rounded-2xl p-4 md:p-6 transition-none",
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
-        "hover:-translate-y-2 hover:border-white/20 shadow-none hover:shadow-none !important",
-        (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.98]",
-        message.color === 'red' && "bg-red-500/10",
-        message.color === 'orange' && "bg-orange-500/10",
-        message.color === 'yellow' && "bg-yellow-500/10",
-        message.color === 'green' && "bg-green-500/10",
-        message.color === 'blue' && "bg-blue-500/10",
-        message.color === 'purple' && "bg-purple-500/10",
-        message.color === 'pink' && "bg-pink-500/10"
+        "shadow-none hover:shadow-none !important",
+        (message.type === 'note' || message.type === 'code') && "cursor-pointer",
+        message.color === 'red' && "bg-red-500/10 border-red-500/50",
+        message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
+        message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
+        message.color === 'green' && "bg-green-500/10 border-green-500/50",
+        message.color === 'blue' && "bg-blue-500/10 border-blue-500/50",
+        message.color === 'purple' && "bg-purple-500/10 border-purple-500/50",
+        message.color === 'pink' && "bg-pink-500/10 border-pink-500/50"
       )}
       onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
     >
       <div className={cn(
-        "absolute top-0 left-0 w-1.5 h-full opacity-100 transition-all duration-300 group-hover:w-2",
+        "absolute top-0 left-0 w-1.5 h-full opacity-100",
         (!message.color || message.color === 'none') ? (
-          message.type === 'note' && "bg-success",
-          message.type === 'tasks' && "bg-warning",
-          message.type === 'credentials' && "bg-accent",
-          message.type === 'links' && "bg-primary",
-          message.type === 'code' && "bg-info",
-          message.type === 'file' && "bg-purple-500"
+          message.type === 'note' ? "bg-success" :
+          message.type === 'tasks' ? "bg-warning" :
+          message.type === 'credentials' ? "bg-accent" :
+          message.type === 'links' ? "bg-primary" :
+          message.type === 'code' ? "bg-info" :
+          message.type === 'file' ? "bg-purple-500" : ""
         ) : (
-          message.color === 'red' && "bg-red-500",
-          message.color === 'orange' && "bg-orange-500",
-          message.color === 'yellow' && "bg-yellow-500",
-          message.color === 'green' && "bg-green-500",
-          message.color === 'blue' && "bg-blue-500",
-          message.color === 'purple' && "bg-purple-500",
-          message.color === 'pink' && "bg-pink-500"
+          message.color === 'red' ? "bg-red-500" :
+          message.color === 'orange' ? "bg-orange-500" :
+          message.color === 'yellow' ? "bg-yellow-500" :
+          message.color === 'green' ? "bg-green-500" :
+          message.color === 'blue' ? "bg-blue-500" :
+          message.color === 'purple' ? "bg-purple-500" :
+          message.color === 'pink' ? "bg-pink-500" : ""
         )
       )} />
 
