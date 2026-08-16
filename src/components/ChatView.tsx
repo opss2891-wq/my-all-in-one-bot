@@ -583,7 +583,7 @@ const ChatView: React.FC = () => {
       )}
 
       {/* Mobile Bottom Navigation - Grid layout */}
-      <div className="fixed bottom-0 start-0 end-0 z-30 md:hidden bg-card/95 backdrop-blur-md border-t border-border safe-area-bottom">
+      <div className="fixed bottom-0 start-0 end-0 z-30 md:hidden glass-panel border-t border-white/10 safe-area-bottom rounded-t-2xl">
         <div className="grid grid-cols-4 gap-1 p-2">
           {filterButtons.map(btn => {
             const Icon = btn.icon;
@@ -647,10 +647,7 @@ const ChatView: React.FC = () => {
       )}>
         {/* Header */}
         {headerVisible && (
-          <header className={cn(
-            "border-b border-border sticky top-0 z-20 safe-area-top animate-fade-in transition-colors duration-300",
-            theme === 'dark' ? "bg-black/20 backdrop-blur-xl border-b border-white/5" : "bg-card/90 backdrop-blur-md"
-          )}>
+          <header className="cyber-header">
             <div className="p-3 md:p-4">
               <div className="flex items-center gap-3 mb-3">
                 {/* Sidebar Toggle - Desktop & Mobile */}
