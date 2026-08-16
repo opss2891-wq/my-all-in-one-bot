@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 
 export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
-export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'emerald' | 'teal' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'slate';
 
 export interface TaskItem {
   text: string;
