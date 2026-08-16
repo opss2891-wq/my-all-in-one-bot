@@ -906,7 +906,7 @@ const ChatView: React.FC = () => {
           </div>
         </main>
 
-        {/* Input */}
+        {/* Input area wrapper with elevated z-index and explicit interaction */}
         {currentConversationId && (
           <div className={cn(
             "sticky bottom-0 z-[150] transition-colors duration-300 pointer-events-auto",
