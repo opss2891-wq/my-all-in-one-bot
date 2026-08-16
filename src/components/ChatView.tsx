@@ -643,30 +643,7 @@ const ChatView: React.FC = () => {
         />
       )}
 
-      {/* Mobile Bottom Navigation - Grid layout */}
-      <div className="fixed bottom-0 start-0 end-0 z-30 md:hidden glass-panel border-t border-white/10 safe-area-bottom rounded-t-2xl">
-        <div className="grid grid-cols-4 gap-1 p-2">
-          {filterButtons.map(btn => {
-            const Icon = btn.icon;
-            const isActive = filter === btn.type;
-            return (
-              <button
-                key={btn.type}
-                onClick={() => { setFilter(btn.type); setPage(1); }}
-                className={cn(
-                  "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
-                  isActive 
-                    ? "bg-primary text-primary-foreground" 
-                    : "text-muted-foreground"
-                )}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="text-[10px] font-medium">{btn.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Mobile filtering now lives in the header rail (deck-rail) */}
 
 
       {/* Main Content */}
