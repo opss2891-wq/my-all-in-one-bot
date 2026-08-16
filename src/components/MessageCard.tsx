@@ -502,6 +502,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                       ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      ref={descriptionRef}
+                      value={tempDescription}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
@@ -1118,6 +1120,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     <div 
       data-card-type={message.type}
       data-card-id={message.id}
+      onDoubleClick={(e) => {
+        if (message.type === 'note' || message.type === 'code') {
+          e.stopPropagation();
+          setTempDescription(message.description || '');
+          setIsAddingDescription(true);
+        }
+      }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).setAttribute('data-active-card', 'true');
       }}
