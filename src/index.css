@@ -46,8 +46,8 @@
     --radius: 0.75rem;
 
     /* Custom design tokens */
-    --glow-primary: none;
-    --glow-accent: none;
+    --glow-primary: transparent;
+    --glow-accent: transparent;
     --gradient-primary: linear-gradient(135deg, hsl(175 80% 40%), hsl(195 80% 35%));
     --gradient-accent: linear-gradient(135deg, hsl(280 60% 55%), hsl(320 60% 50%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 15% 97%));
@@ -103,8 +103,8 @@
     --ring: 175 80% 50%;
 
     /* Custom design tokens */
-    --glow-primary: none;
-    --glow-accent: none;
+    --glow-primary: transparent;
+    --glow-accent: transparent;
     --gradient-primary: linear-gradient(135deg, hsl(175 80% 50%), hsl(195 80% 45%));
     --gradient-accent: linear-gradient(135deg, hsl(280 60% 55%), hsl(320 60% 50%));
     --gradient-card: linear-gradient(145deg, hsl(220 18% 10%), hsl(220 18% 5%));
@@ -189,11 +189,11 @@
 
 @layer utilities {
   .glow-primary {
-    box-shadow: none;
+    box-shadow: transparent !important;
   }
 
   .glow-accent {
-    box-shadow: none;
+    box-shadow: transparent !important;
   }
 
   .gradient-primary {
@@ -266,8 +266,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px hsl(175 80% 50% / 0.3); }
-  50% { box-shadow: 0 0 20px hsl(175 80% 50% / 0.3); }
+  0%, 100% { box-shadow: none !important; }
+  50% { box-shadow: none !important; }
 }
 
 @keyframes slide-up {
