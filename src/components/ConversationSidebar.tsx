@@ -113,6 +113,11 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
 }) => {
   // Add a ref or ID to the main div
   const sidebarId = "conversation-sidebar";
+  const [isReady, setIsReady] = useState(false);
+  
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
@@ -189,13 +194,14 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
 
   return (
     <div id={sidebarId} className={cn(
-      "h-full flex flex-col bg-card/40 backdrop-blur-3xl border-x border-white/5 transition-all duration-500 relative shadow-2xl z-[60]",
+      "h-full flex flex-col bg-[#0A0A0B] backdrop-blur-3xl border-x border-white/5 transition-all duration-500 relative shadow-2xl z-[60] cyber-sidebar",
+      !isReady && "opacity-0",
       className
     )}>
       {/* Header */}
       <div className="p-4 border-b border-white/10 safe-area-top">
-        <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-lg font-bold text-foreground flex-1">{t('conversations')}</h2>
+        <div className="flex items-center gap-2 mb-5">
+          <h2 className="text-xl font-black text-foreground tracking-tight flex-1 uppercase">{t('conversations')}</h2>
           <button
             onClick={onClose}
             className="p-2 rounded-xl hover:bg-muted transition-colors md:hidden"
@@ -205,7 +211,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         </div>
         <button
           onClick={onCreateConversation}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl gradient-primary text-primary-foreground hover:opacity-90 transition-all font-medium"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl gradient-primary text-primary-foreground hover:opacity-90 transition-all font-bold shadow-xl shadow-primary/10"
         >
           <Plus className="w-5 h-5" />
           <span>{t('newConversation')}</span>
@@ -230,7 +236,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('searchConversations')}
             className={cn(
-              "w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-all",
+              "w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm transition-all cyber-input",
               isRTL ? "pr-10 pl-3" : "pl-10 pr-3"
             )}
           />
@@ -261,7 +267,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         >
           <Archive className="w-4.5 h-4.5" />
           <span className="font-medium">{t('archive')}</span>
-          <span className="ms-auto bg-white/10 px-2 py-0.5 rounded-full text-xs">
+          <span className="ms-auto bg-white/5 border border-white/10 px-2 py-0.5 rounded-lg text-[10px] font-bold">
             {archivedConversations.length}
           </span>
         </button>
@@ -284,23 +290,23 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
               <div
                 key={conv.id}
                 className={cn(
-                  "group relative flex items-center gap-3 p-3.5 cursor-pointer transition-all border border-white/5 rounded-[1.25rem] mb-1",
+                  "group relative flex items-center gap-3 p-3.5 cursor-pointer transition-all border border-white/5 rounded-[1.25rem] mb-1 cyber-sidebar-item",
                   currentConversationId === conv.id
-                    ? "bg-primary/20 border-primary/30 shadow-lg shadow-primary/5 scale-[1.02]"
+                    ? "bg-primary/10 border-primary/20 shadow-lg shadow-primary/5 scale-[1.02]"
                     : "hover:bg-white/5 hover:border-white/10 active:scale-[0.98]",
                   conv.color && colorClasses[conv.color]
                 )}
                 onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
               >
                 <div id={sidebarId} className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative transition-all border border-transparent overflow-hidden",
-                  currentConversationId === conv.id ? "bg-primary/10 border-primary/20" : "bg-muted"
+                  "w-11 h-11 rounded-[0.9rem] flex items-center justify-center flex-shrink-0 relative transition-all border border-transparent overflow-hidden",
+                  currentConversationId === conv.id ? "bg-primary/20 border-primary/30" : "bg-white/5 border-white/5"
                 )}>
                   <svg viewBox="0 0 100 100" className={cn(
                     "w-5 h-5 transition-all fill-none",
                     currentConversationId === conv.id ? "text-primary" : "text-muted-foreground"
                   )} xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" stroke="currentColor" strokeWidth="8" />
+                    <path d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   {conv.pinned && (
                     <Pin className="w-3 h-3 text-warning absolute -top-1 -right-1" />
@@ -370,17 +376,17 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                   ) : (
                     <>
                       <p className={cn(
-                        "text-sm font-medium truncate text-foreground",
+                        "text-[0.9rem] font-bold truncate text-foreground/90 group-hover:text-foreground transition-colors",
                         conv.pinned && "flex items-center gap-1"
                       )}>
                         {conv.title}
                       </p>
                       <div className="flex items-center gap-2">
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[0.65rem] uppercase tracking-wider text-muted-foreground/60 font-medium">
                           {formatDate(conv.updatedAt)}
                         </p>
                         {conv.label && (
-                          <span className="text-xs px-1.5 py-0.5 rounded bg-accent/20 text-accent">
+                          <span className="text-[0.65rem] px-1.5 py-0.5 rounded-md bg-accent/10 text-accent/80 border border-accent/20 font-bold uppercase tracking-tighter">
                             {conv.label}
                           </span>
                         )}

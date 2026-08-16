@@ -955,7 +955,7 @@ const ChatView: React.FC = () => {
       {/* Sidebar Overlay */}
       <div 
         className={cn(
-          "fixed inset-0 z-[300] opacity-0 pointer-events-none transition-opacity duration-300",
+          "fixed inset-0 z-[300] opacity-0 pointer-events-none transition-opacity duration-500",
           sidebarOpen && "opacity-100"
         )}
       >
@@ -969,7 +969,7 @@ const ChatView: React.FC = () => {
         
         {/* Sidebar container */}
         <div className={cn(
-          "h-full w-80 transform transition-transform duration-300 ease-out shadow-none pointer-events-auto",
+          "h-full w-80 transform transition-transform duration-500 ease-out shadow-none pointer-events-auto cyber-sidebar",
           sidebarOpen ? "translate-x-0" : (isRTL ? "-translate-x-full" : "translate-x-full"),
           isRTL ? "left-0" : "right-0"
         )}>
