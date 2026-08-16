@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X } from 'lucide-react';
+import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X, Mic, Music, MapPin } from 'lucide-react';
 import { MessageType } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -84,6 +84,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
     links: { icon: Link2, label: t('links'), color: 'text-primary', bgColor: 'bg-primary/20', borderColor: 'border-primary/30' },
     code: { icon: Code, label: t('code'), color: 'text-info', bgColor: 'bg-info/20', borderColor: 'border-info/30' },
     file: { icon: File, label: t('file') || 'ملف', color: 'text-purple-400', bgColor: 'bg-purple-500/20', borderColor: 'border-purple-500/30' },
+    audio: { icon: Music, label: isRTL ? 'صوت' : 'Audio', color: 'text-pink-400', bgColor: 'bg-pink-500/20', borderColor: 'border-pink-500/30' },
+    voice: { icon: Mic, label: isRTL ? 'بصمة' : 'Voice', color: 'text-rose-400', bgColor: 'bg-rose-500/20', borderColor: 'border-rose-500/30' },
+    location: { icon: MapPin, label: isRTL ? 'موقع' : 'Location', color: 'text-emerald-400', bgColor: 'bg-emerald-500/20', borderColor: 'border-emerald-500/30' },
   };
 
   const config = typeConfig[type];
@@ -164,22 +167,21 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
 
   const getPlaceholder = () => {
     switch (type) {
-      case 'note':
-        return t('addNote');
-      case 'tasks':
-        return t('addTasks');
-      case 'credentials':
-        return t('addCredentials');
-      case 'links':
-        return t('addLinks');
-      case 'code':
-        return t('addCode');
+      case 'note': return t('addNote');
+      case 'tasks': return t('addTasks');
+      case 'credentials': return t('addCredentials');
+      case 'links': return t('addLinks');
+      case 'code': return t('addCode');
+      case 'audio': return isRTL ? 'أضف رابط صوتي أو مسار...' : 'Add audio link or path...';
+      case 'voice': return isRTL ? 'أضف ملاحظة صوتية...' : 'Add voice note...';
+      case 'location': return isRTL ? 'أضف إحداثيات أو اسم الموقع...' : 'Add coordinates or location name...';
+      default: return '';
     }
   };
 
   return (
-    <div className="border-t border-white/10 glass-panel p-3 md:p-4 shadow-none relative z-10">
-      <div className="max-w-3xl mx-auto">
+    <div className="border-t border-white/10 glass-panel p-4 md:p-6 shadow-2xl relative z-10 rounded-t-3xl backdrop-blur-2xl">
+      <div className="max-w-4xl mx-auto">
         {/* Type Selector - Horizontal Pills */}
         <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1">
           {(Object.entries(typeConfig) as [MessageType, typeof config][]).map(([key, cfg]) => {
@@ -286,9 +288,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   rows={2}
                   dir="auto"
                   className={cn(
-                    "flex-1 bg-white/5 border-2 rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none transition-all focus:outline-none min-h-[60px]",
+                    "flex-1 bg-white/5 border-2 rounded-2xl px-5 py-4 text-foreground placeholder:text-muted-foreground/50 resize-none transition-all focus:outline-none min-h-[80px] text-lg",
                     config.borderColor,
-                    "focus:ring-2 focus:ring-primary/20 shadow-inner shadow-black/20"
+                    "focus:ring-4 focus:ring-primary/10 shadow-xl"
                   )}
                 />
               </div>

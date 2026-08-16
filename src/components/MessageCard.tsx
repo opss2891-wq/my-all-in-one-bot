@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette, Mic, Music, MapPin } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
@@ -226,6 +226,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'links': return <Globe className={cn(iconClass, "text-primary")} />;
       case 'code': return <Terminal className={cn(iconClass, "text-info")} />;
       case 'file': return <Zap className={cn(iconClass, "text-purple-400")} />;
+      case 'audio': return <Music className={cn(iconClass, "text-pink-400")} />;
+      case 'voice': return <Mic className={cn(iconClass, "text-rose-400")} />;
+      case 'location': return <MapPin className={cn(iconClass, "text-emerald-400")} />;
       default: return <FileText className={iconClass} />;
     }
   };
