@@ -203,15 +203,7 @@
   }
   
   .gradient-primary::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-    transform: rotate(45deg);
-    animation: shine 3s infinite;
+    display: none;
   }
 
   .gradient-accent {
@@ -239,7 +231,7 @@
     background-image: 
       linear-gradient(to right, rgba(45, 212, 191, 0.05) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(45, 212, 191, 0.05) 1px, transparent 1px);
-    mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+    mask-image: none;
   }
 
   .glass-panel {

@@ -353,7 +353,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             
             {/* Optional Description Section */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc animate-fade-in">
+              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -474,7 +474,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
             {/* Optional Description Section for Tasks */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc animate-fade-in">
+              <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -1071,7 +1071,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         "group relative glass-panel rounded-2xl p-4 md:p-6 transition-all duration-500",
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
-        "animate-slide-up hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-white/20 hover:shadow-none",
+        "hover:-translate-y-2 hover:border-white/20 hover:shadow-none",
         (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.98]",
         message.color === 'red' && "bg-red-500/10",
         message.color === 'orange' && "bg-orange-500/10",
