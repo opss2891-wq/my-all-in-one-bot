@@ -227,7 +227,7 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
     .insert([{
       user_id: userId,
       conversation_id: message.conversationId,
-      type: message.type,
+      type: message.type as any,
       content: message.content,
       tasks: message.tasks as any,
       credential: message.credential as any,
