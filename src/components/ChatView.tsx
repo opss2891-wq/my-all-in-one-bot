@@ -921,51 +921,54 @@ const ChatView: React.FC = () => {
         )}
       </div>
 
-      {/* Sidebar - Wrapped in conditional and moved AFTER main content to ensure it doesn't block inputs unless open */}
-      <div className={cn(
-        "fixed inset-0 z-[200] transition-all duration-300 pointer-events-none",
-        sidebarOpen ? "opacity-100" : "opacity-0"
-      )}>
-        {sidebarOpen && (
-          <>
-            {/* Backdrop for mobile */}
-            <div 
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[-1] md:hidden pointer-events-auto"
-              onClick={() => setSidebarOpen(false)}
-            />
-            <div className={cn(
-              "h-full w-80 transform transition-transform duration-300 ease-out shadow-none pointer-events-auto",
-              isRTL 
-                ? "translate-x-0 left-0" 
-                : "translate-x-0 right-0"
-            )}>
-              <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
-                <ConversationSidebar
-                  conversations={conversations}
-                  archivedConversations={archivedConversations}
-                  currentConversationId={currentConversationId}
-                  showArchived={showArchived}
-                  onSelectConversation={(id) => {
-                    setCurrentConversationId(id);
-                    localStorage.setItem('activeConversationId', id);
-                    setSidebarOpen(false);
-                  }}
-                  onCreateConversation={handleCreateConversation}
-                  onArchiveConversation={handleArchiveConversation}
-                  onUnarchiveConversation={handleUnarchiveConversation}
-                  onDeleteConversation={handleDeleteConversation}
-                  onRenameConversation={handleRenameConversation}
-                  onPinConversation={handlePinConversation}
-                  onUnpinConversation={handleUnpinConversation}
-                  onSetColor={handleSetColor}
-                  onSetLabel={handleSetLabel}
-                  onToggleArchived={() => setShowArchived(!showArchived)}
-                  onClose={() => setSidebarOpen(false)}
-                />
-              </React.Suspense>
-            </div>
-          </>
+      {/* Sidebar Overlay */}
+      <div 
+        className={cn(
+          "fixed inset-0 z-[200] transition-all duration-300 pointer-events-none",
+          sidebarOpen ? "opacity-100" : "opacity-0"
         )}
+      >
+        {/* Backdrop for mobile - separate layer to handle clicks specifically */}
+        {sidebarOpen && (
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm md:hidden pointer-events-auto"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        
+        {/* Sidebar container */}
+        <div className={cn(
+          "h-full w-80 transform transition-transform duration-300 ease-out shadow-none pointer-events-auto",
+          sidebarOpen ? "translate-x-0" : (isRTL ? "-translate-x-full" : "translate-x-full"),
+          isRTL ? "left-0" : "right-0"
+        )}>
+          {sidebarOpen && (
+            <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center bg-card/80"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
+              <ConversationSidebar
+                conversations={conversations}
+                archivedConversations={archivedConversations}
+                currentConversationId={currentConversationId}
+                showArchived={showArchived}
+                onSelectConversation={(id) => {
+                  setCurrentConversationId(id);
+                  localStorage.setItem('activeConversationId', id);
+                  setSidebarOpen(false);
+                }}
+                onCreateConversation={handleCreateConversation}
+                onArchiveConversation={handleArchiveConversation}
+                onUnarchiveConversation={handleUnarchiveConversation}
+                onDeleteConversation={handleDeleteConversation}
+                onRenameConversation={handleRenameConversation}
+                onPinConversation={handlePinConversation}
+                onUnpinConversation={handleUnpinConversation}
+                onSetColor={handleSetColor}
+                onSetLabel={handleSetLabel}
+                onToggleArchived={() => setShowArchived(!showArchived)}
+                onClose={() => setSidebarOpen(false)}
+              />
+            </React.Suspense>
+          )}
+        </div>
       </div>
     </div>
   );
