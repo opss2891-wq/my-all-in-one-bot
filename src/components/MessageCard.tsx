@@ -1247,7 +1247,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "shadow-none hover:shadow-none !important",
-        "cursor-pointer pointer-events-auto relative z-[5]",
+        "cursor-pointer pointer-events-auto relative z-[10]",
         message.color === 'red' && "bg-red-500/10 border-red-500/50",
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
@@ -1297,7 +1297,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
 
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
-          <div className={cn(
+          <div className={cn("pointer-events-auto z-[11]",
             "w-8 h-8 rounded-lg flex items-center justify-center",
             message.type === 'note' && "bg-success/10",
             message.type === 'tasks' && "bg-warning/10",
