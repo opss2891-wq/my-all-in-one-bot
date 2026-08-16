@@ -251,13 +251,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
 
   const getBorderColor = () => {
     switch (message.type) {
-      case 'note': return 'border-success/30 hover:border-success/50';
-      case 'tasks': return 'border-warning/30 hover:border-warning/50';
-      case 'credentials': return 'border-accent/30 hover:border-accent/50';
-      case 'links': return 'border-primary/30 hover:border-primary/50';
-      case 'code': return 'border-info/30 hover:border-info/50';
-      case 'file': return 'border-purple-500/30 hover:border-purple-500/50';
-      default: return 'border-border';
+      case 'note': return 'border-success/20 group-hover:border-success/50';
+      case 'tasks': return 'border-warning/20 group-hover:border-warning/50';
+      case 'credentials': return 'border-accent/20 group-hover:border-accent/50';
+      case 'links': return 'border-primary/20 group-hover:border-primary/50';
+      case 'code': return 'border-info/20 group-hover:border-info/50';
+      case 'file': return 'border-purple-500/20 group-hover:border-purple-500/50';
+      default: return 'border-border/30 group-hover:border-primary/30';
     }
   };
 
@@ -993,13 +993,23 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     <div 
       data-card-type={message.type}
       className={cn(
-        "bg-card border-2 rounded-2xl p-4 animate-slide-up group transition-all",
+        "bg-card/40 backdrop-blur-md border border-white/5 rounded-2xl p-4 animate-slide-up group transition-all relative overflow-hidden",
+        "hover:bg-card/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.03)] hover:-translate-y-1 hover:border-white/10",
         layout === 'compact' ? "p-2 min-h-0" : "p-4",
-        getBorderColor(),
         (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.99]"
       )}
       onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
     >
+      <div className={cn(
+        "absolute top-0 left-0 w-1 h-full opacity-20 transition-all duration-300 group-hover:opacity-100",
+        message.type === 'note' && "bg-success",
+        message.type === 'tasks' && "bg-warning",
+        message.type === 'credentials' && "bg-accent",
+        message.type === 'links' && "bg-primary",
+        message.type === 'code' && "bg-info",
+        message.type === 'file' && "bg-purple-500",
+      )} />
+
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
           <div className={cn(
