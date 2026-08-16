@@ -394,7 +394,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                    <DropdownMenuContent align="end" className="w-48 glass-panel border-white/10">
                       <DropdownMenuItem onSelect={() => startEditing(conv)} className="gap-2">
                         <Edit2 className="w-4 h-4" />
                         {t('rename')}
@@ -417,7 +417,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                           <Palette className="w-4 h-4" />
                           {t('setColor')}
                         </DropdownMenuSubTrigger>
-                        <DropdownMenuSubContent className="bg-card border-border">
+                        <DropdownMenuSubContent className="glass-panel border-white/10">
                           {colors.map((color) => (
                             <DropdownMenuItem
                               key={color}

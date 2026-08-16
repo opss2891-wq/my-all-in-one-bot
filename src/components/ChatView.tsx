@@ -692,7 +692,7 @@ const ChatView: React.FC = () => {
                              if (e.key === 'Enter') saveHeaderRename();
                              if (e.key === 'Escape') cancelHeaderRename();
                            }}
-                           className="bg-muted/50 border border-primary/30 rounded-lg px-2 py-1 text-lg font-bold text-foreground w-full focus:outline-none focus:ring-1 focus:ring-primary"
+                           className="bg-white/5 border border-primary/30 rounded-lg px-2 py-1 text-lg font-bold text-foreground w-full focus:outline-none focus:ring-1 focus:ring-primary shadow-inner"
                            autoFocus
                          />
                          <button onClick={saveHeaderRename} className="p-1.5 bg-success/20 hover:bg-success/30 rounded-lg transition-colors">
