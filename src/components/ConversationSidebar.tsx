@@ -280,13 +280,15 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                 onClick={() => !editingId && !labelEditId && onSelectConversation(conv.id!)}
               >
                 <div id={sidebarId} className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative transition-all",
-                  currentConversationId === conv.id ? "bg-primary/20" : "bg-muted"
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative transition-all border border-transparent overflow-hidden",
+                  currentConversationId === conv.id ? "bg-primary/10 border-primary/20" : "bg-muted"
                 )}>
-                  <MessageSquare className={cn(
-                    "w-5 h-5 transition-all",
-                    currentConversationId === conv.id ? "text-primary" : "text-muted-foreground"
-                  )} />
+                  <svg viewBox="0 0 100 100" className={cn(
+                    "w-5 h-5 transition-all fill-none",
+                    currentConversationId === conv.id ? "text-primary drop-shadow-[0_0_5px_rgba(20,184,166,0.3)]" : "text-muted-foreground"
+                  )} xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" stroke="currentColor" strokeWidth="8" />
+                  </svg>
                   {conv.pinned && (
                     <Pin className="w-3 h-3 text-warning absolute -top-1 -right-1" />
                   )}

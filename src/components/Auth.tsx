@@ -1,16 +1,60 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Lock, KeyRound } from 'lucide-react';
+import { Lock, ShieldCheck } from 'lucide-react';
+
+const AuthLogo = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="hsl(175, 80%, 50%)" />
+        <stop offset="100%" stopColor="hsl(195, 80%, 45%)" />
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="2.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+    <path 
+      d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" 
+      stroke="url(#logo-grad)" 
+      strokeWidth="4" 
+      className="animate-pulse"
+      filter="url(#glow)"
+    />
+    <circle cx="50" cy="45" r="12" stroke="url(#logo-grad)" strokeWidth="3" />
+    <path d="M50 57V68M45 73H55" stroke="url(#logo-grad)" strokeWidth="4" strokeLinecap="round" />
+  </svg>
+);
+
+const AnimatedBackground = () => (
+  <div className="fixed inset-0 z-0 overflow-hidden bg-[#0a0c10] pointer-events-none">
+    <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary/20 rounded-full blur-[120px] animate-pulse" />
+    <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-accent/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
+    <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-20">
+      <div className="absolute inset-0 border-[1px] border-primary/30 rounded-full animate-spin-slow" />
+      <div className="absolute inset-20 border-[1px] border-accent/20 rounded-full animate-reverse-spin" />
+      <div className="absolute inset-40 border-[1px] border-primary/10 rounded-full animate-spin-slow" style={{ animationDuration: '20s' }} />
+    </div>
+  </div>
+);
 
 const Auth: React.FC = () => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
-  const { language } = useLanguage();
+  const { language, isRTL } = useLanguage();
   const { loginWithPin } = useAuth();
   const navigate = useNavigate();
 
@@ -30,92 +74,102 @@ const Auth: React.FC = () => {
   const t = {
     en: {
       title: 'DataBot',
-      desc: 'Enter your 4-digit PIN to access your secure vault.',
-      placeholder: 'Enter PIN',
-      login: 'Access Vault',
-      loading: 'Accessing...',
+      subtitle: 'Secure Information Management',
+      desc: 'Authentication Required',
+      placeholder: '••••',
+      login: 'Decrypt & Access',
+      securityStatus: 'Encrypted Session Active',
     },
     ar: {
-      title: 'DataBot',
-      desc: 'أدخل رمز PIN المكون من 4 أرقام للوصول إلى خزنتك الآمنة.',
-      placeholder: 'أدخل الرمز',
-      login: 'دخول الخزنة',
-      loading: 'جاري الدخول...',
+      title: 'داتا بوت',
+      subtitle: 'إدارة البيانات الآمنة',
+      desc: 'مطلوب التحقق من الهوية',
+      placeholder: '••••',
+      login: 'فك التشفير والدخول',
+      securityStatus: 'جلسة مشفرة نشطة',
     }
   };
 
   const content = language === 'ar' ? t.ar : t.en;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background relative overflow-hidden px-4">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
+    <div className="flex items-center justify-center min-h-screen relative overflow-hidden px-4 font-sans selection:bg-primary/30" dir={isRTL ? 'rtl' : 'ltr'}>
+      <AnimatedBackground />
       
-      <Card className="w-full max-w-md border-border/40 bg-card/60 backdrop-blur-xl shadow-elevated relative z-10 overflow-hidden animate-slide-up">
-        {/* Top accent line */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary animate-pulse-glow" />
-        
-        <CardHeader className="text-center space-y-4 pb-8">
-          <div className="flex justify-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-lg animate-float">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
+      <div className="w-full max-w-[440px] relative z-10 animate-fade-in">
+        {/* Logo Section */}
+        <div className="flex flex-col items-center mb-10 text-center">
+          <div className="relative mb-6">
+            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
+            <AuthLogo className="w-24 h-24 relative z-10 drop-shadow-[0_0_15px_rgba(20,184,166,0.5)]" />
           </div>
-          <div className="space-y-1">
-            <CardTitle className="text-3xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
-              {content.title}
-            </CardTitle>
-            <CardDescription className="text-base text-muted-foreground max-w-[280px] mx-auto">
-              {content.desc}
-            </CardDescription>
-          </div>
-        </CardHeader>
+          <h1 className="text-4xl font-black tracking-tighter text-white mb-2">
+            {content.title}
+          </h1>
+          <p className="text-primary/70 font-medium text-sm uppercase tracking-widest">
+            {content.subtitle}
+          </p>
+        </div>
 
-        <CardContent className="space-y-6">
-          <div className="p-6 rounded-xl bg-muted/30 border border-border/50 space-y-4">
-            <div className="flex items-center gap-3 text-primary justify-center">
-              <Lock className="h-5 w-5" />
-              <h3 className="font-semibold">{language === 'ar' ? 'رمز الحماية' : 'Security PIN'}</h3>
+        <Card className="border-white/5 bg-white/[0.03] backdrop-blur-2xl shadow-2xl overflow-hidden ring-1 ring-white/10">
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
+          
+          <CardContent className="p-8 md:p-10">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-tighter mb-4">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                {content.securityStatus}
+              </div>
+              <h2 className="text-xl font-bold text-white/90">{content.desc}</h2>
             </div>
             
-            <form onSubmit={handleAuth} className="space-y-4">
-              <div className="relative">
-                <Input
-                  type="password"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  maxLength={4}
-                  placeholder="••••"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                  className="bg-background/50 text-center text-2xl tracking-[1em] h-14"
-                  required
-                  autoFocus
-                />
-                <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground opacity-50" />
+            <form onSubmit={handleAuth} className="space-y-6">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur opacity-25 group-focus-within:opacity-100 transition duration-500" />
+                <div className="relative">
+                  <Input
+                    type="password"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={4}
+                    placeholder={content.placeholder}
+                    value={pin}
+                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                    className="bg-black/40 border-white/10 text-center text-3xl font-bold tracking-[0.8em] h-20 rounded-2xl text-white placeholder:text-white/10 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                    required
+                    autoFocus
+                  />
+                  <Lock className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-white/20 group-focus-within:text-primary/50 transition-colors" />
+                </div>
               </div>
               
               {error && (
-                <div className="text-xs text-center text-destructive bg-destructive/10 p-2 rounded border border-destructive/20 animate-in fade-in slide-in-from-top-1">
+                <div className="text-sm font-medium text-center text-red-400 bg-red-500/10 py-3 px-4 rounded-xl border border-red-500/20 animate-in fade-in zoom-in duration-300">
                   {error}
                 </div>
               )}
 
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-primary hover:opacity-90 transition-opacity shadow-md h-12 text-lg"
+                className="w-full h-16 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-bold shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] transition-all active:scale-[0.98] group"
               >
-                {content.login}
+                <span className="flex items-center justify-center gap-2">
+                  {content.login}
+                  <Lock className="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                </span>
               </Button>
             </form>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Footer Info */}
-      <div className="absolute bottom-6 left-0 w-full text-center text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] pointer-events-none">
-        Powered by DataBot Security
+        {/* System Info */}
+        <div className="mt-8 flex items-center justify-between text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] px-2">
+          <span>v4.0.0 Stable</span>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span>Secure Cloud Active</span>
+          </div>
+        </div>
       </div>
     </div>
   );
