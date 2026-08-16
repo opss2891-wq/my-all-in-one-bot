@@ -188,7 +188,7 @@
 }
 
 @layer utilities {
-  * {
+  .no-animations * {
     box-shadow: none !important;
     filter: none !important;
     animation: none !important;
@@ -199,7 +199,7 @@
     transform: none !important;
   }
 
-  *:hover {
+  .no-animations *:hover {
     transform: none !important;
     transition: none !important;
     animation: none !important;

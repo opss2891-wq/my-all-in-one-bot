@@ -189,8 +189,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
 
   return (
     <div id={sidebarId} className={cn(
-      "h-full flex flex-col bg-card/40 backdrop-blur-3xl border-x border-white/5 transition-all duration-500 relative shadow-2xl",
-      (editingId || labelEditId) ? "translate-x-0 opacity-100" : "group-[.dropdown-open]:translate-x-0 group-[.dropdown-open]:opacity-100",
+      "h-full flex flex-col bg-card/40 backdrop-blur-3xl border-x border-white/5 transition-all duration-500 relative shadow-2xl z-[60]",
       className
     )}>
       {/* Header */}
