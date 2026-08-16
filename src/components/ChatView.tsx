@@ -583,7 +583,7 @@ const ChatView: React.FC = () => {
       )}
 
       {/* Mobile Bottom Navigation - Grid layout */}
-      <div className="fixed bottom-0 start-0 end-0 z-30 md:hidden bg-card/95 backdrop-blur-md border-t border-border safe-area-bottom">
+      <div className="fixed bottom-0 start-0 end-0 z-30 md:hidden glass-panel border-t border-white/10 safe-area-bottom rounded-t-2xl">
         <div className="grid grid-cols-4 gap-1 p-2">
           {filterButtons.map(btn => {
             const Icon = btn.icon;
@@ -647,16 +647,13 @@ const ChatView: React.FC = () => {
       )}>
         {/* Header */}
         {headerVisible && (
-          <header className={cn(
-            "border-b border-border sticky top-0 z-20 safe-area-top animate-fade-in transition-colors duration-300",
-            theme === 'dark' ? "bg-black/20 backdrop-blur-xl border-b border-white/5" : "bg-card/90 backdrop-blur-md"
-          )}>
+          <header className="cyber-header">
             <div className="p-3 md:p-4">
               <div className="flex items-center gap-3 mb-3">
                 {/* Sidebar Toggle - Desktop & Mobile */}
                 <button
                   onClick={toggleSidebar}
-                  className="flex p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex p-2.5 rounded-xl bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all border border-white/5"
                   title={t('conversations')}
                 >
                   <Menu className="w-5 h-5" />
@@ -667,10 +664,10 @@ const ChatView: React.FC = () => {
                   onClick={goToPrevConversation}
                   disabled={!canGoPrev}
                   className={cn(
-                    "p-2 rounded-xl transition-colors",
+                    "p-2 rounded-xl transition-all border border-white/5",
                     canGoPrev 
-                      ? "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground" 
-                      : "bg-muted/20 text-muted-foreground/30 cursor-not-allowed"
+                      ? "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground" 
+                      : "bg-white/5 text-muted-foreground/30 cursor-not-allowed"
                   )}
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -695,7 +692,7 @@ const ChatView: React.FC = () => {
                              if (e.key === 'Enter') saveHeaderRename();
                              if (e.key === 'Escape') cancelHeaderRename();
                            }}
-                           className="bg-muted/50 border border-primary/30 rounded-lg px-2 py-1 text-lg font-bold text-foreground w-full focus:outline-none focus:ring-1 focus:ring-primary"
+                           className="bg-white/5 border border-primary/30 rounded-lg px-2 py-1 text-lg font-bold text-foreground w-full focus:outline-none focus:ring-1 focus:ring-primary shadow-inner"
                            autoFocus
                          />
                          <button onClick={saveHeaderRename} className="p-1.5 bg-success/20 hover:bg-success/30 rounded-lg transition-colors">

@@ -180,7 +180,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
       className
     )}>
       {/* Header */}
-      <div className="p-4 border-b border-border safe-area-top">
+      <div className="p-4 border-b border-white/10 safe-area-top">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-bold text-foreground flex-1">{t('conversations')}</h2>
           <button
@@ -192,7 +192,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         </div>
         <button
           onClick={onCreateConversation}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-medium"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl gradient-primary text-primary-foreground hover:opacity-90 transition-all font-medium shadow-lg shadow-primary/20"
         >
           <Plus className="w-5 h-5" />
           <span>{t('newConversation')}</span>
@@ -205,7 +205,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 border-b border-border">
+      <div className="px-3 py-2 border-b border-white/10">
         <div className="relative">
           <Search className={cn(
             "absolute top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground",
@@ -217,7 +217,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('searchConversations')}
             className={cn(
-              "w-full py-2.5 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-all",
+              "w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-all",
               isRTL ? "pr-10 pl-3" : "pl-10 pr-3"
             )}
           />
@@ -225,7 +225,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
             <button
               onClick={() => setSearchQuery('')}
               className={cn(
-                "absolute top-1/2 -translate-y-1/2 p-1 hover:bg-background rounded-lg transition-colors",
+                "absolute top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-lg transition-colors",
                 isRTL ? "left-2" : "right-2"
               )}
             >
@@ -236,26 +236,26 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
       </div>
 
       {/* Toggle Archived */}
-      <div className="px-3 py-2 border-b border-border">
+      <div className="px-3 py-2 border-b border-white/10">
         <button
           onClick={onToggleArchived}
           className={cn(
             "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all",
             showArchived 
-              ? "bg-accent/20 text-accent" 
-              : "text-muted-foreground hover:bg-muted"
+              ? "bg-accent/20 text-accent shadow-lg shadow-accent/10 border border-accent/20" 
+              : "text-muted-foreground hover:bg-white/5 border border-transparent"
           )}
         >
           <Archive className="w-4.5 h-4.5" />
           <span className="font-medium">{t('archive')}</span>
-          <span className="ms-auto bg-muted px-2 py-0.5 rounded-full text-xs">
+          <span className="ms-auto bg-white/10 px-2 py-0.5 rounded-full text-xs">
             {archivedConversations.length}
           </span>
         </button>
       </div>
 
       {/* Conversations List */}
-      <div className="flex-1 overflow-y-auto p-3">
+      <div className="flex-1 overflow-y-auto p-3 cyber-grid">
         {displayedConversations.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-16 h-16 rounded-2xl bg-muted mx-auto mb-4 flex items-center justify-center">
@@ -394,7 +394,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                    <DropdownMenuContent align="end" className="w-48 glass-panel border-white/10">
                       <DropdownMenuItem onSelect={() => startEditing(conv)} className="gap-2">
                         <Edit2 className="w-4 h-4" />
                         {t('rename')}
@@ -417,7 +417,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                           <Palette className="w-4 h-4" />
                           {t('setColor')}
                         </DropdownMenuSubTrigger>
-                        <DropdownMenuSubContent className="bg-card border-border">
+                        <DropdownMenuSubContent className="glass-panel border-white/10">
                           {colors.map((color) => (
                             <DropdownMenuItem
                               key={color}

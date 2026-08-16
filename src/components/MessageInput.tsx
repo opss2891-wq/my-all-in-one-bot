@@ -178,7 +178,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   return (
-    <div className="border-t border-border bg-card/95 backdrop-blur-md p-3 md:p-4">
+    <div className="border-t border-white/10 glass-panel p-3 md:p-4 shadow-2xl relative z-10">
       <div className="max-w-3xl mx-auto">
         {/* Type Selector - Horizontal Pills */}
         <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1">
@@ -192,8 +192,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 rounded-xl text-sm whitespace-nowrap transition-all border",
                   isActive 
-                    ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor}` 
-                    : "bg-muted/50 text-muted-foreground border-transparent hover:bg-muted"
+                    ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor} shadow-lg shadow-primary/10` 
+                    : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10"
                 )}
               >
                 <TypeIcon className="w-4 h-4" />
@@ -217,7 +217,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-3 bg-secondary/80 border-2 rounded-2xl px-4 py-6 text-foreground transition-all hover:bg-secondary",
+                  "flex-1 flex items-center justify-center gap-3 bg-white/5 border-2 border-dashed rounded-2xl px-4 py-6 text-foreground transition-all hover:bg-white/10",
                   config.borderColor
                 )}
               >
@@ -286,9 +286,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   rows={2}
                   dir="auto"
                   className={cn(
-                    "flex-1 bg-secondary/80 border-2 rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none transition-all focus:outline-none min-h-[60px]",
+                    "flex-1 bg-white/5 border-2 rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground resize-none transition-all focus:outline-none min-h-[60px]",
                     config.borderColor,
-                    "focus:ring-2 focus:ring-primary/20"
+                    "focus:ring-2 focus:ring-primary/20 shadow-inner shadow-black/20"
                   )}
                 />
               </div>
