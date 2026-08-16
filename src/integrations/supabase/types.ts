@@ -183,6 +183,11 @@ export type Database = {
         | "blue"
         | "purple"
         | "pink"
+        | "emerald"
+        | "teal"
+        | "indigo"
+        | "rose"
+        | "slate"
       app_message_type:
         | "note"
         | "tasks"
@@ -326,6 +331,11 @@ export const Constants = {
         "blue",
         "purple",
         "pink",
+        "emerald",
+        "teal",
+        "indigo",
+        "rose",
+        "slate",
       ],
       app_message_type: [
         "note",
