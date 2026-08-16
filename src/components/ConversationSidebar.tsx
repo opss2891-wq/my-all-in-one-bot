@@ -194,8 +194,8 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
     )}>
       {/* Header */}
       <div className="p-4 border-b border-white/10 safe-area-top">
-        <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-lg font-bold text-foreground flex-1">{t('conversations')}</h2>
+        <div className="flex items-center gap-2 mb-5">
+          <h2 className="text-xl font-black text-foreground tracking-tight flex-1 uppercase">{t('conversations')}</h2>
           <button
             onClick={onClose}
             className="p-2 rounded-xl hover:bg-muted transition-colors md:hidden"
@@ -261,7 +261,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         >
           <Archive className="w-4.5 h-4.5" />
           <span className="font-medium">{t('archive')}</span>
-          <span className="ms-auto bg-white/10 px-2 py-0.5 rounded-full text-xs">
+          <span className="ms-auto bg-white/5 border border-white/10 px-2 py-0.5 rounded-lg text-[10px] font-bold">
             {archivedConversations.length}
           </span>
         </button>
@@ -370,17 +370,17 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                   ) : (
                     <>
                       <p className={cn(
-                        "text-sm font-medium truncate text-foreground",
+                        "text-[0.9rem] font-bold truncate text-foreground/90 group-hover:text-foreground transition-colors",
                         conv.pinned && "flex items-center gap-1"
                       )}>
                         {conv.title}
                       </p>
                       <div className="flex items-center gap-2">
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[0.65rem] uppercase tracking-wider text-muted-foreground/60 font-medium">
                           {formatDate(conv.updatedAt)}
                         </p>
                         {conv.label && (
-                          <span className="text-xs px-1.5 py-0.5 rounded bg-accent/20 text-accent">
+                          <span className="text-[0.65rem] px-1.5 py-0.5 rounded-md bg-accent/10 text-accent/80 border border-accent/20 font-bold uppercase tracking-tighter">
                             {conv.label}
                           </span>
                         )}
