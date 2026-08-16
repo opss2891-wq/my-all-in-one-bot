@@ -1060,6 +1060,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   return (
     <div 
       data-card-type={message.type}
+      data-card-id={message.id}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).setAttribute('data-active-card', 'true');
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).removeAttribute('data-active-card');
+      }}
       className={cn(
         "group relative glass-panel rounded-2xl p-4 md:p-6 transition-all duration-500",
         getBorderColor(),

@@ -4,7 +4,7 @@ import {
   Message, MessageType, getMessages, addMessage, deleteMessage, TaskItem, LinkItem, CredentialData, CodeData, FileData,
   Conversation, ConversationColor, getConversations, getArchivedConversations, createConversation, 
   archiveConversation, unarchiveConversation, deleteConversation, updateConversation,
-  pinConversation, unpinConversation, setConversationColor, setConversationLabel
+  pinConversation, unpinConversation, setConversationColor, setConversationLabel, updateMessage
 } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { generateLinkTitle, explainCode } from '@/lib/gemini';
@@ -442,6 +442,16 @@ const ChatView: React.FC = () => {
       await deleteMessage(id);
       await loadMessages();
       toast({ title: t('deletedSuccess') });
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
+    }
+  };
+
+  const handleUpdateMessageColor = async (id: string, color: ConversationColor) => {
+    try {
+      await updateMessage(id, { color });
+      await loadMessages();
+      toast({ title: language === 'ar' ? 'تم تحديث اللون' : 'Color updated' });
     } catch (error) {
       toast({ title: t('error'), variant: 'destructive' });
     }
