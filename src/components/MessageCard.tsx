@@ -297,6 +297,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none !important';
       case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none !important';
       case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none !important';
+      case 'audio': return 'border-pink-500/50 bg-pink-500/5 dark:bg-pink-500/10 shadow-none !important';
+      case 'voice': return 'border-rose-500/50 bg-rose-500/5 dark:bg-rose-500/10 shadow-none !important';
+      case 'location': return 'border-emerald-500/50 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-none !important';
       default: return 'border-border/30 shadow-none !important';
     }
   };
