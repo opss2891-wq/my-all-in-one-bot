@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
@@ -135,6 +135,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const [isAddingDescription, setIsAddingDescription] = useState(false);
   const [tempDescription, setTempDescription] = useState('');
   const [noteHeight, setNoteHeight] = useState<number | null>(null);
+  const [showColorPicker, setShowColorPicker] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
   const { layout } = useUI();
@@ -251,6 +252,19 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   };
 
   const getBorderColor = () => {
+    // If a custom color is set, it takes precedence
+    if (message.color && message.color !== 'none') {
+      switch (message.color) {
+        case 'red': return 'border-red-500/20 group-hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.1)]';
+        case 'orange': return 'border-orange-500/20 group-hover:border-orange-500/50 hover:shadow-[0_0_15px_rgba(249,115,22,0.1)]';
+        case 'yellow': return 'border-yellow-500/20 group-hover:border-yellow-500/50 hover:shadow-[0_0_15px_rgba(234,179,8,0.1)]';
+        case 'green': return 'border-green-500/20 group-hover:border-green-500/50 hover:shadow-[0_0_15px_rgba(34,197,94,0.1)]';
+        case 'blue': return 'border-blue-500/20 group-hover:border-blue-500/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.1)]';
+        case 'purple': return 'border-purple-500/20 group-hover:border-purple-500/50 hover:shadow-[0_0_15px_rgba(168,85,247,0.1)]';
+        case 'pink': return 'border-pink-500/20 group-hover:border-pink-500/50 hover:shadow-[0_0_15px_rgba(236,72,153,0.1)]';
+      }
+    }
+
     switch (message.type) {
       case 'note': return 'border-success/20 group-hover:border-success/50 hover:shadow-[0_0_15px_rgba(34,197,94,0.1)]';
       case 'tasks': return 'border-warning/20 group-hover:border-warning/50 hover:shadow-[0_0_15px_rgba(234,179,8,0.1)]';
@@ -259,6 +273,17 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'code': return 'border-info/20 group-hover:border-info/50 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)]';
       case 'file': return 'border-purple-500/20 group-hover:border-purple-500/50 hover:shadow-[0_0_15px_rgba(168,85,247,0.1)]';
       default: return 'border-border/30 group-hover:border-primary/30';
+    }
+  };
+
+  const handleSetColor = async (color: Message['color']) => {
+    if (!message.id) return;
+    try {
+      await updateMessage(message.id, { color });
+      onUpdate();
+      setShowColorPicker(false);
+    } catch (error) {
+      toast({ title: t('error'), variant: 'destructive' });
     }
   };
 
@@ -1035,23 +1060,47 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   return (
     <div 
       data-card-type={message.type}
+      data-card-id={message.id}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).setAttribute('data-active-card', 'true');
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).removeAttribute('data-active-card');
+      }}
       className={cn(
         "group relative glass-panel rounded-2xl p-4 md:p-6 transition-all duration-500",
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "animate-slide-up hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-white/20",
-        (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.98]"
+        (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.98]",
+        message.color === 'red' && "bg-red-500/5",
+        message.color === 'orange' && "bg-orange-500/5",
+        message.color === 'yellow' && "bg-yellow-500/5",
+        message.color === 'green' && "bg-green-500/5",
+        message.color === 'blue' && "bg-blue-500/5",
+        message.color === 'purple' && "bg-purple-500/5",
+        message.color === 'pink' && "bg-pink-500/5"
       )}
       onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
     >
       <div className={cn(
         "absolute top-0 left-0 w-1.5 h-full opacity-100 transition-all duration-300 group-hover:w-2",
-        message.type === 'note' && "bg-success",
-        message.type === 'tasks' && "bg-warning",
-        message.type === 'credentials' && "bg-accent",
-        message.type === 'links' && "bg-primary",
-        message.type === 'code' && "bg-info",
-        message.type === 'file' && "bg-purple-500",
+        (!message.color || message.color === 'none') ? (
+          message.type === 'note' && "bg-success",
+          message.type === 'tasks' && "bg-warning",
+          message.type === 'credentials' && "bg-accent",
+          message.type === 'links' && "bg-primary",
+          message.type === 'code' && "bg-info",
+          message.type === 'file' && "bg-purple-500"
+        ) : (
+          message.color === 'red' && "bg-red-500",
+          message.color === 'orange' && "bg-orange-500",
+          message.color === 'yellow' && "bg-yellow-500",
+          message.color === 'green' && "bg-green-500",
+          message.color === 'blue' && "bg-blue-500",
+          message.color === 'purple' && "bg-purple-500",
+          message.color === 'pink' && "bg-pink-500"
+        )
       )} />
 
       <div className="flex items-center justify-between gap-3 mb-3">
@@ -1077,6 +1126,41 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           </div>
         </div>
         <div className="flex items-center gap-1">
+          <div className="relative">
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowColorPicker(!showColorPicker); }}
+              className={cn(
+                "p-2 rounded-xl transition-all opacity-50 group-hover:opacity-100 hover:bg-muted",
+                showColorPicker && "opacity-100 bg-muted"
+              )}
+              title={t('color') || 'اللون'}
+            >
+              <Palette className="w-4 h-4" />
+            </button>
+            {showColorPicker && (
+              <div className="absolute top-full right-0 mt-2 p-2 bg-card border border-border rounded-xl shadow-2xl z-50 flex gap-1 min-w-[160px] animate-fade-in">
+                {['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((color) => (
+                  <button
+                    key={color}
+                    onClick={(e) => { e.stopPropagation(); handleSetColor(color as any); }}
+                    className={cn(
+                      "w-6 h-6 rounded-full border border-white/20 transition-transform hover:scale-125",
+                      color === 'none' && "bg-transparent flex items-center justify-center",
+                      color === 'red' && "bg-red-500",
+                      color === 'orange' && "bg-orange-500",
+                      color === 'yellow' && "bg-yellow-500",
+                      color === 'green' && "bg-green-500",
+                      color === 'blue' && "bg-blue-500",
+                      color === 'purple' && "bg-purple-500",
+                      color === 'pink' && "bg-pink-500"
+                    )}
+                  >
+                    {color === 'none' && <X className="w-3 h-3 text-muted-foreground" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button
             onClick={handleTogglePin}
             className={cn(
