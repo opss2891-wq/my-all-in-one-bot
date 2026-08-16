@@ -940,7 +940,7 @@ const ChatView: React.FC = () => {
         {currentConversationId && (
           <div 
             className={cn(
-              "sticky bottom-0 z-[200] transition-colors duration-300 pointer-events-auto cyber-input-wrapper",
+              "sticky bottom-0 z-[999] transition-colors duration-300 pointer-events-auto cyber-input-wrapper",
               theme === 'dark' ? "bg-slate-900/95 backdrop-blur-xl" : "bg-card/95 backdrop-blur-xl"
             )}
             onClick={(e) => e.stopPropagation()}
