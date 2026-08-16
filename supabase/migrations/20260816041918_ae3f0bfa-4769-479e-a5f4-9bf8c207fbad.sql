@@ -1,0 +1,1 @@
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS color public.app_conversation_color DEFAULT 'none';

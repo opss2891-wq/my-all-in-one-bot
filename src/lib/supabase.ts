@@ -53,6 +53,7 @@ export interface Message {
   fileData?: FileData;
   images?: string[];
   description?: string;
+  color?: ConversationColor;
   createdAt: string;
 }
 
@@ -277,6 +278,7 @@ export const getMessages = async (userId: string, conversationId?: string) => {
 
     images: m.images,
     description: m.description,
+    color: m.color as ConversationColor,
     createdAt: m.created_at
   })) as Message[];
 };
@@ -317,6 +319,7 @@ export const updateMessage = async (id: string, updates: Partial<Message>) => {
   if (updates.images !== undefined) mappedUpdates.images = updates.images;
   if (updates.description !== undefined) mappedUpdates.description = updates.description;
   if (updates.pinned !== undefined) mappedUpdates.pinned = updates.pinned;
+  if (updates.color !== undefined) mappedUpdates.color = updates.color;
 
   const { error } = await supabase
     .from('messages')

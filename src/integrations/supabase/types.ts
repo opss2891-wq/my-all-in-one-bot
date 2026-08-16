@@ -86,6 +86,7 @@ export type Database = {
       messages: {
         Row: {
           code_data: Json | null
+          color: Database["public"]["Enums"]["app_conversation_color"] | null
           content: string | null
           conversation_id: string | null
           created_at: string
@@ -101,6 +102,7 @@ export type Database = {
         }
         Insert: {
           code_data?: Json | null
+          color?: Database["public"]["Enums"]["app_conversation_color"] | null
           content?: string | null
           conversation_id?: string | null
           created_at?: string
@@ -116,6 +118,7 @@ export type Database = {
         }
         Update: {
           code_data?: Json | null
+          color?: Database["public"]["Enums"]["app_conversation_color"] | null
           content?: string | null
           conversation_id?: string | null
           created_at?: string
