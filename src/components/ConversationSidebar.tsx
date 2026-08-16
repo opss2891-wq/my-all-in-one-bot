@@ -39,13 +39,13 @@ import Pagination from './Pagination';
 
 const colorClasses: Record<ConversationColor, string> = {
   none: '',
-  red: 'border-l-4 border-l-red-500',
-  orange: 'border-l-4 border-l-orange-500',
-  yellow: 'border-l-4 border-l-yellow-500',
-  green: 'border-l-4 border-l-green-500',
-  blue: 'border-l-4 border-l-blue-500',
-  purple: 'border-l-4 border-l-purple-500',
-  pink: 'border-l-4 border-l-pink-500',
+  red: 'border-l-4 border-l-red-500 bg-red-500/5',
+  orange: 'border-l-4 border-l-orange-500 bg-orange-500/5',
+  yellow: 'border-l-4 border-l-yellow-500 bg-yellow-500/5',
+  green: 'border-l-4 border-l-green-500 bg-green-500/5',
+  blue: 'border-l-4 border-l-blue-500 bg-blue-500/5',
+  purple: 'border-l-4 border-l-purple-500 bg-purple-500/5',
+  pink: 'border-l-4 border-l-pink-500 bg-pink-500/5',
 };
 
 const colorDots: Record<ConversationColor, string> = {
