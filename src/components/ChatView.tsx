@@ -648,7 +648,7 @@ const ChatView: React.FC = () => {
 
       {/* Main Content */}
       <div className={cn(
-        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300 relative z-10 pointer-events-auto",
+        "flex-1 flex flex-col min-w-0 relative z-10 pointer-events-auto",
         theme === 'dark' ? "bg-transparent" : "bg-background/50",
         sidebarOpen ? "opacity-40 pointer-events-none md:pointer-events-auto" : "opacity-100"
       )}>
