@@ -601,7 +601,7 @@ const ChatView: React.FC = () => {
 
   return (
     <div className={cn(
-      "flex h-[100dvh] overflow-hidden transition-colors duration-300 relative",
+      "flex h-[100dvh] overflow-hidden transition-colors duration-300 relative pointer-events-auto",
       isRTL ? "flex-row-reverse" : "flex-row",
       theme === 'dark' ? "bg-[#0a0c10]" : "bg-background"
     )}>
@@ -664,8 +664,9 @@ const ChatView: React.FC = () => {
 
       {/* Main Content */}
       <div className={cn(
-        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300 relative z-10",
-        theme === 'dark' ? "bg-transparent" : "bg-background/50"
+        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300 relative z-10 pointer-events-auto",
+        theme === 'dark' ? "bg-transparent" : "bg-background/50",
+        sidebarOpen ? "opacity-40 pointer-events-none md:pointer-events-auto" : "opacity-100"
       )}>
         {/* Header */}
         {headerVisible && (
@@ -940,7 +941,7 @@ const ChatView: React.FC = () => {
         {currentConversationId && (
           <div 
             className={cn(
-              "sticky bottom-0 z-[200] transition-colors duration-300 pointer-events-auto cyber-input-wrapper",
+              "sticky bottom-0 z-[999] transition-colors duration-300 pointer-events-auto cyber-input-wrapper",
               theme === 'dark' ? "bg-slate-900/95 backdrop-blur-xl" : "bg-card/95 backdrop-blur-xl"
             )}
             onClick={(e) => e.stopPropagation()}
