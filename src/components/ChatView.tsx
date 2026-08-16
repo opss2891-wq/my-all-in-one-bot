@@ -692,7 +692,7 @@ const ChatView: React.FC = () => {
                 </button>
                 
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 group overflow-hidden">
-                  <svg viewBox="0 0 100 100" className="w-6 h-6 md:w-8 md:h-8 fill-none drop-shadow-[0_0_8px_rgba(20,184,166,0.4)]" xmlns="http://www.w3.org/2000/svg">
+                  <svg viewBox="0 0 100 100" className="w-6 h-6 md:w-8 md:h-8 fill-none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" stroke="currentColor" strokeWidth="6" className="text-primary" />
                     <circle cx="50" cy="45" r="12" stroke="currentColor" strokeWidth="4" className="text-primary" />
                     <path d="M50 57V68M45 73H55" stroke="currentColor" strokeWidth="6" strokeLinecap="round" className="text-primary" />
@@ -871,7 +871,7 @@ const ChatView: React.FC = () => {
               </div>
             ) : !currentConversationId ? (
               <div className="text-center py-20">
-                <div className="w-20 h-20 rounded-3xl gradient-primary mx-auto mb-6 flex items-center justify-center glow-primary">
+                <div className="w-20 h-20 rounded-3xl gradient-primary mx-auto mb-6 flex items-center justify-center">
                   <Sparkles className="w-10 h-10 text-primary-foreground" />
                 </div>
                 <h2 className="text-xl font-bold text-foreground mb-2">{t('welcome')}</h2>

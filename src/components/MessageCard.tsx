@@ -255,23 +255,23 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     // If a custom color is set, it takes precedence
     if (message.color && message.color !== 'none') {
       switch (message.color) {
-        case 'red': return 'border-red-500/40 bg-red-500/[0.05] dark:bg-red-500/[0.1]';
-        case 'orange': return 'border-orange-500/40 bg-orange-500/[0.05] dark:bg-orange-500/[0.1]';
-        case 'yellow': return 'border-yellow-500/40 bg-yellow-500/[0.05] dark:bg-yellow-500/[0.1]';
-        case 'green': return 'border-green-500/40 bg-green-500/[0.05] dark:bg-green-500/[0.1]';
-        case 'blue': return 'border-blue-500/40 bg-blue-500/[0.05] dark:bg-blue-500/[0.1]';
-        case 'purple': return 'border-purple-500/40 bg-purple-500/[0.05] dark:bg-purple-500/[0.1]';
-        case 'pink': return 'border-pink-500/40 bg-pink-500/[0.05] dark:bg-pink-500/[0.1]';
+        case 'red': return 'border-red-500/40 bg-red-500/[0.05] dark:bg-red-500/[0.1] shadow-none';
+        case 'orange': return 'border-orange-500/40 bg-orange-500/[0.05] dark:bg-orange-500/[0.1] shadow-none';
+        case 'yellow': return 'border-yellow-500/40 bg-yellow-500/[0.05] dark:bg-yellow-500/[0.1] shadow-none';
+        case 'green': return 'border-green-500/40 bg-green-500/[0.05] dark:bg-green-500/[0.1] shadow-none';
+        case 'blue': return 'border-blue-500/40 bg-blue-500/[0.05] dark:bg-blue-500/[0.1] shadow-none';
+        case 'purple': return 'border-purple-500/40 bg-purple-500/[0.05] dark:bg-purple-500/[0.1] shadow-none';
+        case 'pink': return 'border-pink-500/40 bg-pink-500/[0.05] dark:bg-pink-500/[0.1] shadow-none';
       }
     }
 
     switch (message.type) {
-      case 'note': return 'border-success/30 bg-success/[0.02] dark:bg-success/[0.05]';
-      case 'tasks': return 'border-warning/30 bg-warning/[0.02] dark:bg-warning/[0.05]';
-      case 'credentials': return 'border-accent/30 bg-accent/[0.02] dark:bg-accent/[0.05]';
-      case 'links': return 'border-primary/30 bg-primary/[0.02] dark:bg-primary/[0.05]';
-      case 'code': return 'border-info/30 bg-info/[0.02] dark:bg-info/[0.05]';
-      case 'file': return 'border-purple-500/30 bg-purple-500/[0.02] dark:bg-purple-500/[0.05]';
+      case 'note': return 'border-success/30 bg-success/[0.02] dark:bg-success/[0.05] shadow-none';
+      case 'tasks': return 'border-warning/30 bg-warning/[0.02] dark:bg-warning/[0.05] shadow-none';
+      case 'credentials': return 'border-accent/30 bg-accent/[0.02] dark:bg-accent/[0.05] shadow-none';
+      case 'links': return 'border-primary/30 bg-primary/[0.02] dark:bg-primary/[0.05] shadow-none';
+      case 'code': return 'border-info/30 bg-info/[0.02] dark:bg-info/[0.05] shadow-none';
+      case 'file': return 'border-purple-500/30 bg-purple-500/[0.02] dark:bg-purple-500/[0.05] shadow-none';
       default: return 'border-border/30';
     }
   };
