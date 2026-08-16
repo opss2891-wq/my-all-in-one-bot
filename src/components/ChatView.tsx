@@ -41,7 +41,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
 import { encryptData } from '@/lib/encryption';
 
-const MESSAGES_PER_PAGE = 12;
+const MESSAGES_PER_PAGE = 50; // Increased to reduce pagination issues
 
 const ChatView: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -952,8 +952,8 @@ const ChatView: React.FC = () => {
         {/* Input */}
         {currentConversationId && (
           <div className={cn(
-            "sticky bottom-0 z-20 transition-colors duration-300",
-            theme === 'dark' ? "bg-slate-900/90 backdrop-blur-md" : "bg-card/90 backdrop-blur-md"
+            "sticky bottom-0 z-[100] transition-colors duration-300 pointer-events-auto",
+            theme === 'dark' ? "bg-slate-900/95 backdrop-blur-xl" : "bg-card/95 backdrop-blur-xl"
           )}>
             <React.Suspense fallback={<div className="p-4 border-t border-border bg-card animate-pulse h-20" />}>
               <MessageInput onSend={handleSend} loading={sending} />
