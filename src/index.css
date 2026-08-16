@@ -188,12 +188,16 @@
 }
 
 @layer utilities {
-  .glow-primary {
-    box-shadow: transparent !important;
-  }
-
-  .glow-accent {
-    box-shadow: transparent !important;
+  .glow-primary, 
+  .glow-accent,
+  [class*="glow-"],
+  [class*="shadow-primary"],
+  [class*="shadow-accent"],
+  [class*="shadow-success"],
+  [class*="shadow-warning"],
+  [class*="shadow-info"] {
+    box-shadow: none !important;
+    filter: none !important;
   }
 
   .gradient-primary {
@@ -235,11 +239,11 @@
   }
 
   .glass-panel {
-    @apply bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+    @apply bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-none !important;
   }
 
   .cyber-header {
-    @apply bg-black/40 backdrop-blur-2xl border-b border-white/10 shadow-2xl sticky top-0 z-30;
+    @apply bg-black/40 backdrop-blur-2xl border-b border-white/10 shadow-none sticky top-0 z-30;
   }
 
   .neo-button {
