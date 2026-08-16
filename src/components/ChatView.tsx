@@ -573,6 +573,12 @@ const ChatView: React.FC = () => {
           canGoNext={canGoNext}
           canGoPrev={canGoPrev}
           onRenameConversation={handleRenameCurrent}
+          onSetCardColor={async (color) => {
+            const activeCardId = (document.querySelector('[data-active-card="true"]') as HTMLElement)?.dataset.cardId;
+            if (activeCardId) {
+              await handleUpdateMessageColor(activeCardId, color);
+            }
+          }}
         />
       </React.Suspense>
 
