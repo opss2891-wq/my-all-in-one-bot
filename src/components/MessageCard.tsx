@@ -491,7 +491,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 key={index + 1}
                 onClick={() => handleToggleTask(index + 1)}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[20]",
+                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[50]",
                   layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
                 )}
@@ -511,7 +511,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 />
               </div>
             ))}
-            <div className="pointer-events-auto relative z-[20]">
+            <div className="pointer-events-auto relative z-[50]">
               <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
             </div>
             {/* Optional Description Section for Tasks */}
