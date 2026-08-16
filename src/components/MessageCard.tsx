@@ -255,24 +255,24 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     // If a custom color is set, it takes precedence
     if (message.color && message.color !== 'none') {
       switch (message.color) {
-        case 'red': return 'border-red-500/20 group-hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.1)]';
-        case 'orange': return 'border-orange-500/20 group-hover:border-orange-500/50 hover:shadow-[0_0_15px_rgba(249,115,22,0.1)]';
-        case 'yellow': return 'border-yellow-500/20 group-hover:border-yellow-500/50 hover:shadow-[0_0_15px_rgba(234,179,8,0.1)]';
-        case 'green': return 'border-green-500/20 group-hover:border-green-500/50 hover:shadow-[0_0_15px_rgba(34,197,94,0.1)]';
-        case 'blue': return 'border-blue-500/20 group-hover:border-blue-500/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.1)]';
-        case 'purple': return 'border-purple-500/20 group-hover:border-purple-500/50 hover:shadow-[0_0_15px_rgba(168,85,247,0.1)]';
-        case 'pink': return 'border-pink-500/20 group-hover:border-pink-500/50 hover:shadow-[0_0_15px_rgba(236,72,153,0.1)]';
+        case 'red': return 'border-red-500/40 bg-red-500/[0.05] dark:bg-red-500/[0.1]';
+        case 'orange': return 'border-orange-500/40 bg-orange-500/[0.05] dark:bg-orange-500/[0.1]';
+        case 'yellow': return 'border-yellow-500/40 bg-yellow-500/[0.05] dark:bg-yellow-500/[0.1]';
+        case 'green': return 'border-green-500/40 bg-green-500/[0.05] dark:bg-green-500/[0.1]';
+        case 'blue': return 'border-blue-500/40 bg-blue-500/[0.05] dark:bg-blue-500/[0.1]';
+        case 'purple': return 'border-purple-500/40 bg-purple-500/[0.05] dark:bg-purple-500/[0.1]';
+        case 'pink': return 'border-pink-500/40 bg-pink-500/[0.05] dark:bg-pink-500/[0.1]';
       }
     }
 
     switch (message.type) {
-      case 'note': return 'border-success/20 group-hover:border-success/50 hover:shadow-[0_0_15px_rgba(34,197,94,0.1)]';
-      case 'tasks': return 'border-warning/20 group-hover:border-warning/50 hover:shadow-[0_0_15px_rgba(234,179,8,0.1)]';
-      case 'credentials': return 'border-accent/20 group-hover:border-accent/50 hover:shadow-[0_0_15px_rgba(168,85,247,0.1)]';
-      case 'links': return 'border-primary/20 group-hover:border-primary/50 hover:shadow-[0_0_15px_rgba(20,184,166,0.1)]';
-      case 'code': return 'border-info/20 group-hover:border-info/50 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)]';
-      case 'file': return 'border-purple-500/20 group-hover:border-purple-500/50 hover:shadow-[0_0_15px_rgba(168,85,247,0.1)]';
-      default: return 'border-border/30 group-hover:border-primary/30';
+      case 'note': return 'border-success/30 bg-success/[0.02] dark:bg-success/[0.05]';
+      case 'tasks': return 'border-warning/30 bg-warning/[0.02] dark:bg-warning/[0.05]';
+      case 'credentials': return 'border-accent/30 bg-accent/[0.02] dark:bg-accent/[0.05]';
+      case 'links': return 'border-primary/30 bg-primary/[0.02] dark:bg-primary/[0.05]';
+      case 'code': return 'border-info/30 bg-info/[0.02] dark:bg-info/[0.05]';
+      case 'file': return 'border-purple-500/30 bg-purple-500/[0.02] dark:bg-purple-500/[0.05]';
+      default: return 'border-border/30';
     }
   };
 
@@ -1071,15 +1071,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         "group relative glass-panel rounded-2xl p-4 md:p-6 transition-all duration-500",
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
-        "animate-slide-up hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-white/20",
+        "animate-slide-up hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-white/20 hover:shadow-none",
         (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.98]",
-        message.color === 'red' && "bg-red-500/5",
-        message.color === 'orange' && "bg-orange-500/5",
-        message.color === 'yellow' && "bg-yellow-500/5",
-        message.color === 'green' && "bg-green-500/5",
-        message.color === 'blue' && "bg-blue-500/5",
-        message.color === 'purple' && "bg-purple-500/5",
-        message.color === 'pink' && "bg-pink-500/5"
+        message.color === 'red' && "bg-red-500/10",
+        message.color === 'orange' && "bg-orange-500/10",
+        message.color === 'yellow' && "bg-yellow-500/10",
+        message.color === 'green' && "bg-green-500/10",
+        message.color === 'blue' && "bg-blue-500/10",
+        message.color === 'purple' && "bg-purple-500/10",
+        message.color === 'pink' && "bg-pink-500/10"
       )}
       onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
     >
