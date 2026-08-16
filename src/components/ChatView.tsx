@@ -422,6 +422,13 @@ const ChatView: React.FC = () => {
         if (type === 'note' && images && images.length > 0) {
           (messageData as Partial<Message>).images = images;
         }
+        
+        // If type is audio, voice or location, ensure content is set correctly
+        if (['audio', 'voice', 'location'].includes(type)) {
+          messageData.content = content;
+          messageData.type = type;
+        }
+
         await addMessage(user.id, { 
           ...messageData, 
           conversationId: currentConversationId 
