@@ -261,10 +261,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                   setType(key);
                 }}
                 className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-xl text-sm whitespace-nowrap transition-all border pointer-events-auto relative z-[152]",
+                  "flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[11px] uppercase tracking-wider whitespace-nowrap transition-all border-2 pointer-events-auto relative z-[152] font-black",
                   isActive 
-                    ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor} shadow-lg shadow-primary/10` 
-                    : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10"
+                    ? `${cfg.bgColor} ${cfg.color} ${cfg.borderColor} shadow-xl shadow-primary/10 scale-105 -translate-y-0.5` 
+                    : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:border-white/10"
                 )}
               >
                 <TypeIcon className="w-4 h-4" />
@@ -592,14 +592,17 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
             onClick={handleSend}
             disabled={loading}
             className={cn(
-              "px-6 rounded-[1.5rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-95 relative z-[151] pointer-events-auto",
-              loading ? "opacity-50 cursor-not-allowed" : "gradient-primary text-primary-foreground hover:brightness-110 shadow-lg shadow-primary/20"
+              "px-8 rounded-[1.8rem] transition-all flex items-center justify-center flex-shrink-0 active:scale-90 relative z-[151] pointer-events-auto group/send overflow-hidden",
+              loading ? "opacity-50 cursor-not-allowed" : "gradient-primary text-primary-foreground hover:brightness-125 shadow-2xl shadow-primary/30 border-b-4 border-primary/50"
             )}
           >
             {loading ? (
-              <Loader2 className="w-6 h-6 animate-spin" />
+              <Loader2 className="w-7 h-7 animate-spin" />
             ) : (
-              <Send className={cn("w-6 h-6", isRTL && "rotate-180")} />
+              <>
+                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/send:translate-y-0 transition-transform duration-300" />
+                <Send className={cn("w-7 h-7 relative z-10 transition-transform duration-500 group-hover/send:scale-110 group-hover/send:rotate-12", isRTL && "rotate-180 group-hover/send:-rotate-168")} />
+              </>
             )}
           </button>
         </div>
