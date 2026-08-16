@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X, Mic, Music, MapPin, Plus } from 'lucide-react';
-import { MessageType } from '@/lib/firebase';
+import { MessageType, TaskItem, CredentialData, LinkItem, CodeData } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';

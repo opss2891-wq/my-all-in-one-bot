@@ -386,7 +386,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             
             {/* Optional Description Section */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc pointer-events-auto z-10">
+              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc pointer-events-auto z-[60]">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -519,7 +519,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             </div>
             {/* Optional Description Section for Tasks */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc pointer-events-auto z-[60]">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
