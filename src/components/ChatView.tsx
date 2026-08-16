@@ -633,7 +633,7 @@ const ChatView: React.FC = () => {
       {/* Sidebar Overlay Container */}
       <div className={cn(
         "fixed inset-0 z-50 transition-all duration-300 pointer-events-none",
-        sidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0"
+        sidebarOpen ? "opacity-100 pointer-events-auto" : "hidden pointer-events-none"
       )}>
         {/* Backdrop for mobile */}
         {sidebarOpen && (
