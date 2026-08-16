@@ -255,24 +255,25 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     // If a custom color is set, it takes precedence
     if (message.color && message.color !== 'none') {
       switch (message.color) {
-        case 'red': return 'border-red-500 bg-red-500/10 dark:bg-red-500/20 shadow-none';
-        case 'orange': return 'border-orange-500 bg-orange-500/10 dark:bg-orange-500/20 shadow-none';
-        case 'yellow': return 'border-yellow-500 bg-yellow-500/10 dark:bg-yellow-500/20 shadow-none';
-        case 'green': return 'border-green-500 bg-green-500/10 dark:bg-green-500/20 shadow-none';
-        case 'blue': return 'border-blue-500 bg-blue-500/10 dark:bg-blue-500/20 shadow-none';
-        case 'purple': return 'border-purple-500 bg-purple-500/10 dark:bg-purple-500/20 shadow-none';
-        case 'pink': return 'border-pink-500 bg-pink-500/10 dark:bg-pink-500/20 shadow-none';
+        case 'red': return 'border-red-500 bg-red-500/10 dark:bg-red-500/20 shadow-none !important';
+        case 'orange': return 'border-orange-500 bg-orange-500/10 dark:bg-orange-500/20 shadow-none !important';
+        case 'yellow': return 'border-yellow-500 bg-yellow-500/10 dark:bg-yellow-500/20 shadow-none !important';
+        case 'green': return 'border-green-500 bg-green-500/10 dark:bg-green-500/20 shadow-none !important';
+        case 'blue': return 'border-blue-500 bg-blue-500/10 dark:bg-blue-500/20 shadow-none !important';
+        case 'purple': return 'border-purple-500 bg-purple-500/10 dark:bg-purple-500/20 shadow-none !important';
+        case 'pink': return 'border-pink-500 bg-pink-500/10 dark:bg-pink-500/20 shadow-none !important';
+        default: return 'border-border/30 shadow-none !important';
       }
     }
 
     switch (message.type) {
-      case 'note': return 'border-success/50 bg-success/5 dark:bg-success/10 shadow-none';
-      case 'tasks': return 'border-warning/50 bg-warning/5 dark:bg-warning/10 shadow-none';
-      case 'credentials': return 'border-accent/50 bg-accent/5 dark:bg-accent/10 shadow-none';
-      case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none';
-      case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none';
-      case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none';
-      default: return 'border-border/30';
+      case 'note': return 'border-success/50 bg-success/5 dark:bg-success/10 shadow-none !important';
+      case 'tasks': return 'border-warning/50 bg-warning/5 dark:bg-warning/10 shadow-none !important';
+      case 'credentials': return 'border-accent/50 bg-accent/5 dark:bg-accent/10 shadow-none !important';
+      case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none !important';
+      case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none !important';
+      case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none !important';
+      default: return 'border-border/30 shadow-none !important';
     }
   };
 
