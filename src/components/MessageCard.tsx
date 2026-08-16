@@ -491,7 +491,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 key={index + 1}
                 onClick={() => handleToggleTask(index + 1)}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-10",
+                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[20]",
                   layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
                 )}
@@ -511,7 +511,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 />
               </div>
             ))}
-            <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
+            <div className="pointer-events-auto relative z-[20]">
+              <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
+            </div>
             {/* Optional Description Section for Tasks */}
             {(message.description || isAddingDescription) ? (
               <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc">
@@ -1262,7 +1264,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "shadow-none hover:shadow-none !important",
-        "cursor-pointer pointer-events-auto relative z-10",
+        "cursor-pointer pointer-events-auto relative z-[5]",
         message.color === 'red' && "bg-red-500/10 border-red-500/50",
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
