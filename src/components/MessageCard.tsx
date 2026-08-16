@@ -11,7 +11,7 @@ import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
-import { Pin, PinOff } from 'lucide-react';
+import { Pin, PinOff, Slash } from 'lucide-react';
 
 const CODE_LANGUAGES = [
   'javascript', 'typescript', 'python', 'php', 'sql',
@@ -221,7 +221,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     const iconClass = "w-5 h-5 transition-transform duration-300 group-hover:scale-110";
     switch (message.type) {
       case 'note': return <FileText className={cn(iconClass, "text-success")} />;
-      case 'tasks': return <Activity className={cn(iconClass, "text-warning")} />;
+      case 'tasks': return <CheckSquare className={cn(iconClass, "text-warning")} />;
       case 'credentials': return <Shield className={cn(iconClass, "text-accent")} />;
       case 'links': return <Globe className={cn(iconClass, "text-primary")} />;
       case 'code': return <Terminal className={cn(iconClass, "text-info")} />;
@@ -272,35 +272,35 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     // If a custom color is set, it takes precedence
     if (message.color && message.color !== 'none') {
       switch (message.color) {
-        case 'red': return 'border-red-500 bg-red-500/10 dark:bg-red-500/20 shadow-none !important';
-        case 'orange': return 'border-orange-500 bg-orange-500/10 dark:bg-orange-500/20 shadow-none !important';
-        case 'yellow': return 'border-yellow-500 bg-yellow-500/10 dark:bg-yellow-500/20 shadow-none !important';
-        case 'green': return 'border-green-500 bg-green-500/10 dark:bg-green-500/20 shadow-none !important';
-        case 'emerald': return 'border-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/20 shadow-none !important';
-        case 'teal': return 'border-teal-500 bg-teal-500/10 dark:bg-teal-500/20 shadow-none !important';
-        case 'blue': return 'border-blue-500 bg-blue-500/10 dark:bg-blue-500/20 shadow-none !important';
-        case 'indigo': return 'border-indigo-500 bg-indigo-500/10 dark:bg-indigo-500/20 shadow-none !important';
-        case 'purple': return 'border-purple-500 bg-purple-500/10 dark:bg-purple-500/20 shadow-none !important';
-        case 'pink': return 'border-pink-500 bg-pink-500/10 dark:bg-pink-500/20 shadow-none !important';
-        case 'rose': return 'border-rose-500 bg-rose-500/10 dark:bg-rose-500/20 shadow-none !important';
-        case 'slate': return 'border-slate-500 bg-slate-500/10 dark:bg-slate-500/20 shadow-none !important';
-        case 'cyan': return 'border-cyan-500 bg-cyan-500/10 dark:bg-cyan-500/20 shadow-none !important';
-        case 'amber': return 'border-amber-500 bg-amber-500/10 dark:bg-amber-500/20 shadow-none !important';
+        case 'red': return 'border-red-500 bg-red-500/10 dark:bg-red-500/20 shadow-none !important pointer-events-auto';
+        case 'orange': return 'border-orange-500 bg-orange-500/10 dark:bg-orange-500/20 shadow-none !important pointer-events-auto';
+        case 'yellow': return 'border-yellow-500 bg-yellow-500/10 dark:bg-yellow-500/20 shadow-none !important pointer-events-auto';
+        case 'green': return 'border-green-500 bg-green-500/10 dark:bg-green-500/20 shadow-none !important pointer-events-auto';
+        case 'emerald': return 'border-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/20 shadow-none !important pointer-events-auto';
+        case 'teal': return 'border-teal-500 bg-teal-500/10 dark:bg-teal-500/20 shadow-none !important pointer-events-auto';
+        case 'blue': return 'border-blue-500 bg-blue-500/10 dark:bg-blue-500/20 shadow-none !important pointer-events-auto';
+        case 'indigo': return 'border-indigo-500 bg-indigo-500/10 dark:bg-indigo-500/20 shadow-none !important pointer-events-auto';
+        case 'purple': return 'border-purple-500 bg-purple-500/10 dark:bg-purple-500/20 shadow-none !important pointer-events-auto';
+        case 'pink': return 'border-pink-500 bg-pink-500/10 dark:bg-pink-500/20 shadow-none !important pointer-events-auto';
+        case 'rose': return 'border-rose-500 bg-rose-500/10 dark:bg-rose-500/20 shadow-none !important pointer-events-auto';
+        case 'slate': return 'border-slate-500 bg-slate-500/10 dark:bg-slate-500/20 shadow-none !important pointer-events-auto';
+        case 'cyan': return 'border-cyan-500 bg-cyan-500/10 dark:bg-cyan-500/20 shadow-none !important pointer-events-auto';
+        case 'amber': return 'border-amber-500 bg-amber-500/10 dark:bg-amber-500/20 shadow-none !important pointer-events-auto';
         default: return 'border-border/30 shadow-none !important';
       }
     }
 
     switch (message.type) {
-      case 'note': return 'border-success/50 bg-success/5 dark:bg-success/10 shadow-none !important';
-      case 'tasks': return 'border-warning/50 bg-warning/5 dark:bg-warning/10 shadow-none !important';
-      case 'credentials': return 'border-accent/50 bg-accent/5 dark:bg-accent/10 shadow-none !important';
-      case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none !important';
-      case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none !important';
-      case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none !important';
-      case 'audio': return 'border-pink-500/50 bg-pink-500/5 dark:bg-pink-500/10 shadow-none !important';
-      case 'voice': return 'border-rose-500/50 bg-rose-500/5 dark:bg-rose-500/10 shadow-none !important';
-      case 'location': return 'border-emerald-500/50 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-none !important';
-      default: return 'border-border/30 shadow-none !important';
+      case 'note': return 'border-success/50 bg-success/5 dark:bg-success/10 shadow-none !important pointer-events-auto';
+      case 'tasks': return 'border-warning/50 bg-warning/5 dark:bg-warning/10 shadow-none !important pointer-events-auto';
+      case 'credentials': return 'border-accent/50 bg-accent/5 dark:bg-accent/10 shadow-none !important pointer-events-auto';
+      case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none !important pointer-events-auto';
+      case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none !important pointer-events-auto';
+      case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none !important pointer-events-auto';
+      case 'audio': return 'border-pink-500/50 bg-pink-500/5 dark:bg-pink-500/10 shadow-none !important pointer-events-auto';
+      case 'voice': return 'border-rose-500/50 bg-rose-500/5 dark:bg-rose-500/10 shadow-none !important pointer-events-auto';
+      case 'location': return 'border-emerald-500/50 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-none !important pointer-events-auto';
+      default: return 'border-border/30 shadow-none !important pointer-events-auto';
     }
   };
 
@@ -334,12 +334,12 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               }}
               style={{ height: noteHeight ? `${noteHeight}px` : 'auto' }}
               className={cn(
-                "overflow-hidden transition-[height] duration-200 pointer-events-auto relative z-10",
+                "overflow-hidden transition-[height] duration-200 pointer-events-auto relative z-[60] !pointer-events-auto",
                 !noteHeight && !isExpanded && "max-h-[150px]"
               )}
             >
               <div className={cn(
-                "text-foreground leading-relaxed markdown-content",
+                "text-foreground leading-relaxed markdown-content pointer-events-auto !pointer-events-auto",
                 layout === 'compact' ? "text-xs line-clamp-2" : "text-sm md:text-base"
               )}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -494,7 +494,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                   handleToggleTask(index + 1);
                 }}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[60]",
+                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[60] !pointer-events-auto",
                   layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
                 )}
@@ -1247,7 +1247,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "shadow-none hover:shadow-none !important",
-        "cursor-pointer pointer-events-auto relative z-[10]",
+        "cursor-pointer pointer-events-auto relative z-[10] !pointer-events-auto",
         message.color === 'red' && "bg-red-500/10 border-red-500/50",
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
