@@ -630,47 +630,6 @@ const ChatView: React.FC = () => {
         </div>
       </div>
 
-      {/* Sidebar - Wrapped in conditional to prevent intercepting clicks when closed */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-[60] transition-all duration-300">
-          {/* Backdrop for mobile */}
-          <div 
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[-1] md:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-          <div className={cn(
-            "h-full w-80 transform transition-transform duration-300 ease-out shadow-none",
-            isRTL 
-              ? "translate-x-0 left-0" 
-              : "translate-x-0 right-0"
-          )}>
-            <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
-              <ConversationSidebar
-                conversations={conversations}
-                archivedConversations={archivedConversations}
-                currentConversationId={currentConversationId}
-                showArchived={showArchived}
-                onSelectConversation={(id) => {
-                  setCurrentConversationId(id);
-                  localStorage.setItem('activeConversationId', id);
-                  setSidebarOpen(false);
-                }}
-                onCreateConversation={handleCreateConversation}
-                onArchiveConversation={handleArchiveConversation}
-                onUnarchiveConversation={handleUnarchiveConversation}
-                onDeleteConversation={handleDeleteConversation}
-                onRenameConversation={handleRenameConversation}
-                onPinConversation={handlePinConversation}
-                onUnpinConversation={handleUnpinConversation}
-                onSetColor={handleSetColor}
-                onSetLabel={handleSetLabel}
-                onToggleArchived={() => setShowArchived(!showArchived)}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </React.Suspense>
-          </div>
-        </div>
-      )}
 
       {/* Main Content */}
       <div className={cn(
