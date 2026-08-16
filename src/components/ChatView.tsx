@@ -580,22 +580,25 @@ const ChatView: React.FC = () => {
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20" />
 
 
-      <React.Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
-        <ContextMenu 
-          onNavigate={handleNavigate}
-          onNextConversation={goToNextConversation}
-          onPrevConversation={goToPrevConversation}
-          canGoNext={canGoNext}
-          canGoPrev={canGoPrev}
-          onRenameConversation={handleRenameCurrent}
-          onSetCardColor={async (color) => {
-            const activeCardId = (document.querySelector('[data-active-card="true"]') as HTMLElement)?.dataset.cardId;
-            if (activeCardId) {
-              await handleUpdateMessageColor(activeCardId, color);
-            }
-          }}
-        />
-      </React.Suspense>
+      {/* Context Menu - Wrapped to prevent full-screen capture */}
+      <div className="contents pointer-events-none">
+        <React.Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
+          <ContextMenu 
+            onNavigate={handleNavigate}
+            onNextConversation={goToNextConversation}
+            onPrevConversation={goToPrevConversation}
+            canGoNext={canGoNext}
+            canGoPrev={canGoPrev}
+            onRenameConversation={handleRenameCurrent}
+            onSetCardColor={async (color) => {
+              const activeCardId = (document.querySelector('[data-active-card="true"]') as HTMLElement)?.dataset.cardId;
+              if (activeCardId) {
+                await handleUpdateMessageColor(activeCardId, color);
+              }
+            }}
+          />
+        </React.Suspense>
+      </div>
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
