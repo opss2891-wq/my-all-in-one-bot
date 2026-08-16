@@ -243,6 +243,17 @@
   .animate-reverse-spin {
     animation: reverse-spin 12s linear infinite;
   }
+
+  .cyber-grid {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, hsl(var(--primary) / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--primary) / 0.05) 1px, transparent 1px);
+  }
+
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-white/10;
+  }
 }
 
 @keyframes float {

@@ -554,10 +554,15 @@ const ChatView: React.FC = () => {
 
   return (
     <div className={cn(
-      "flex h-[100dvh] overflow-hidden transition-colors duration-300",
+      "flex h-[100dvh] overflow-hidden transition-colors duration-300 relative",
       isRTL ? "flex-row-reverse" : "flex-row",
-      theme === 'dark' ? "bg-slate-950" : "bg-background"
+      theme === 'dark' ? "bg-[#0a0c10]" : "bg-background"
     )}>
+      {/* Background patterns */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-40 cyber-grid" />
+      <div className="absolute top-[-20%] start-[-10%] w-[60%] h-[60%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] end-[-10%] w-[60%] h-[60%] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
+
       <React.Suspense fallback={<div className="fixed inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-50"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>}>
         <ContextMenu 
           onNavigate={handleNavigate}
@@ -604,7 +609,7 @@ const ChatView: React.FC = () => {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out",
+        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out shadow-2xl",
         isRTL 
           ? (sidebarOpen ? "translate-x-0 left-0" : "-translate-x-full left-0") 
           : (sidebarOpen ? "translate-x-0 right-0" : "translate-x-full right-0")
@@ -637,14 +642,14 @@ const ChatView: React.FC = () => {
 
       {/* Main Content */}
       <div className={cn(
-        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300",
-        theme === 'dark' ? "bg-slate-950" : "bg-background"
+        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300 relative z-10",
+        theme === 'dark' ? "bg-transparent" : "bg-background/50"
       )}>
         {/* Header */}
         {headerVisible && (
           <header className={cn(
             "border-b border-border sticky top-0 z-20 safe-area-top animate-fade-in transition-colors duration-300",
-            theme === 'dark' ? "bg-slate-900/90 backdrop-blur-md" : "bg-card/90 backdrop-blur-md"
+            theme === 'dark' ? "bg-black/20 backdrop-blur-xl border-b border-white/5" : "bg-card/90 backdrop-blur-md"
           )}>
             <div className="p-3 md:p-4">
               <div className="flex items-center gap-3 mb-3">
@@ -838,8 +843,8 @@ const ChatView: React.FC = () => {
         <main 
           ref={mainRef} 
           className={cn(
-            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300",
-            theme === 'dark' ? "bg-slate-950 text-slate-50" : "bg-slate-50/30 text-slate-900"
+            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300 scroll-smooth",
+            theme === 'dark' ? "bg-transparent text-slate-50" : "bg-slate-50/30 text-slate-900"
           )}
         >
           <div className="p-3 md:p-4 max-w-3xl mx-auto">

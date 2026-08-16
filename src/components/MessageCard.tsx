@@ -251,13 +251,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
 
   const getBorderColor = () => {
     switch (message.type) {
-      case 'note': return 'border-success/30 hover:border-success/50';
-      case 'tasks': return 'border-warning/30 hover:border-warning/50';
-      case 'credentials': return 'border-accent/30 hover:border-accent/50';
-      case 'links': return 'border-primary/30 hover:border-primary/50';
-      case 'code': return 'border-info/30 hover:border-info/50';
-      case 'file': return 'border-purple-500/30 hover:border-purple-500/50';
-      default: return 'border-border';
+      case 'note': return 'border-success/20 group-hover:border-success/50';
+      case 'tasks': return 'border-warning/20 group-hover:border-warning/50';
+      case 'credentials': return 'border-accent/20 group-hover:border-accent/50';
+      case 'links': return 'border-primary/20 group-hover:border-primary/50';
+      case 'code': return 'border-info/20 group-hover:border-info/50';
+      case 'file': return 'border-purple-500/20 group-hover:border-purple-500/50';
+      default: return 'border-border/30 group-hover:border-primary/30';
     }
   };
 
