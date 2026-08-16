@@ -878,7 +878,7 @@ const ChatView: React.FC = () => {
                   layout === 'grid' ? "grid-cols-2 md:grid-cols-2" : "grid-cols-1 md:grid-cols-1"
                 )}>
                   <React.Suspense fallback={<div className="p-4 border border-border rounded-xl bg-card animate-pulse h-24" />}>
-                    {displayedMessages.map(message => (
+                    {pagedMessages.map(message => (
                       <MessageCard 
                         key={message.id} 
                         message={message} 
@@ -889,13 +889,18 @@ const ChatView: React.FC = () => {
                     ))}
                   </React.Suspense>
                 </div>
-                {hasMore && (
-                  <div className="flex justify-center py-6">
-                    {loadingMore ? (
-                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                    ) : (
-                      <p className="text-sm text-muted-foreground">{t('scrollMore')}</p>
-                    )}
+                
+                {/* Pagination for messages */}
+                {totalPages > 1 && (
+                  <div className="mt-8 mb-12">
+                    <React.Suspense fallback={<div className="h-10 w-full animate-pulse bg-muted rounded-xl" />}>
+                      <Pagination
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                        totalItems={filteredMessages.length}
+                      />
+                    </React.Suspense>
                   </div>
                 )}
               </>
