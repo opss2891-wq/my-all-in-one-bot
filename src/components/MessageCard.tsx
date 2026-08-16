@@ -1003,13 +1003,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
     >
       <div className={cn(
-        "absolute top-0 left-0 w-1.5 h-full opacity-30 transition-all duration-300 group-hover:opacity-100 group-hover:w-2",
-        message.type === 'note' && "bg-success shadow-[0_0_10px_rgba(34,197,94,0.5)]",
-        message.type === 'tasks' && "bg-warning shadow-[0_0_10px_rgba(234,179,8,0.5)]",
-        message.type === 'credentials' && "bg-accent shadow-[0_0_10px_rgba(168,85,247,0.5)]",
-        message.type === 'links' && "bg-primary shadow-[0_0_10px_rgba(20,184,166,0.5)]",
-        message.type === 'code' && "bg-info shadow-[0_0_10px_rgba(6,182,212,0.5)]",
-        message.type === 'file' && "bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]",
+        "absolute top-0 left-0 w-1.5 h-full opacity-100 transition-all duration-300 group-hover:w-2",
+        message.type === 'note' && "bg-success shadow-[0_0_15px_rgba(34,197,94,0.6)]",
+        message.type === 'tasks' && "bg-warning shadow-[0_0_15px_rgba(234,179,8,0.6)]",
+        message.type === 'credentials' && "bg-accent shadow-[0_0_15px_rgba(168,85,247,0.6)]",
+        message.type === 'links' && "bg-primary shadow-[0_0_15px_rgba(20,184,166,0.6)]",
+        message.type === 'code' && "bg-info shadow-[0_0_15px_rgba(6,182,212,0.6)]",
+        message.type === 'file' && "bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.6)]",
       )} />
 
       <div className="flex items-center justify-between gap-3 mb-3">
