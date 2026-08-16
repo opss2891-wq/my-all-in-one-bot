@@ -1154,7 +1154,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               <Palette className="w-4 h-4" />
             </button>
             {showColorPicker && (
-              <div className="absolute top-full right-0 mt-2 p-2 bg-card border border-border rounded-xl shadow-2xl z-50 flex gap-1 min-w-[160px]">
+              <div className="absolute top-full right-0 mt-2 p-3 bg-card border border-border rounded-2xl shadow-2xl z-50 grid grid-cols-4 gap-2 min-w-[140px]">
                 {['none', 'red', 'orange', 'yellow', 'green', 'emerald', 'teal', 'blue', 'indigo', 'purple', 'pink', 'rose', 'slate'].map((color) => (
                   <button
                     key={color}
