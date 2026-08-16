@@ -480,8 +480,11 @@ const ChatView: React.FC = () => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-  const displayedMessages = filteredMessages.slice(0, displayCount);
-  const hasMore = displayCount < filteredMessages.length;
+  const totalPages = Math.ceil(filteredMessages.length / MESSAGES_PER_PAGE);
+  const pagedMessages = filteredMessages.slice(
+    (page - 1) * MESSAGES_PER_PAGE,
+    page * MESSAGES_PER_PAGE
+  );
 
   const currentConversation = [...conversations, ...archivedConversations].find(
     c => c.id === currentConversationId
@@ -503,7 +506,7 @@ const ChatView: React.FC = () => {
     } else {
       setFilter(section as MessageType);
     }
-    setDisplayCount(MESSAGES_PER_PAGE);
+    setPage(1);
   };
 
   // Navigate to next/previous conversation
@@ -583,7 +586,7 @@ const ChatView: React.FC = () => {
             return (
               <button
                 key={btn.type}
-                onClick={() => { setFilter(btn.type); setDisplayCount(MESSAGES_PER_PAGE); }}
+                onClick={() => { setFilter(btn.type); setPage(1); }}
                 className={cn(
                   "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
                   isActive 
@@ -723,7 +726,7 @@ const ChatView: React.FC = () => {
                       return (
                         <button
                           key={type}
-                          onClick={() => { setFilter(type as any); setDisplayCount(MESSAGES_PER_PAGE); }}
+                          onClick={() => { setFilter(type as any); setPage(1); }}
                           className={cn(
                             "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all text-xs font-medium",
                             isActive 
@@ -799,7 +802,7 @@ const ChatView: React.FC = () => {
                   return (
                     <button
                       key={btn.type}
-                      onClick={() => { setFilter(btn.type); setDisplayCount(MESSAGES_PER_PAGE); }}
+                      onClick={() => { setFilter(btn.type); setPage(1); }}
                       className={cn(
                         "flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all font-medium",
                         isActive 

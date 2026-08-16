@@ -105,6 +105,8 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   const [searchQuery, setSearchQuery] = useState('');
   const [labelEditId, setLabelEditId] = useState<string | null>(null);
   const [labelValue, setLabelValue] = useState('');
+  const [page, setPage] = useState(1);
+  const CONVERSATIONS_PER_PAGE = 8;
   const { t, isRTL, language } = useLanguage();
   const { logout, user } = useAuth();
 
@@ -465,6 +467,19 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
                 )}
               </div>
             ))}
+            </div>
+            
+            {/* Pagination for Sidebar */}
+            {totalPages > 1 && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                  compact
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
