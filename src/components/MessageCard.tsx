@@ -1069,6 +1069,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           </div>
         );
       }
+      case 'audio':
+      case 'voice':
+      case 'location':
+        return null; // Already handled above
       case 'file': {
         const fileData = message.fileData;
         if (!fileData) return null;
