@@ -11,7 +11,7 @@ import CodeHighlight from './CodeHighlight';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
-import { Pin, PinOff } from 'lucide-react';
+import { Pin, PinOff, Slash } from 'lucide-react';
 
 const CODE_LANGUAGES = [
   'javascript', 'typescript', 'python', 'php', 'sql',
@@ -221,7 +221,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     const iconClass = "w-5 h-5 transition-transform duration-300 group-hover:scale-110";
     switch (message.type) {
       case 'note': return <FileText className={cn(iconClass, "text-success")} />;
-      case 'tasks': return <Activity className={cn(iconClass, "text-warning")} />;
+      case 'tasks': return <CheckSquare className={cn(iconClass, "text-warning")} />;
       case 'credentials': return <Shield className={cn(iconClass, "text-accent")} />;
       case 'links': return <Globe className={cn(iconClass, "text-primary")} />;
       case 'code': return <Terminal className={cn(iconClass, "text-info")} />;
