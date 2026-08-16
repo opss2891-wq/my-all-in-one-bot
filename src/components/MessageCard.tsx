@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
@@ -203,14 +203,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   };
 
   const getIcon = () => {
+    const iconClass = "w-5 h-5 transition-transform duration-300 group-hover:scale-110";
     switch (message.type) {
-      case 'note': return <FileText className="w-5 h-5 text-success" />;
-      case 'tasks': return <CheckSquare className="w-5 h-5 text-warning" />;
-      case 'credentials': return <Key className="w-5 h-5 text-accent" />;
-      case 'links': return <Link2 className="w-5 h-5 text-primary" />;
-      case 'code': return <Code className="w-5 h-5 text-info" />;
-      case 'file': return <File className="w-5 h-5 text-purple-400" />;
-      default: return <FileText className="w-5 h-5" />;
+      case 'note': return <FileText className={cn(iconClass, "text-success")} />;
+      case 'tasks': return <Activity className={cn(iconClass, "text-warning")} />;
+      case 'credentials': return <Shield className={cn(iconClass, "text-accent")} />;
+      case 'links': return <Globe className={cn(iconClass, "text-primary")} />;
+      case 'code': return <Terminal className={cn(iconClass, "text-info")} />;
+      case 'file': return <Zap className={cn(iconClass, "text-purple-400")} />;
+      default: return <FileText className={iconClass} />;
     }
   };
 
@@ -327,7 +328,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             
             {/* Optional Description Section */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc animate-fade-in">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -441,7 +442,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             <AddTaskInput messageId={message.id!} onUpdate={onUpdate} />
             {/* Optional Description Section for Tasks */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-warning/10 bg-warning/5 rounded-xl p-3 relative group/desc animate-fade-in">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -501,7 +502,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             )}
             {/* Optional Description Section for Credentials */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-accent/10 bg-accent/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-accent/10 bg-accent/5 rounded-xl p-3 relative group/desc animate-fade-in">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -727,7 +728,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             })}
             {/* Optional Description Section for Links */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-primary/10 bg-primary/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-primary/10 bg-primary/5 rounded-xl p-3 relative group/desc animate-fade-in">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -819,7 +820,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             )}
             {/* Optional Description Section for Code */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-info/10 bg-info/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-info/10 bg-info/5 rounded-xl p-3 relative group/desc animate-fade-in">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -924,7 +925,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             )}
             {/* Optional Description Section for Files */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-purple-500/10 bg-purple-500/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-purple-500/10 bg-purple-500/5 rounded-xl p-3 relative group/desc animate-fade-in">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
