@@ -823,7 +823,7 @@ const ChatView: React.FC = () => {
         {!headerVisible && (
           <button
             onClick={toggleHeader}
-            className="fixed top-4 start-4 z-30 p-3 rounded-xl bg-card/90 backdrop-blur-md border border-border shadow-none text-muted-foreground hover:text-foreground transition-colors"
+            className="fixed top-4 start-4 z-30 deck-icon-btn deck-icon-btn--accent"
           >
             <Eye className="w-5 h-5" />
           </button>
@@ -833,38 +833,36 @@ const ChatView: React.FC = () => {
         <main 
           ref={mainRef} 
           className={cn(
-            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300 scroll-smooth pb-32 md:pb-40 relative z-10",
-            theme === 'dark' ? "bg-transparent text-slate-50" : "bg-slate-50/30 text-slate-900"
+            "flex-1 overflow-y-auto overscroll-contain scroll-smooth pb-36 md:pb-44 relative z-10",
+            theme === 'dark' ? "text-slate-50" : "text-slate-900"
           )}
         >
-          <div className="p-3 md:p-4 max-w-3xl mx-auto relative z-10">
+          <div className="px-3 md:px-4 py-4 max-w-4xl mx-auto relative z-10">
 
             {/* Messages Grid - 2 columns on mobile */}
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-20">
-                <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
-                <p className="text-muted-foreground">{t('loading')}</p>
+              <div className="flex flex-col items-center justify-center py-24">
+                <Loader2 className="w-9 h-9 animate-spin text-primary mb-4" />
+                <p className="text-sm text-muted-foreground">{t('loading')}</p>
               </div>
             ) : !currentConversationId ? (
-              <div className="text-center py-20">
-                <div className="w-20 h-20 rounded-3xl gradient-primary mx-auto mb-6 flex items-center justify-center">
-                  <Sparkles className="w-10 h-10 text-primary-foreground" />
+              <div className="deck-empty">
+                <div className="deck-empty-mark">
+                  <Sparkles className="w-8 h-8 text-primary" />
                 </div>
-                <h2 className="text-xl font-bold text-foreground mb-2">{t('welcome')}</h2>
-                <p className="text-muted-foreground mb-6">{t('createToStart')}</p>
-                <button
-                  onClick={handleCreateConversation}
-                  className="px-6 py-3 rounded-xl gradient-primary text-primary-foreground font-medium"
-                >
+                <h2 className="text-lg font-extrabold text-foreground mb-1">{t('welcome')}</h2>
+                <p className="text-sm text-muted-foreground mb-6">{t('createToStart')}</p>
+                <button onClick={handleCreateConversation} className="deck-cta">
+                  <Plus className="w-4 h-4" />
                   {t('newConversation')}
                 </button>
               </div>
             ) : filteredMessages.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="w-16 h-16 rounded-2xl bg-muted mx-auto mb-4 flex items-center justify-center">
+              <div className="deck-empty">
+                <div className="deck-empty-mark">
                   <Sparkles className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <p className="text-foreground font-medium mb-1">
+                <p className="text-foreground font-bold mb-1">
                   {searchQuery ? t('noResults') : t('noMessages')}
                 </p>
                 <p className="text-sm text-muted-foreground">
