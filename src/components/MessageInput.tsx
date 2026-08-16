@@ -210,7 +210,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
         </div>
 
         {/* Input Area - Textarea with Send Button aligned */}
-        <div className={cn("flex gap-3 items-stretch", isRTL && "flex-row-reverse")}>
+        <div className={cn("flex gap-3 items-stretch relative z-[151]", isRTL && "flex-row-reverse")}>
           {type === 'file' ? (
             <div className="flex-1 flex flex-col gap-2">
               <input
