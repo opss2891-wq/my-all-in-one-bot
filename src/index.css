@@ -357,6 +357,11 @@
   border: 1px solid rgba(255,255,255,0.05);
 }
 
+.cyber-input-wrapper {
+  isolation: isolate;
+  background: transparent !important;
+}
+
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
