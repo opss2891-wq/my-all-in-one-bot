@@ -1068,13 +1068,6 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           </div>
         );
       }
-          </div>
-        );
-      }
-      case 'audio':
-      case 'voice':
-      case 'location':
-        return null; // Already handled above
       case 'file': {
         const fileData = message.fileData;
         if (!fileData) return null;
@@ -1221,21 +1214,11 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'location': {
         return (
           <div className="space-y-3">
-            <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 aspect-video bg-emerald-500/5 flex flex-col items-center justify-center gap-2">
-              <MapPin className="w-10 h-10 text-emerald-400 opacity-50" />
-              <p className="text-sm text-emerald-400/70 font-medium">
-                {message.content || (language === 'ar' ? 'موقع جغرافي' : 'Location')}
+            <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 min-h-[100px] bg-emerald-500/5 flex flex-col items-center justify-center gap-2 p-4">
+              <Database className="w-8 h-8 text-emerald-400 opacity-50" />
+              <p className="text-sm text-emerald-400/70 font-medium text-center">
+                {message.content || (language === 'ar' ? 'بيانات إضافية' : 'Additional Data')}
               </p>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(message.content || '')}`, '_blank');
-                }}
-                className="absolute bottom-3 right-3 px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs rounded-lg transition-colors flex items-center gap-2"
-              >
-                <ExternalLink className="w-3 h-3" />
-                {language === 'ar' ? 'فتح الخريطة' : 'Open Map'}
-              </button>
             </div>
             {message.description && (
               <p className="text-sm text-muted-foreground italic px-2">
