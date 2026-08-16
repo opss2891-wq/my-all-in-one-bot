@@ -99,9 +99,12 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   return (
     <div
-      className="fixed z-[150] animate-fade-in pointer-events-auto"
-      style={{ left: adjustedX, top: adjustedY }}
+      className="fixed inset-0 z-[150] pointer-events-none"
     >
+      <div 
+        className="absolute animate-fade-in pointer-events-auto"
+        style={{ left: adjustedX, top: adjustedY }}
+      >
       <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden min-w-[200px] backdrop-blur-xl">
         {/* Header */}
         <div className="p-3 border-b border-border bg-secondary/50 flex items-center justify-between">
