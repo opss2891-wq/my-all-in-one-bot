@@ -208,12 +208,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   };
 
   const handleCardClick = () => {
-    if (message.type === 'note' && message.content) {
-      copyToClipboard(message.content);
-    }
-    if (message.type === 'code' && message.codeData?.code) {
-      copyToClipboard(message.codeData.code);
-    }
+    // Note and Code cards no longer copy to clipboard on single click
   };
 
   const getIcon = () => {
@@ -504,7 +499,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
+                      onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       onChange={(e) => setTempDescription(e.target.value)}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للمهام...' : 'Add a sub-note for tasks...'}
                       className="w-full bg-card border border-warning/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-warning"
