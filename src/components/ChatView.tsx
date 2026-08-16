@@ -625,11 +625,22 @@ const ChatView: React.FC = () => {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed inset-y-0 z-50 w-80 transform transition-transform duration-300 ease-out shadow-none",
-        isRTL 
-          ? (sidebarOpen ? "translate-x-0 left-0" : "-translate-x-full left-0") 
-          : (sidebarOpen ? "translate-x-0 right-0" : "translate-x-full right-0")
+        "fixed inset-0 z-50 transition-all duration-300 pointer-events-none md:pointer-events-auto",
+        sidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       )}>
+        {/* Backdrop for mobile */}
+        {sidebarOpen && (
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[-1] md:hidden pointer-events-auto"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        <div className={cn(
+          "h-full w-80 transform transition-transform duration-300 ease-out shadow-none pointer-events-auto",
+          isRTL 
+            ? (sidebarOpen ? "translate-x-0 left-0" : "-translate-x-full left-0") 
+            : (sidebarOpen ? "translate-x-0 right-0" : "translate-x-full right-0")
+        )}>
         <React.Suspense fallback={<div className="h-full w-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}>
           <ConversationSidebar
             conversations={conversations}
@@ -654,6 +665,7 @@ const ChatView: React.FC = () => {
             onClose={() => setSidebarOpen(false)}
           />
         </React.Suspense>
+        </div>
       </div>
 
       {/* Main Content */}
