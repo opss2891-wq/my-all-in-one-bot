@@ -993,11 +993,11 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     <div 
       data-card-type={message.type}
       className={cn(
-        "group relative glass-panel rounded-2xl p-4 md:p-5 transition-all duration-300",
+        "group relative glass-panel rounded-2xl p-4 md:p-6 transition-all duration-500",
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
-        "animate-slide-up hover:-translate-y-1 hover:shadow-2xl",
-        (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.99]"
+        "animate-slide-up hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:border-white/20",
+        (message.type === 'note' || message.type === 'code') && "cursor-pointer active:scale-[0.98]"
       )}
       onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
     >
