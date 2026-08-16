@@ -3,8 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 
 
-export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
-export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'emerald' | 'teal' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'slate';
+export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file' | 'audio' | 'voice' | 'location';
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'emerald' | 'teal' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'slate' | 'cyan' | 'amber';
 
 export interface TaskItem {
   text: string;
@@ -227,7 +227,7 @@ export const addMessage = async (userId: string, message: Omit<Message, 'id' | '
     .insert([{
       user_id: userId,
       conversation_id: message.conversationId,
-      type: message.type,
+      type: message.type as any,
       content: message.content,
       tasks: message.tasks as any,
       credential: message.credential as any,

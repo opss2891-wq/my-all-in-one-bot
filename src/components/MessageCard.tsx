@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette, Mic, Music, MapPin } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
@@ -226,6 +226,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'links': return <Globe className={cn(iconClass, "text-primary")} />;
       case 'code': return <Terminal className={cn(iconClass, "text-info")} />;
       case 'file': return <Zap className={cn(iconClass, "text-purple-400")} />;
+      case 'audio': return <Music className={cn(iconClass, "text-pink-400")} />;
+      case 'voice': return <Mic className={cn(iconClass, "text-rose-400")} />;
+      case 'location': return <MapPin className={cn(iconClass, "text-emerald-400")} />;
       default: return <FileText className={iconClass} />;
     }
   };
@@ -281,6 +284,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         case 'pink': return 'border-pink-500 bg-pink-500/10 dark:bg-pink-500/20 shadow-none !important';
         case 'rose': return 'border-rose-500 bg-rose-500/10 dark:bg-rose-500/20 shadow-none !important';
         case 'slate': return 'border-slate-500 bg-slate-500/10 dark:bg-slate-500/20 shadow-none !important';
+        case 'cyan': return 'border-cyan-500 bg-cyan-500/10 dark:bg-cyan-500/20 shadow-none !important';
+        case 'amber': return 'border-amber-500 bg-amber-500/10 dark:bg-amber-500/20 shadow-none !important';
         default: return 'border-border/30 shadow-none !important';
       }
     }
@@ -292,6 +297,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'links': return 'border-primary/50 bg-primary/5 dark:bg-primary/10 shadow-none !important';
       case 'code': return 'border-info/50 bg-info/5 dark:bg-info/10 shadow-none !important';
       case 'file': return 'border-purple-500/50 bg-purple-500/5 dark:bg-purple-500/10 shadow-none !important';
+      case 'audio': return 'border-pink-500/50 bg-pink-500/5 dark:bg-pink-500/10 shadow-none !important';
+      case 'voice': return 'border-rose-500/50 bg-rose-500/5 dark:bg-rose-500/10 shadow-none !important';
+      case 'location': return 'border-emerald-500/50 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-none !important';
       default: return 'border-border/30 shadow-none !important';
     }
   };
@@ -1126,6 +1134,64 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           </div>
         );
       }
+      case 'audio':
+      case 'voice': {
+        return (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
+              <div className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center bg-white/10",
+                message.type === 'audio' ? "text-pink-400" : "text-rose-400"
+              )}>
+                {message.type === 'audio' ? <Music className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-foreground font-medium truncate">
+                  {message.content || (language === 'ar' ? 'ملف صوتي' : 'Audio file')}
+                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full w-1/3 bg-current opacity-50" />
+                  </div>
+                  <span className="text-[10px] text-muted-foreground tabular-nums">0:00 / 0:00</span>
+                </div>
+              </div>
+            </div>
+            {message.description && (
+              <p className="text-sm text-muted-foreground italic px-2">
+                {message.description}
+              </p>
+            )}
+          </div>
+        );
+      }
+      case 'location': {
+        return (
+          <div className="space-y-3">
+            <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 aspect-video bg-emerald-500/5 flex flex-col items-center justify-center gap-2">
+              <MapPin className="w-10 h-10 text-emerald-400 opacity-50" />
+              <p className="text-sm text-emerald-400/70 font-medium">
+                {message.content || (language === 'ar' ? 'موقع جغرافي' : 'Location')}
+              </p>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(message.content || '')}`, '_blank');
+                }}
+                className="absolute bottom-3 right-3 px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs rounded-lg transition-colors flex items-center gap-2"
+              >
+                <ExternalLink className="w-3 h-3" />
+                {language === 'ar' ? 'فتح الخريطة' : 'Open Map'}
+              </button>
+            </div>
+            {message.description && (
+              <p className="text-sm text-muted-foreground italic px-2">
+                {message.description}
+              </p>
+            )}
+          </div>
+        );
+      }
       default: return null;
     }
   };
@@ -1157,7 +1223,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         message.color === 'purple' && "bg-purple-500/10 border-purple-500/50",
         message.color === 'pink' && "bg-pink-500/10 border-pink-500/50",
         message.color === 'rose' && "bg-rose-500/10 border-rose-500/50",
-        message.color === 'slate' && "bg-slate-500/10 border-slate-500/50"
+        message.color === 'slate' && "bg-slate-500/10 border-slate-500/50",
+        message.color === 'cyan' && "bg-cyan-500/10 border-cyan-500/50",
+        message.color === 'amber' && "bg-amber-500/10 border-amber-500/50"
       )}
       onClick={handleCardClick}
     >
@@ -1169,7 +1237,10 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           message.type === 'credentials' ? "bg-accent" :
           message.type === 'links' ? "bg-primary" :
           message.type === 'code' ? "bg-info" :
-          message.type === 'file' ? "bg-purple-500" : ""
+          message.type === 'file' ? "bg-purple-500" :
+          message.type === 'audio' ? "bg-pink-400" :
+          message.type === 'voice' ? "bg-rose-400" :
+          message.type === 'location' ? "bg-emerald-400" : ""
         ) : (
           message.color === 'red' ? "bg-red-500" :
           message.color === 'orange' ? "bg-orange-500" :
@@ -1182,7 +1253,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           message.color === 'purple' ? "bg-purple-500" :
           message.color === 'pink' ? "bg-pink-500" :
           message.color === 'rose' ? "bg-rose-500" :
-          message.color === 'slate' ? "bg-slate-500" : ""
+          message.color === 'slate' ? "bg-slate-500" :
+          message.color === 'cyan' ? "bg-cyan-500" :
+          message.color === 'amber' ? "bg-amber-500" : ""
         )
       )} />
 
@@ -1193,6 +1266,9 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             message.type === 'note' && "bg-success/10",
             message.type === 'tasks' && "bg-warning/10",
             message.type === 'credentials' && "bg-accent/10",
+            message.type === 'audio' && "bg-pink-500/10",
+            message.type === 'voice' && "bg-rose-500/10",
+            message.type === 'location' && "bg-emerald-500/10",
             message.type === 'links' && "bg-primary/10",
             message.type === 'code' && "bg-info/10",
             message.type === 'file' && "bg-purple-500/10",

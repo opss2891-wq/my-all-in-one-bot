@@ -35,7 +35,7 @@ export const enableOfflinePersistence = async () => {
 };
 
 // Conversation types
-export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'emerald' | 'teal' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'slate';
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'emerald' | 'teal' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'slate' | 'cyan' | 'amber';
 
 export interface Conversation {
   id?: string;
@@ -50,7 +50,7 @@ export interface Conversation {
 }
 
 // Message types
-export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
+export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file' | 'audio' | 'voice' | 'location';
 
 export interface CodeData {
   code: string;

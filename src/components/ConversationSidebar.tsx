@@ -51,6 +51,8 @@ const colorClasses: Record<ConversationColor, string> = {
   pink: 'border-l-4 border-l-pink-500 bg-pink-500/5',
   rose: 'border-l-4 border-l-rose-500 bg-rose-500/5',
   slate: 'border-l-4 border-l-slate-500 bg-slate-500/5',
+  cyan: 'border-l-4 border-l-cyan-500 bg-cyan-500/5',
+  amber: 'border-l-4 border-l-amber-500 bg-amber-500/5',
 };
 
 const colorDots: Record<ConversationColor, string> = {
@@ -67,6 +69,8 @@ const colorDots: Record<ConversationColor, string> = {
   pink: 'bg-pink-500',
   rose: 'bg-rose-500',
   slate: 'bg-slate-500',
+  cyan: 'bg-cyan-500',
+  amber: 'bg-amber-500',
 };
 
 interface ConversationSidebarProps {
@@ -120,7 +124,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   const { t, isRTL, language } = useLanguage();
   const { logout, user } = useAuth();
 
-  const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'emerald', 'teal', 'blue', 'indigo', 'purple', 'pink', 'rose', 'slate'];
+  const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'emerald', 'teal', 'blue', 'indigo', 'purple', 'pink', 'rose', 'slate', 'cyan', 'amber'];
 
   const baseConversations = showArchived ? archivedConversations : conversations;
   
