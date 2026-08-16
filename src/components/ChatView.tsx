@@ -924,8 +924,8 @@ const ChatView: React.FC = () => {
       {/* Sidebar Overlay */}
       <div 
         className={cn(
-          "fixed inset-0 z-[200] transition-all duration-300 pointer-events-none",
-          sidebarOpen ? "opacity-100" : "opacity-0"
+          "fixed inset-0 z-[200] opacity-0 pointer-events-none transition-opacity duration-300",
+          sidebarOpen && "opacity-100"
         )}
       >
         {/* Backdrop for mobile - separate layer to handle clicks specifically */}
