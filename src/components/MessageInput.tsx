@@ -180,7 +180,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
   };
 
   return (
-    <div className="border-t border-white/5 bg-[#0A0A0B]/80 p-4 md:p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.8)] relative z-[50] rounded-t-[2.5rem] backdrop-blur-3xl">
+    <div className="border-t border-white/5 bg-[#0A0A0B]/80 p-4 md:p-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.8)] relative z-[150] rounded-t-[2.5rem] backdrop-blur-3xl">
       <div className="max-w-4xl mx-auto">
         {/* Type Selector - Horizontal Pills */}
         <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1">

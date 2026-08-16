@@ -325,7 +325,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         const displayContent = (!isLongNote || isExpanded) ? content : content.slice(0, 180) + '...';
 
         return (
-          <div className="space-y-3 relative group/note pointer-events-auto" dir="rtl" style={{ textAlign: 'right' }}>
+          <div className="space-y-3 relative group/note pointer-events-auto z-10" dir="rtl" style={{ textAlign: 'right' }}>
             <div 
               onDoubleClick={(e) => {
                 e.stopPropagation();
@@ -334,7 +334,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               }}
               style={{ height: noteHeight ? `${noteHeight}px` : 'auto' }}
               className={cn(
-                "overflow-hidden transition-[height] duration-200 pointer-events-auto",
+                "overflow-hidden transition-[height] duration-200 pointer-events-auto relative z-10",
                 !noteHeight && !isExpanded && "max-h-[150px]"
               )}
             >
@@ -386,7 +386,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             
             {/* Optional Description Section */}
             {(message.description || isAddingDescription) ? (
-              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc">
+              <div className="mt-3 pt-3 border-t border-success/10 bg-success/5 rounded-xl p-3 relative group/desc pointer-events-auto z-10">
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
@@ -1335,7 +1335,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 relative z-20 pointer-events-auto">
           <div className="relative">
             <button
               onClick={(e) => { e.stopPropagation(); setShowColorPicker(!showColorPicker); }}
