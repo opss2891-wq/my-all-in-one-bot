@@ -653,7 +653,7 @@ const ChatView: React.FC = () => {
                 {/* Sidebar Toggle - Desktop & Mobile */}
                 <button
                   onClick={toggleSidebar}
-                  className="flex p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex p-2.5 rounded-xl bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all border border-white/5"
                   title={t('conversations')}
                 >
                   <Menu className="w-5 h-5" />
@@ -664,10 +664,10 @@ const ChatView: React.FC = () => {
                   onClick={goToPrevConversation}
                   disabled={!canGoPrev}
                   className={cn(
-                    "p-2 rounded-xl transition-colors",
+                    "p-2 rounded-xl transition-all border border-white/5",
                     canGoPrev 
-                      ? "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground" 
-                      : "bg-muted/20 text-muted-foreground/30 cursor-not-allowed"
+                      ? "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground" 
+                      : "bg-white/5 text-muted-foreground/30 cursor-not-allowed"
                   )}
                 >
                   <ChevronRight className="w-5 h-5" />
