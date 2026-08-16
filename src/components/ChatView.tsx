@@ -35,12 +35,13 @@ const SearchBar = React.lazy(() => import('./SearchBar'));
 const ConversationSidebar = React.lazy(() => import('./ConversationSidebar'));
 const ContextMenu = React.lazy(() => import('./ContextMenu'));
 const SettingsDialog = React.lazy(() => import('./SettingsDialog'));
+const Pagination = React.lazy(() => import('./Pagination'));
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUI } from '@/contexts/UIContext';
 import { encryptData } from '@/lib/encryption';
 
-const MESSAGES_PER_PAGE = 15;
+const MESSAGES_PER_PAGE = 12;
 
 const ChatView: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,8 +59,7 @@ const ChatView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [editingTitle, setEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState('');
-  const [displayCount, setDisplayCount] = useState(MESSAGES_PER_PAGE);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
   const mainRef = useRef<HTMLDivElement>(null);
 
   const { t, isRTL, language } = useLanguage();
@@ -73,31 +73,25 @@ const ChatView: React.FC = () => {
   useEffect(() => {
     if (currentConversationId) {
       loadMessages();
+      setPage(1); // Reset page when conversation changes
     }
   }, [currentConversationId]);
 
-  const handleScroll = useCallback(() => {
-    if (!mainRef.current || loadingMore) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = mainRef.current;
-    const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
-    
-    if (scrollPercentage > 0.8) {
-      setLoadingMore(true);
-      setTimeout(() => {
-        setDisplayCount(prev => prev + MESSAGES_PER_PAGE);
-        setLoadingMore(false);
-      }, 300);
-    }
-  }, [loadingMore]);
-
+  // Reset page when filter or search changes
   useEffect(() => {
-    const mainElement = mainRef.current;
-    if (mainElement) {
-      mainElement.addEventListener('scroll', handleScroll);
-      return () => mainElement.removeEventListener('scroll', handleScroll);
+    setPage(1);
+  }, [filter, searchQuery]);
+
+  const scrollToTop = () => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [handleScroll]);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    scrollToTop();
+  };
 
   // Keyboard navigation for conversations (ArrowLeft/ArrowRight)
   useEffect(() => {
@@ -486,8 +480,11 @@ const ChatView: React.FC = () => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-  const displayedMessages = filteredMessages.slice(0, displayCount);
-  const hasMore = displayCount < filteredMessages.length;
+  const totalPages = Math.ceil(filteredMessages.length / MESSAGES_PER_PAGE);
+  const pagedMessages = filteredMessages.slice(
+    (page - 1) * MESSAGES_PER_PAGE,
+    page * MESSAGES_PER_PAGE
+  );
 
   const currentConversation = [...conversations, ...archivedConversations].find(
     c => c.id === currentConversationId
@@ -509,7 +506,7 @@ const ChatView: React.FC = () => {
     } else {
       setFilter(section as MessageType);
     }
-    setDisplayCount(MESSAGES_PER_PAGE);
+    setPage(1);
   };
 
   // Navigate to next/previous conversation
@@ -589,7 +586,7 @@ const ChatView: React.FC = () => {
             return (
               <button
                 key={btn.type}
-                onClick={() => { setFilter(btn.type); setDisplayCount(MESSAGES_PER_PAGE); }}
+                onClick={() => { setFilter(btn.type); setPage(1); }}
                 className={cn(
                   "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
                   isActive 
@@ -729,7 +726,7 @@ const ChatView: React.FC = () => {
                       return (
                         <button
                           key={type}
-                          onClick={() => { setFilter(type as any); setDisplayCount(MESSAGES_PER_PAGE); }}
+                          onClick={() => { setFilter(type as any); setPage(1); }}
                           className={cn(
                             "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all text-xs font-medium",
                             isActive 
@@ -805,7 +802,7 @@ const ChatView: React.FC = () => {
                   return (
                     <button
                       key={btn.type}
-                      onClick={() => { setFilter(btn.type); setDisplayCount(MESSAGES_PER_PAGE); }}
+                      onClick={() => { setFilter(btn.type); setPage(1); }}
                       className={cn(
                         "flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all font-medium",
                         isActive 
@@ -881,7 +878,7 @@ const ChatView: React.FC = () => {
                   layout === 'grid' ? "grid-cols-2 md:grid-cols-2" : "grid-cols-1 md:grid-cols-1"
                 )}>
                   <React.Suspense fallback={<div className="p-4 border border-border rounded-xl bg-card animate-pulse h-24" />}>
-                    {displayedMessages.map(message => (
+                    {pagedMessages.map(message => (
                       <MessageCard 
                         key={message.id} 
                         message={message} 
@@ -892,13 +889,18 @@ const ChatView: React.FC = () => {
                     ))}
                   </React.Suspense>
                 </div>
-                {hasMore && (
-                  <div className="flex justify-center py-6">
-                    {loadingMore ? (
-                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                    ) : (
-                      <p className="text-sm text-muted-foreground">{t('scrollMore')}</p>
-                    )}
+                
+                {/* Pagination for messages */}
+                {totalPages > 1 && (
+                  <div className="mt-8 mb-12">
+                    <React.Suspense fallback={<div className="h-10 w-full animate-pulse bg-muted rounded-xl" />}>
+                      <Pagination
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                        totalItems={filteredMessages.length}
+                      />
+                    </React.Suspense>
                   </div>
                 )}
               </>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   MessageSquare, 
   Plus, 
@@ -35,6 +35,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import GlobalSearchDialog from './GlobalSearchDialog';
+import Pagination from './Pagination';
 
 const colorClasses: Record<ConversationColor, string> = {
   none: '',
@@ -104,6 +105,8 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   const [searchQuery, setSearchQuery] = useState('');
   const [labelEditId, setLabelEditId] = useState<string | null>(null);
   const [labelValue, setLabelValue] = useState('');
+  const [page, setPage] = useState(1);
+  const CONVERSATIONS_PER_PAGE = 8;
   const { t, isRTL, language } = useLanguage();
   const { logout, user } = useAuth();
 
@@ -111,7 +114,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
 
   const baseConversations = showArchived ? archivedConversations : conversations;
   
-  const displayedConversations = useMemo(() => {
+  const allDisplayedConversations = useMemo(() => {
     let filtered = baseConversations;
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -126,6 +129,17 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
   }, [baseConversations, searchQuery]);
+
+  const totalPages = Math.ceil(allDisplayedConversations.length / CONVERSATIONS_PER_PAGE);
+  const displayedConversations = allDisplayedConversations.slice(
+    (page - 1) * CONVERSATIONS_PER_PAGE,
+    page * CONVERSATIONS_PER_PAGE
+  );
+
+  // Reset page when switching between regular/archived or when searching
+  useEffect(() => {
+    setPage(1);
+  }, [showArchived, searchQuery]);
 
   const startEditing = (conv: Conversation) => {
     setEditingId(conv.id!);
@@ -456,6 +470,18 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
           </div>
         )}
       </div>
+
+      {/* Pagination for Sidebar */}
+      {totalPages > 1 && (
+        <div className="px-3 py-2 border-t border-border bg-card/50">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            compact
+          />
+        </div>
+      )}
 
       <div className="p-4 border-t mt-auto">
         <div className="flex items-center justify-between gap-2 mb-2 px-2">
