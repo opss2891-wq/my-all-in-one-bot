@@ -408,8 +408,8 @@
 
 .deck-bar {
   @apply flex items-center gap-2 rounded-2xl px-2 py-2 border;
-  border-color: hsl(var(--border) / 0.7);
-  background: hsl(var(--card) / 0.6);
+  border-color: hsl(var(--border));
+  background: hsl(var(--card));
 }
 
 .deck-mark {
@@ -486,9 +486,9 @@
 }
 
 .deck-empty {
-  @apply flex flex-col items-center justify-center text-center py-20 px-6 rounded-3xl border;
-  border-color: hsl(var(--border) / 0.6);
-  background: hsl(var(--card) / 0.4);
+  @apply flex flex-col items-center justify-center text-center py-20 px-6 rounded-3xl border border-dashed;
+  border-color: hsl(var(--border));
+  background: hsl(var(--card) / 0.7);
 }
 
 .deck-empty-mark {
