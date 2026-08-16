@@ -340,7 +340,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               )}
             >
               <div className={cn(
-                "text-foreground leading-relaxed markdown-content pointer-events-auto !pointer-events-auto",
+                "text-foreground leading-relaxed markdown-content pointer-events-auto !pointer-events-auto select-text",
+
                 layout === 'compact' ? "text-xs line-clamp-2" : "text-sm md:text-base"
               )}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>

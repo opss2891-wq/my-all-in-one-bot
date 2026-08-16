@@ -938,17 +938,19 @@ const ChatView: React.FC = () => {
           </div>
         </main>
 
-        {/* Input area wrapper with elevated z-index and explicit interaction */}
+        {/* Floating Input area - repositioned for maximum reachability */}
         {currentConversationId && (
           <div 
-            className="fixed bottom-0 left-0 right-0 z-[999] pointer-events-auto cyber-input-wrapper"
+            className="fixed bottom-0 left-0 right-0 z-[999] pointer-events-auto cyber-input-wrapper overflow-visible"
             onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
           >
             <React.Suspense fallback={<div className="p-4 bg-black/50 animate-pulse h-20" />}>
               <MessageInput onSend={handleSend} loading={sending} />
             </React.Suspense>
           </div>
         )}
+
 
       </div>
 
