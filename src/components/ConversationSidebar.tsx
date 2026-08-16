@@ -43,9 +43,14 @@ const colorClasses: Record<ConversationColor, string> = {
   orange: 'border-l-4 border-l-orange-500 bg-orange-500/5',
   yellow: 'border-l-4 border-l-yellow-500 bg-yellow-500/5',
   green: 'border-l-4 border-l-green-500 bg-green-500/5',
+  emerald: 'border-l-4 border-l-emerald-500 bg-emerald-500/5',
+  teal: 'border-l-4 border-l-teal-500 bg-teal-500/5',
   blue: 'border-l-4 border-l-blue-500 bg-blue-500/5',
+  indigo: 'border-l-4 border-l-indigo-500 bg-indigo-500/5',
   purple: 'border-l-4 border-l-purple-500 bg-purple-500/5',
   pink: 'border-l-4 border-l-pink-500 bg-pink-500/5',
+  rose: 'border-l-4 border-l-rose-500 bg-rose-500/5',
+  slate: 'border-l-4 border-l-slate-500 bg-slate-500/5',
 };
 
 const colorDots: Record<ConversationColor, string> = {
@@ -54,9 +59,14 @@ const colorDots: Record<ConversationColor, string> = {
   orange: 'bg-orange-500',
   yellow: 'bg-yellow-500',
   green: 'bg-green-500',
+  emerald: 'bg-emerald-500',
+  teal: 'bg-teal-500',
   blue: 'bg-blue-500',
+  indigo: 'bg-indigo-500',
   purple: 'bg-purple-500',
   pink: 'bg-pink-500',
+  rose: 'bg-rose-500',
+  slate: 'bg-slate-500',
 };
 
 interface ConversationSidebarProps {
@@ -110,7 +120,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
   const { t, isRTL, language } = useLanguage();
   const { logout, user } = useAuth();
 
-  const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'];
+  const colors: ConversationColor[] = ['none', 'red', 'orange', 'yellow', 'green', 'emerald', 'teal', 'blue', 'indigo', 'purple', 'pink', 'rose', 'slate'];
 
   const baseConversations = showArchived ? archivedConversations : conversations;
   
