@@ -502,15 +502,12 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                       ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
-                      ref={descriptionRef}
-                      value={tempDescription}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
                           handleUpdateDescription();
                         }
                       }}
-                      onChange={(e) => setTempDescription(e.target.value)}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للمهام...' : 'Add a sub-note for tasks...'}
                       className="w-full bg-card border border-warning/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-warning"
                       rows={2}
