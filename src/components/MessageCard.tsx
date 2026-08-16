@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
@@ -139,6 +139,19 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
   const { layout } = useUI();
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (isAddingDescription) {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (descriptionRef.current && !descriptionRef.current.contains(event.target as Node)) {
+          handleUpdateDescription();
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isAddingDescription, tempDescription]);
 
   const handleResizeStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -194,14 +207,6 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     onUpdate();
   };
 
-  const handleCardClick = () => {
-    if (message.type === 'note' && message.content) {
-      copyToClipboard(message.content);
-    }
-    if (message.type === 'code' && message.codeData?.code) {
-      copyToClipboard(message.codeData.code);
-    }
-  };
 
   const getIcon = () => {
     const iconClass = "w-5 h-5 transition-transform duration-300 group-hover:scale-110";
@@ -363,8 +368,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية...' : 'Add a sub-note...'}
                       className="w-full bg-card border border-success/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
                       rows={2}
@@ -484,8 +496,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للمهام...' : 'Add a sub-note for tasks...'}
                       className="w-full bg-card border border-warning/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-warning"
                       rows={2}
@@ -688,8 +707,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للبيانات...' : 'Add a sub-note for credentials...'}
                       className="w-full bg-card border border-accent/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
                       rows={2}
@@ -791,8 +817,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للروابط...' : 'Add a sub-note for links...'}
                       className="w-full bg-card border border-primary/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                       rows={2}
@@ -890,8 +923,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للكود...' : 'Add a sub-note for code...'}
                       className="w-full bg-card border border-info/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-info"
                       rows={2}
@@ -1002,8 +1042,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للملف...' : 'Add a sub-note for file...'}
                       className="w-full bg-card border border-purple-500/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
                       rows={2}
@@ -1067,6 +1114,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     <div 
       data-card-type={message.type}
       data-card-id={message.id}
+      onDoubleClick={(e) => {
+        if (message.type === 'note' || message.type === 'code') {
+          e.stopPropagation();
+          setTempDescription(message.description || '');
+          setIsAddingDescription(true);
+        }
+      }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).setAttribute('data-active-card', 'true');
       }}
@@ -1078,7 +1132,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "shadow-none hover:shadow-none !important",
-        (message.type === 'note' || message.type === 'code') && "cursor-pointer",
+        (message.type === 'note' || message.type === 'code') && "cursor-default",
         message.color === 'red' && "bg-red-500/10 border-red-500/50",
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
@@ -1092,7 +1146,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         message.color === 'rose' && "bg-rose-500/10 border-rose-500/50",
         message.color === 'slate' && "bg-slate-500/10 border-slate-500/50"
       )}
-      onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
+      onClick={undefined}
     >
       <div className={cn(
         "absolute top-0 left-0 w-1.5 h-full opacity-100",
