@@ -246,9 +246,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
 
   return (
     <div className="border-t border-white/5 bg-[#0A0A0B]/95 p-4 md:p-6 shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.9)] relative z-[999] rounded-t-[2.5rem] backdrop-blur-3xl pointer-events-auto">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto pointer-events-auto">
         {/* Type Selector - Horizontal Pills */}
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-1 -mx-1 px-1 relative z-[1001] pointer-events-auto">
+        <div className="flex gap-2 mb-3 overflow-x-auto pb-2 -mx-1 px-1 relative z-[1001] pointer-events-auto scrollbar-hide">
           {(Object.entries(typeConfig) as [MessageType, typeof config][]).map(([key, cfg]) => {
             const TypeIcon = cfg.icon;
             const isActive = type === key;
@@ -257,6 +257,12 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                 key={key}
                 type="button"
                 onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setType(key);
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   setType(key);
                 }}
@@ -267,8 +273,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                     : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:border-white/10"
                 )}
               >
-                <TypeIcon className="w-4 h-4" />
-                <span className="font-medium">{cfg.label}</span>
+                <TypeIcon className="w-4 h-4 pointer-events-none" />
+                <span className="font-medium pointer-events-none">{cfg.label}</span>
               </button>
             );
           })}

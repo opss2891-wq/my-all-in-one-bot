@@ -940,17 +940,15 @@ const ChatView: React.FC = () => {
         {/* Input area wrapper with elevated z-index and explicit interaction */}
         {currentConversationId && (
           <div 
-            className={cn(
-              "sticky bottom-0 z-[999] transition-colors duration-300 pointer-events-auto cyber-input-wrapper",
-              theme === 'dark' ? "bg-slate-900/95 backdrop-blur-xl" : "bg-card/95 backdrop-blur-xl"
-            )}
+            className="fixed bottom-0 left-0 right-0 z-[999] pointer-events-auto cyber-input-wrapper"
             onClick={(e) => e.stopPropagation()}
           >
-            <React.Suspense fallback={<div className="p-4 border-t border-border bg-card animate-pulse h-20" />}>
+            <React.Suspense fallback={<div className="p-4 bg-black/50 animate-pulse h-20" />}>
               <MessageInput onSend={handleSend} loading={sending} />
             </React.Suspense>
           </div>
         )}
+
       </div>
 
       {/* Sidebar Overlay */}
