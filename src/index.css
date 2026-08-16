@@ -188,22 +188,30 @@
 }
 
 @layer utilities {
+  * {
+    box-shadow: none !important;
+    filter: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+  }
+
   .glow-primary, 
   .glow-accent,
   [class*="glow-"],
-  [class*="shadow-primary"],
-  [class*="shadow-accent"],
-  [class*="shadow-success"],
-  [class*="shadow-warning"],
-  [class*="shadow-info"] {
+  [class*="shadow-"],
+  [class*="blur-"],
+  [class*="drop-shadow-"] {
     box-shadow: none !important;
     filter: none !important;
+    backdrop-filter: none !important;
   }
 
   .gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--info)));
     position: relative;
     overflow: hidden;
+    box-shadow: none !important;
   }
   
   .gradient-primary::after {
@@ -212,10 +220,12 @@
 
   .gradient-accent {
     background: linear-gradient(135deg, hsl(var(--accent)), #ec4899);
+    box-shadow: none !important;
   }
 
   .gradient-card {
     background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    box-shadow: none !important;
   }
 
   .snap-section {
@@ -228,6 +238,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    filter: none !important;
   }
 
   .cyber-grid {
