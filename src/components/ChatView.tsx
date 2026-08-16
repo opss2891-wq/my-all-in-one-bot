@@ -601,7 +601,7 @@ const ChatView: React.FC = () => {
 
   return (
     <div className={cn(
-      "flex h-[100dvh] overflow-hidden transition-colors duration-300 relative",
+      "flex h-[100dvh] overflow-hidden transition-colors duration-300 relative pointer-events-auto",
       isRTL ? "flex-row-reverse" : "flex-row",
       theme === 'dark' ? "bg-[#0a0c10]" : "bg-background"
     )}>
@@ -664,8 +664,9 @@ const ChatView: React.FC = () => {
 
       {/* Main Content */}
       <div className={cn(
-        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300 relative z-10",
-        theme === 'dark' ? "bg-transparent" : "bg-background/50"
+        "flex-1 flex flex-col min-w-0 pb-[140px] md:pb-0 transition-colors duration-300 relative z-10 pointer-events-auto",
+        theme === 'dark' ? "bg-transparent" : "bg-background/50",
+        sidebarOpen ? "opacity-40 pointer-events-none md:pointer-events-auto" : "opacity-100"
       )}>
         {/* Header */}
         {headerVisible && (
