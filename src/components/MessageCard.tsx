@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
@@ -139,6 +139,19 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   const [isResizing, setIsResizing] = useState(false);
   const { t, language } = useLanguage();
   const { layout } = useUI();
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (isAddingDescription) {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (descriptionRef.current && !descriptionRef.current.contains(event.target as Node)) {
+          handleUpdateDescription();
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isAddingDescription, tempDescription]);
 
   const handleResizeStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -363,8 +376,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية...' : 'Add a sub-note...'}
                       className="w-full bg-card border border-success/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
                       rows={2}
@@ -688,8 +708,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للبيانات...' : 'Add a sub-note for credentials...'}
                       className="w-full bg-card border border-accent/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
                       rows={2}
@@ -791,8 +818,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للروابط...' : 'Add a sub-note for links...'}
                       className="w-full bg-card border border-primary/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                       rows={2}
@@ -890,8 +924,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للكود...' : 'Add a sub-note for code...'}
                       className="w-full bg-card border border-info/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-info"
                       rows={2}
@@ -1002,8 +1043,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                 {isAddingDescription ? (
                   <div className="flex flex-col gap-2">
                     <textarea
+                      ref={descriptionRef}
                       value={tempDescription}
                       onChange={(e) => setTempDescription(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleUpdateDescription();
+                        }
+                      }}
                       placeholder={language === 'ar' ? 'أضف ملاحظة فرعية للملف...' : 'Add a sub-note for file...'}
                       className="w-full bg-card border border-purple-500/30 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
                       rows={2}
