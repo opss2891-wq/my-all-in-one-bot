@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X, Mic, Music, MapPin, Plus } from 'lucide-react';
+import { Send, FileText, CheckSquare, Key, Link2, Code, Loader2, File, Upload, Image, X, Mic, Music, Database, Plus } from 'lucide-react';
 import { MessageType, TaskItem, CredentialData, LinkItem, CodeData } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -108,7 +108,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
     file: { icon: File, label: t('file') || 'ملف', color: 'text-purple-400', bgColor: 'bg-purple-500/20', borderColor: 'border-purple-500/30' },
     audio: { icon: Music, label: isRTL ? 'صوت' : 'Audio', color: 'text-pink-400', bgColor: 'bg-pink-500/20', borderColor: 'border-pink-500/30' },
     voice: { icon: Mic, label: isRTL ? 'بصمة' : 'Voice', color: 'text-rose-400', bgColor: 'bg-rose-500/20', borderColor: 'border-rose-500/30' },
-    location: { icon: MapPin, label: isRTL ? 'موقع' : 'Location', color: 'text-emerald-400', bgColor: 'bg-emerald-500/20', borderColor: 'border-emerald-500/30' },
+    location: { icon: Database, label: isRTL ? 'بيانات' : 'Data', color: 'text-emerald-400', bgColor: 'bg-emerald-500/20', borderColor: 'border-emerald-500/30' },
   };
 
   const config = typeConfig[type];
@@ -227,7 +227,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
         case 'code': return 'أضف كود برمجي...';
         case 'audio': return 'اكتب وصفاً للتسجيل أو رابط...';
         case 'voice': return 'سجل ملاحظة صوتية...';
-        case 'location': return 'أضف إحداثيات أو اسم الموقع...';
+        case 'location': return 'أضف بيانات إضافية أو ملاحظات...';
         default: return 'اكتب شيئاً...';
       }
     }
@@ -239,7 +239,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
       case 'code': return t('addCode');
       case 'audio': return 'Add audio link or path...';
       case 'voice': return 'Add voice note...';
-      case 'location': return 'Add coordinates or location name...';
+      case 'location': return 'Add additional data or notes...';
       default: return '';
     }
   };
@@ -453,25 +453,15 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                 type="text"
                 value={location.address}
                 onChange={(e) => setLocation({...location, address: e.target.value})}
-                placeholder={isRTL ? 'اسم الموقع أو العنوان...' : 'Location name or address...'}
+                placeholder={isRTL ? 'اسم المرجع أو العنوان...' : 'Reference name or title...'}
                 className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
               />
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  value={location.lat}
-                  onChange={(e) => setLocation({...location, lat: e.target.value})}
-                  placeholder="Latitude (30.0444)"
-                  className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-                />
-                <input
-                  type="text"
-                  value={location.lng}
-                  onChange={(e) => setLocation({...location, lng: e.target.value})}
-                  placeholder="Longitude (31.2357)"
-                  className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none"
-                />
-              </div>
+              <textarea
+                value={location.lat}
+                onChange={(e) => setLocation({...location, lat: e.target.value})}
+                placeholder={isRTL ? 'أدخل البيانات الإضافية هنا...' : 'Enter additional data here...'}
+                className="bg-white/5 border border-emerald-400/30 rounded-xl px-4 py-2 text-foreground focus:outline-none min-h-[80px]"
+              />
             </div>
           ) : type === 'audio' || type === 'voice' ? (
             <div className="flex-1 flex flex-col gap-3 animate-fade-in">

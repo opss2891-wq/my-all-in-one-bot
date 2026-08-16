@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette, Mic, Music, MapPin } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette, Mic, Music, Database } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
