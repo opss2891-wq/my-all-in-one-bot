@@ -1132,7 +1132,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "shadow-none hover:shadow-none !important",
-        (message.type === 'note' || message.type === 'code') && "cursor-default",
+        (message.type === 'note' || message.type === 'code') && "cursor-pointer",
         message.color === 'red' && "bg-red-500/10 border-red-500/50",
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
@@ -1146,7 +1146,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         message.color === 'rose' && "bg-rose-500/10 border-rose-500/50",
         message.color === 'slate' && "bg-slate-500/10 border-slate-500/50"
       )}
-      onClick={undefined}
+      onClick={handleCardClick}
     >
       <div className={cn(
         "absolute top-0 left-0 w-1.5 h-full opacity-100",
