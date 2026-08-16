@@ -180,7 +180,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
       className
     )}>
       {/* Header */}
-      <div className="p-4 border-b border-border safe-area-top">
+      <div className="p-4 border-b border-white/10 safe-area-top">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-bold text-foreground flex-1">{t('conversations')}</h2>
           <button
@@ -192,7 +192,7 @@ const ConversationSidebar: React.FC<ConversationSidebarProps & { className?: str
         </div>
         <button
           onClick={onCreateConversation}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-medium"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl gradient-primary text-primary-foreground hover:opacity-90 transition-all font-medium shadow-lg shadow-primary/20"
         >
           <Plus className="w-5 h-5" />
           <span>{t('newConversation')}</span>
