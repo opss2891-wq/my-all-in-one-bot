@@ -866,7 +866,7 @@ const ChatView: React.FC = () => {
             theme === 'dark' ? "bg-transparent text-slate-50" : "bg-slate-50/30 text-slate-900"
           )}
         >
-          <div className="p-3 md:p-4 max-w-3xl mx-auto">
+          <div className="p-3 md:p-4 max-w-3xl mx-auto relative z-10">
             {/* Messages Grid - 2 columns on mobile */}
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">

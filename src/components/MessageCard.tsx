@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette, Mic, Music, MapPin } from 'lucide-react';
+import { Trash2, Copy, FileText, CheckSquare, Square, Key, Link2, Code, Eye, EyeOff, ExternalLink, Plus, X, File, Download, ChevronDown, User, Shield, Lock, Activity, Zap, Terminal, Globe, Palette, Mic, Music, Database } from 'lucide-react';
 import { Message, updateMessage } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { decryptData } from '@/lib/encryption';
@@ -228,7 +228,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'file': return <Zap className={cn(iconClass, "text-purple-400")} />;
       case 'audio': return <Music className={cn(iconClass, "text-pink-400")} />;
       case 'voice': return <Mic className={cn(iconClass, "text-rose-400")} />;
-      case 'location': return <MapPin className={cn(iconClass, "text-emerald-400")} />;
+      case 'location': return <Database className={cn(iconClass, "text-emerald-400")} />;
       default: return <FileText className={iconClass} />;
     }
   };
@@ -1050,34 +1050,24 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         );
       }
       case 'location': {
-        const coords = message.content?.match(/-?\d+\.\d+,\s*-?\d+\.\d+/);
-        const mapUrl = coords ? `https://www.google.com/maps?q=${coords[0]}` : `https://www.google.com/maps/search/${encodeURIComponent(message.content || '')}`;
         return (
           <div className="space-y-3 bg-emerald-500/5 dark:bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20 shadow-none !important">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-emerald-400" />
+                <Database className="w-5 h-5 text-emerald-400" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium line-clamp-2">{message.content}</p>
-                <a 
-                  href={mapUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:underline mt-1"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  {language === 'ar' ? 'فتح في الخرائط' : 'Open in Maps'}
-                </a>
+                <p className="text-sm font-medium">{message.content}</p>
               </div>
             </div>
+            {message.description && (
+              <p className="text-xs text-muted-foreground italic border-t border-emerald-500/10 pt-2">
+                {message.description}
+              </p>
+            )}
           </div>
         );
       }
-      case 'audio':
-      case 'voice':
-      case 'location':
-        return null; // Already handled above
       case 'file': {
         const fileData = message.fileData;
         if (!fileData) return null;
@@ -1224,21 +1214,11 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
       case 'location': {
         return (
           <div className="space-y-3">
-            <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 aspect-video bg-emerald-500/5 flex flex-col items-center justify-center gap-2">
-              <MapPin className="w-10 h-10 text-emerald-400 opacity-50" />
-              <p className="text-sm text-emerald-400/70 font-medium">
-                {message.content || (language === 'ar' ? 'موقع جغرافي' : 'Location')}
+            <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 min-h-[100px] bg-emerald-500/5 flex flex-col items-center justify-center gap-2 p-4">
+              <Database className="w-8 h-8 text-emerald-400 opacity-50" />
+              <p className="text-sm text-emerald-400/70 font-medium text-center">
+                {message.content || (language === 'ar' ? 'بيانات إضافية' : 'Additional Data')}
               </p>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(message.content || '')}`, '_blank');
-                }}
-                className="absolute bottom-3 right-3 px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs rounded-lg transition-colors flex items-center gap-2"
-              >
-                <ExternalLink className="w-3 h-3" />
-                {language === 'ar' ? 'فتح الخريطة' : 'Open Map'}
-              </button>
             </div>
             {message.description && (
               <p className="text-sm text-muted-foreground italic px-2">
