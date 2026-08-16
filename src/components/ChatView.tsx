@@ -911,7 +911,7 @@ const ChatView: React.FC = () => {
         {/* Input */}
         {currentConversationId && (
           <div className={cn(
-            "sticky bottom-0 z-[100] transition-colors duration-300 pointer-events-auto",
+            "sticky bottom-0 z-[150] transition-colors duration-300 pointer-events-auto",
             theme === 'dark' ? "bg-slate-900/95 backdrop-blur-xl" : "bg-card/95 backdrop-blur-xl"
           )}>
             <React.Suspense fallback={<div className="p-4 border-t border-border bg-card animate-pulse h-20" />}>
@@ -923,7 +923,7 @@ const ChatView: React.FC = () => {
 
       {/* Sidebar - Wrapped in conditional and moved AFTER main content to ensure it doesn't block inputs unless open */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-[110] transition-all duration-300">
+        <div className="fixed inset-0 z-[200] transition-all duration-300">
           {/* Backdrop for mobile */}
           <div 
             className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[-1] md:hidden"
