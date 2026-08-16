@@ -334,12 +334,12 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               }}
               style={{ height: noteHeight ? `${noteHeight}px` : 'auto' }}
               className={cn(
-                "overflow-hidden transition-[height] duration-200 pointer-events-auto relative z-[60]",
+                "overflow-hidden transition-[height] duration-200 pointer-events-auto relative z-[60] !pointer-events-auto",
                 !noteHeight && !isExpanded && "max-h-[150px]"
               )}
             >
               <div className={cn(
-                "text-foreground leading-relaxed markdown-content pointer-events-auto",
+                "text-foreground leading-relaxed markdown-content pointer-events-auto !pointer-events-auto",
                 layout === 'compact' ? "text-xs line-clamp-2" : "text-sm md:text-base"
               )}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -494,7 +494,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                   handleToggleTask(index + 1);
                 }}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[60]",
+                  "flex items-center gap-3 rounded-xl cursor-pointer transition-all active:scale-[0.98] pointer-events-auto relative z-[60] !pointer-events-auto",
                   layout === 'compact' ? "p-1.5 gap-2" : "p-3 gap-3",
                   task.completed ? "bg-success/10" : "hover:bg-muted/80"
                 )}
@@ -1247,7 +1247,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         getBorderColor(),
         isResizing && "cursor-ns-resize select-none",
         "shadow-none hover:shadow-none !important",
-        "cursor-pointer pointer-events-auto relative z-[10]",
+        "cursor-pointer pointer-events-auto relative z-[10] !pointer-events-auto",
         message.color === 'red' && "bg-red-500/10 border-red-500/50",
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",

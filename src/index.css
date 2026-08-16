@@ -293,6 +293,19 @@
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(45, 212, 191, 0.3);
     box-shadow: 0 0 20px -5px rgba(45, 212, 191, 0.1);
+    pointer-events: auto !important;
+  }
+
+  .pointer-events-auto {
+    pointer-events: auto !important;
+  }
+
+  .cursor-pointer {
+    cursor: pointer !important;
+  }
+
+  .cursor-text {
+    cursor: text !important;
   }
 
   .glass-panel {
