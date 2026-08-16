@@ -295,7 +295,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                     "flex-1 bg-white/[0.02] border-2 rounded-[1.5rem] px-5 py-4 text-foreground placeholder:text-muted-foreground/30 resize-none transition-all focus:outline-none text-lg pointer-events-auto relative z-[151]",
                     config.borderColor,
                     "focus:ring-4 focus:ring-primary/5 shadow-2xl focus:bg-white/[0.05]",
-                    type === 'code' && "font-mono text-sm"
+                    type === 'code' && "font-mono text-sm",
+                    (type === 'tasks' || type === 'code' || type === 'credentials') && "min-h-[150px]"
                   )}
                 />
               </div>
