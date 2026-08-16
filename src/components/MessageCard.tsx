@@ -208,6 +208,15 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
   };
 
 
+  const handleCardClick = () => {
+    if (message.type === 'note' && message.content) {
+      copyToClipboard(message.content);
+    }
+    if (message.type === 'code' && message.codeData?.code) {
+      copyToClipboard(message.codeData.code);
+    }
+  };
+
   const getIcon = () => {
     const iconClass = "w-5 h-5 transition-transform duration-300 group-hover:scale-110";
     switch (message.type) {
@@ -310,6 +319,11 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         return (
           <div className="space-y-3 relative group/note" dir="rtl" style={{ textAlign: 'right' }}>
             <div 
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                setTempDescription(message.description || '');
+                setIsAddingDescription(true);
+              }}
               style={{ height: noteHeight ? `${noteHeight}px` : 'auto' }}
               className={cn(
                 "overflow-hidden transition-[height] duration-200",
@@ -900,7 +914,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                   <Copy className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
               </div>
-              <div className="pt-8 border border-info/20 rounded-xl overflow-hidden bg-[#0d1117]">
+              <div 
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  setTempDescription(message.description || '');
+                  setIsAddingDescription(true);
+                }}
+                className="pt-8 border border-info/20 rounded-xl overflow-hidden bg-[#0d1117]">
                 <CodeHighlight code={codeData.code} language={codeData.language || 'text'} />
               </div>
             </div>
@@ -1114,13 +1134,6 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
     <div 
       data-card-type={message.type}
       data-card-id={message.id}
-      onDoubleClick={(e) => {
-        if (message.type === 'note' || message.type === 'code') {
-          e.stopPropagation();
-          setTempDescription(message.description || '');
-          setIsAddingDescription(true);
-        }
-      }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).setAttribute('data-active-card', 'true');
       }}
