@@ -259,9 +259,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         case 'orange': return 'border-orange-500 bg-orange-500/10 dark:bg-orange-500/20 shadow-none !important';
         case 'yellow': return 'border-yellow-500 bg-yellow-500/10 dark:bg-yellow-500/20 shadow-none !important';
         case 'green': return 'border-green-500 bg-green-500/10 dark:bg-green-500/20 shadow-none !important';
+        case 'emerald': return 'border-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/20 shadow-none !important';
+        case 'teal': return 'border-teal-500 bg-teal-500/10 dark:bg-teal-500/20 shadow-none !important';
         case 'blue': return 'border-blue-500 bg-blue-500/10 dark:bg-blue-500/20 shadow-none !important';
+        case 'indigo': return 'border-indigo-500 bg-indigo-500/10 dark:bg-indigo-500/20 shadow-none !important';
         case 'purple': return 'border-purple-500 bg-purple-500/10 dark:bg-purple-500/20 shadow-none !important';
         case 'pink': return 'border-pink-500 bg-pink-500/10 dark:bg-pink-500/20 shadow-none !important';
+        case 'rose': return 'border-rose-500 bg-rose-500/10 dark:bg-rose-500/20 shadow-none !important';
+        case 'slate': return 'border-slate-500 bg-slate-500/10 dark:bg-slate-500/20 shadow-none !important';
         default: return 'border-border/30 shadow-none !important';
       }
     }
@@ -1078,9 +1083,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
         message.color === 'orange' && "bg-orange-500/10 border-orange-500/50",
         message.color === 'yellow' && "bg-yellow-500/10 border-yellow-500/50",
         message.color === 'green' && "bg-green-500/10 border-green-500/50",
+        message.color === 'emerald' && "bg-emerald-500/10 border-emerald-500/50",
+        message.color === 'teal' && "bg-teal-500/10 border-teal-500/50",
         message.color === 'blue' && "bg-blue-500/10 border-blue-500/50",
+        message.color === 'indigo' && "bg-indigo-500/10 border-indigo-500/50",
         message.color === 'purple' && "bg-purple-500/10 border-purple-500/50",
-        message.color === 'pink' && "bg-pink-500/10 border-pink-500/50"
+        message.color === 'pink' && "bg-pink-500/10 border-pink-500/50",
+        message.color === 'rose' && "bg-rose-500/10 border-rose-500/50",
+        message.color === 'slate' && "bg-slate-500/10 border-slate-500/50"
       )}
       onClick={(message.type === 'note' || message.type === 'code') ? handleCardClick : undefined}
     >
@@ -1098,9 +1108,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
           message.color === 'orange' ? "bg-orange-500" :
           message.color === 'yellow' ? "bg-yellow-500" :
           message.color === 'green' ? "bg-green-500" :
+          message.color === 'emerald' ? "bg-emerald-500" :
+          message.color === 'teal' ? "bg-teal-500" :
           message.color === 'blue' ? "bg-blue-500" :
+          message.color === 'indigo' ? "bg-indigo-500" :
           message.color === 'purple' ? "bg-purple-500" :
-          message.color === 'pink' ? "bg-pink-500" : ""
+          message.color === 'pink' ? "bg-pink-500" :
+          message.color === 'rose' ? "bg-rose-500" :
+          message.color === 'slate' ? "bg-slate-500" : ""
         )
       )} />
 
@@ -1139,8 +1154,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
               <Palette className="w-4 h-4" />
             </button>
             {showColorPicker && (
-              <div className="absolute top-full right-0 mt-2 p-2 bg-card border border-border rounded-xl shadow-2xl z-50 flex gap-1 min-w-[160px]">
-                {['none', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink'].map((color) => (
+              <div className="absolute top-full right-0 mt-2 p-3 bg-card border border-border rounded-2xl shadow-2xl z-50 grid grid-cols-4 gap-2 min-w-[140px]">
+                {['none', 'red', 'orange', 'yellow', 'green', 'emerald', 'teal', 'blue', 'indigo', 'purple', 'pink', 'rose', 'slate'].map((color) => (
                   <button
                     key={color}
                     onClick={(e) => { e.stopPropagation(); handleSetColor(color as any); }}
@@ -1151,9 +1166,14 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, onDelete, onUpdate, 
                       color === 'orange' && "bg-orange-500",
                       color === 'yellow' && "bg-yellow-500",
                       color === 'green' && "bg-green-500",
+                      color === 'emerald' && "bg-emerald-500",
+                      color === 'teal' && "bg-teal-500",
                       color === 'blue' && "bg-blue-500",
+                      color === 'indigo' && "bg-indigo-500",
                       color === 'purple' && "bg-purple-500",
-                      color === 'pink' && "bg-pink-500"
+                      color === 'pink' && "bg-pink-500",
+                      color === 'rose' && "bg-rose-500",
+                      color === 'slate' && "bg-slate-500"
                     )}
                   >
                     {color === 'none' && <X className="w-3 h-3 text-muted-foreground" />}

@@ -35,7 +35,7 @@ export const enableOfflinePersistence = async () => {
 };
 
 // Conversation types
-export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'emerald' | 'teal' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'slate';
 
 export interface Conversation {
   id?: string;

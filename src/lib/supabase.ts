@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 
 export type MessageType = 'note' | 'tasks' | 'credentials' | 'links' | 'code' | 'file';
-export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink';
+export type ConversationColor = 'none' | 'red' | 'orange' | 'yellow' | 'green' | 'emerald' | 'teal' | 'blue' | 'indigo' | 'purple' | 'pink' | 'rose' | 'slate';
 
 export interface TaskItem {
   text: string;
@@ -156,7 +156,7 @@ export const updateConversation = async (id: string, updates: Partial<Conversati
       title: updates.title,
       archived: updates.archived,
       pinned: updates.pinned,
-      color: updates.color,
+      color: updates.color as any,
       label: updates.label,
       updated_at: new Date().toISOString()
     })
@@ -207,7 +207,7 @@ export const unpinConversation = async (id: string) => {
 export const setConversationColor = async (id: string, color: ConversationColor) => {
   const { error } = await supabase
     .from('conversations')
-    .update({ color, updated_at: new Date().toISOString() })
+    .update({ color: color as any, updated_at: new Date().toISOString() })
     .eq('id', id);
   if (error) throw error;
 };
