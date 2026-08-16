@@ -677,177 +677,140 @@ const ChatView: React.FC = () => {
       )}>
         {/* Header */}
         {headerVisible && (
-          <header className="cyber-header">
-            <div className="p-3 md:p-4">
-              <div className="flex items-center gap-3 mb-3">
-                {/* Sidebar Toggle - Desktop & Mobile */}
+          <header className="deck-header">
+            <div className="mx-auto w-full max-w-4xl px-3 md:px-4 pt-3 pb-2">
+              {/* Row 1 — identity & controls */}
+              <div className="deck-bar">
                 <button
                   onClick={toggleSidebar}
-                  className="flex p-2.5 rounded-xl bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all border border-white/5"
+                  className="deck-icon-btn"
                   title={t('conversations')}
                 >
                   <Menu className="w-5 h-5" />
                 </button>
-                
-                {/* Previous Conversation */}
-                <button
-                  onClick={goToPrevConversation}
-                  disabled={!canGoPrev}
-                  className={cn(
-                    "p-2 rounded-xl transition-all border border-white/5",
-                    canGoPrev 
-                      ? "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground" 
-                      : "bg-white/5 text-muted-foreground/30 cursor-not-allowed"
-                  )}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-                
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 group overflow-hidden">
-                  <svg viewBox="0 0 100 100" className="w-6 h-6 md:w-8 md:h-8 fill-none" xmlns="http://www.w3.org/2000/svg">
+
+                <div className="deck-mark">
+                  <svg viewBox="0 0 100 100" className="w-5 h-5 md:w-6 md:h-6 fill-none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M50 5L15 20V45C15 67.2 29.9 87.7 50 95C70.1 87.7 85 67.2 85 45V20L50 5Z" stroke="currentColor" strokeWidth="6" className="text-primary" />
                     <circle cx="50" cy="45" r="12" stroke="currentColor" strokeWidth="4" className="text-primary" />
                     <path d="M50 57V68M45 73H55" stroke="currentColor" strokeWidth="6" strokeLinecap="round" className="text-primary" />
                   </svg>
                 </div>
-                 <div className="flex-1 min-w-0">
-                   {currentConversationId ? (
-                     editingTitle ? (
-                       <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
-                         <input
-                           type="text"
-                           value={tempTitle}
-                           onChange={(e) => setTempTitle(e.target.value)}
-                           onKeyDown={(e) => {
-                             if (e.key === 'Enter') saveHeaderRename();
-                             if (e.key === 'Escape') cancelHeaderRename();
-                           }}
-                           className="bg-white/5 border border-primary/30 rounded-lg px-2 py-1 text-lg font-bold text-foreground w-full focus:outline-none focus:ring-1 focus:ring-primary shadow-inner"
-                           autoFocus
-                         />
-                         <button onClick={saveHeaderRename} className="p-1.5 bg-success/20 hover:bg-success/30 rounded-lg transition-colors">
-                           <Check className="w-5 h-5 text-success" />
-                         </button>
-                         <button onClick={cancelHeaderRename} className="p-1.5 bg-destructive/20 hover:bg-destructive/30 rounded-lg transition-colors">
-                           <X className="w-5 h-5 text-destructive" />
-                         </button>
-                       </div>
-                     ) : (
-                        <div 
-                          className="cursor-pointer hover:bg-muted/30 rounded-lg px-2 py-1 transition-all group relative border border-transparent hover:border-primary/20"
-                          onClick={handleRenameCurrent}
-                          title={language === 'ar' ? 'تعديل العنوان' : 'Edit title'}
-                        >
-                          <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
-                            {currentConversation?.title}
-                          </h1>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('personalStorage')}</p>
-                        </div>
 
-                     )
-                   ) : (
-                     <div className="flex flex-col">
-                       <h1 className="text-lg md:text-xl font-bold text-foreground truncate">
-                         {t('appName')}
-                       </h1>
-                       <p className="text-xs text-muted-foreground">{t('personalStorage')}</p>
-                     </div>
-                   )}
-                  </div>
-                  
-                  {/* Filter Pills - Desktop only to avoid crowding */}
-                  <div className="hidden lg:flex items-center gap-1.5 bg-muted/20 p-1 rounded-2xl mx-2">
-                    {['all', 'note', 'tasks', 'credentials', 'links', 'code', 'file'].map((type) => {
-                      const isActive = filter === type;
-                      return (
-                        <button
-                          key={type}
-                          onClick={() => { setFilter(type as any); setPage(1); }}
-                          className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all text-xs font-medium",
-                            isActive 
-                              ? "bg-primary text-primary-foreground shadow-none" 
-                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                          )}
-                        >
-                          {type === 'all' && <Sparkles className="w-3.5 h-3.5" />}
-                          {type === 'note' && <FileText className="w-3.5 h-3.5" />}
-                          {type === 'tasks' && <CheckSquare className="w-3.5 h-3.5" />}
-                          {type === 'credentials' && <Key className="w-3.5 h-3.5" />}
-                          {type === 'links' && <Link2 className="w-3.5 h-3.5" />}
-                          {type === 'code' && <Code className="w-3.5 h-3.5" />}
-                          {type === 'file' && <File className="w-3.5 h-3.5" />}
-                          <span className="hidden xl:inline">{type === 'all' ? t('all') : t(type)}</span>
+                <div className="flex-1 min-w-0">
+                  {currentConversationId ? (
+                    editingTitle ? (
+                      <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                        <input
+                          type="text"
+                          value={tempTitle}
+                          onChange={(e) => setTempTitle(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') saveHeaderRename();
+                            if (e.key === 'Escape') cancelHeaderRename();
+                          }}
+                          className="deck-title-input"
+                          autoFocus
+                        />
+                        <button onClick={saveHeaderRename} className="deck-icon-btn text-success">
+                          <Check className="w-5 h-5" />
                         </button>
-                      );
-                    })}
+                        <button onClick={cancelHeaderRename} className="deck-icon-btn text-destructive">
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="group w-full text-start rounded-xl px-1.5 py-0.5 transition-colors hover:bg-foreground/5"
+                        onClick={handleRenameCurrent}
+                        title={language === 'ar' ? 'تعديل العنوان' : 'Edit title'}
+                      >
+                        <h1 className="text-base md:text-lg font-extrabold text-foreground truncate leading-tight">
+                          {currentConversation?.title}
+                        </h1>
+                        <div className={cn("flex items-center gap-1.5 mt-0.5", isRTL && "flex-row-reverse")}>
+                          <span className="deck-chip">{messages.length}</span>
+                          <span className="text-[10px] text-muted-foreground tracking-wider uppercase truncate">
+                            {t('personalStorage')}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  ) : (
+                    <div className="px-1.5">
+                      <h1 className="text-base md:text-lg font-extrabold text-foreground truncate leading-tight">
+                        {t('appName')}
+                      </h1>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t('personalStorage')}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className={cn("flex items-center gap-1", isRTL && "flex-row-reverse")}>
+                  <div className="deck-group hidden sm:flex">
+                    <button
+                      onClick={goToPrevConversation}
+                      disabled={!canGoPrev}
+                      className={cn("deck-icon-btn deck-icon-btn--flat", !canGoPrev && "opacity-30 cursor-not-allowed")}
+                    >
+                      <ChevronRight className="w-4.5 h-4.5" />
+                    </button>
+                    <button
+                      onClick={goToNextConversation}
+                      disabled={!canGoNext}
+                      className={cn("deck-icon-btn deck-icon-btn--flat", !canGoNext && "opacity-30 cursor-not-allowed")}
+                    >
+                      <ChevronLeft className="w-4.5 h-4.5" />
+                    </button>
                   </div>
 
-                
-                {/* Next Conversation */}
-                <button
-                  onClick={goToNextConversation}
-                  disabled={!canGoNext}
-                  className={cn(
-                    "p-2 rounded-xl transition-colors",
-                    canGoNext 
-                      ? "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground" 
-                      : "bg-muted/20 text-muted-foreground/30 cursor-not-allowed"
-                  )}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                
-                {/* Settings */}
-                <React.Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
-                  <SettingsDialog />
-                </React.Suspense>
-                
-                {/* Theme Toggle */}
-                <button
-                  onClick={toggleTheme}
-                  className="p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                  title={theme === 'dark' ? t('lightMode') : t('darkMode')}
-                >
-                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </button>
-                
-                {/* Header Toggle */}
-                <button
-                  onClick={toggleHeader}
-                  className="p-2.5 rounded-xl bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                >
-                  <EyeOff className="w-5 h-5" />
-                </button>
-                
-                <button
-                  onClick={handleCreateConversation}
-                  className="p-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors md:hidden"
-                >
-                  <Plus className="w-5 h-5" />
-                </button>
+                  <React.Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+                    <SettingsDialog />
+                  </React.Suspense>
+
+                  <button
+                    onClick={toggleTheme}
+                    className="deck-icon-btn"
+                    title={theme === 'dark' ? t('lightMode') : t('darkMode')}
+                  >
+                    {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  </button>
+
+                  <button onClick={toggleHeader} className="deck-icon-btn hidden sm:flex">
+                    <EyeOff className="w-5 h-5" />
+                  </button>
+
+                  <button
+                    onClick={handleCreateConversation}
+                    className="deck-icon-btn deck-icon-btn--accent"
+                    title={t('newConversation')}
+                  >
+                    <Plus className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
-              <SearchBar value={searchQuery} onChange={setSearchQuery} />
+              {/* Row 2 — search */}
+              <div className="mt-2">
+                <SearchBar value={searchQuery} onChange={setSearchQuery} />
+              </div>
 
-              {/* Desktop Filter Tabs */}
-              <div className="hidden md:flex gap-2 mt-3 overflow-x-auto pb-1">
+              {/* Row 3 — unified filter rail */}
+              <div className="deck-rail mt-2">
                 {filterButtons.map(btn => {
                   const Icon = btn.icon;
                   const isActive = filter === btn.type;
+                  const count = countFor(btn.type);
                   return (
                     <button
                       key={btn.type}
                       onClick={() => { setFilter(btn.type); setPage(1); }}
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-xl text-sm whitespace-nowrap transition-all font-medium",
-                        isActive 
-                          ? "bg-primary text-primary-foreground shadow-none" 
-                          : "bg-muted/50 text-muted-foreground hover:bg-muted"
-                      )}
+                      className={cn("deck-pill", isActive && "deck-pill--active")}
                     >
-                      <Icon className="w-4 h-4" />
-                      {btn.label}
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      <span className="whitespace-nowrap">{btn.label}</span>
+                      {count > 0 && <span className="deck-pill-count">{count}</span>}
                     </button>
                   );
                 })}
