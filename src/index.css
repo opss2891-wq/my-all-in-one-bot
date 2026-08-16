@@ -196,6 +196,14 @@
     animation-name: none !important;
     animation-duration: 0s !important;
     transition-duration: 0s !important;
+    transform: none !important;
+  }
+
+  *:hover {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
   }
 
   .glow-primary, 
