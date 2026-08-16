@@ -863,11 +863,12 @@ const ChatView: React.FC = () => {
         <main 
           ref={mainRef} 
           className={cn(
-            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300 scroll-smooth",
+            "flex-1 overflow-y-auto overscroll-contain transition-colors duration-300 scroll-smooth pb-32 md:pb-40 relative z-10",
             theme === 'dark' ? "bg-transparent text-slate-50" : "bg-slate-50/30 text-slate-900"
           )}
         >
           <div className="p-3 md:p-4 max-w-3xl mx-auto relative z-10">
+
             {/* Messages Grid - 2 columns on mobile */}
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">

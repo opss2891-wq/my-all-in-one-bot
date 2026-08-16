@@ -256,11 +256,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
               <button
                 key={key}
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setType(key);
-                }}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -273,6 +268,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, loading }) => {
                     : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:border-white/10"
                 )}
               >
+
                 <TypeIcon className="w-4 h-4 pointer-events-none" />
                 <span className="font-medium pointer-events-none">{cfg.label}</span>
               </button>
