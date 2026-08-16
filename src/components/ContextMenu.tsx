@@ -342,6 +342,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         )}
       </div>
     </div>
+  </div>
   );
 };
 
